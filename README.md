@@ -1,0 +1,3 @@
+# Hypr-G dotfiles
+
+WIP
