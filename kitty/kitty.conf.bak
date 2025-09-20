@@ -11,8 +11,3 @@ confirm_os_window_close 0
 shell fish
 
 map ctrl+c copy_or_interrupt
-
-# BEGIN_KITTY_THEME
-# Atelier Plateau Dark
-include current-theme.conf
-# END_KITTY_THEME

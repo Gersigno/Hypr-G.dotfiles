@@ -20,6 +20,7 @@ end
 
 alias clear "printf '\033[2J\033[3J\033[1;1H'"
 alias neofetch fastfetch
+alias ya yazi
 
 # temp ugly code
 alias light "set kvantum_theme_name 'Kv-Gnome-Light' \

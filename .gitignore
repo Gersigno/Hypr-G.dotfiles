@@ -1,14 +1,21 @@
 /*
 
+# Top level files
 !.gitignore
 !README.md
-
-!fastfetch
-!fish/
-fish/*
 !fish/config.fish
-!gtk-3.0
-!gtk-4.0
-!hypr
-!kitty
-!xdg-desktop-portal
+
+# Top level directories
+!fastfetch
+!gtk-3.0/
+!gtk-4.0/
+!hypr/
+!kitty/
+!xdg-desktop-portal/
+!fuzzel/
+
+# Explicitly re-excluded files (has to include each parent directories)
+!/hypr/
+!/hypr/hypr-g/
+!/hypr/hypr-g/hyprlock/
+/hypr/hypr-g/hyprlock/wallpaper.png
