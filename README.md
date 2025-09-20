@@ -42,8 +42,7 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 
 ## 📝 TODO/Roadmap
 - Setting GUI app
-- Implement top bar
-- Implement finder
+- ...Implement top bar
 - Install, Update & Uninstall scripts
 - Credits section
 - Packages list

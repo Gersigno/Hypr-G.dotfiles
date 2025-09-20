@@ -11,6 +11,16 @@
         "hyprland/window",
         "mpris"
     ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "group/expand-tray",
+        "group/expand-audio",
+        "network",
+        "memory",
+        "cpu"
+    ],
     "hyprland/workspaces": {
         "format": "{icon}",
         "format-icons": {
@@ -22,7 +32,8 @@
         "format": "<span  weight='bold' >{class}</span>",
         "max-length": 120,
         "icon": false,
-        "icon-size": 13
+        "icon-size": 13,
+        "tooltip": false
     },
     "mpris": {
         "format": "{player_icon} {dynamic}",
@@ -33,7 +44,124 @@
             "mpv": "🎵"
         },
         "status-icons": {
-            "paused": "▶" 
+            "paused": "▶"
         }
+    },
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%b %d, %H:%M}",
+        "tooltip-format": "{:%A, %B %d, %Y - %H:%M:%S}"
+    },
+    "group/expand-tray": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 600,
+            "children-class": "not-power",
+            "transition-to-left": true,
+            "click-to-reveal": true
+        },
+        "modules": [
+            "custom/menu",
+            "tray"
+        ]
+    },
+    "custom/menu": {
+        "format": "󰅃",
+        "rotate": 90
+    },
+    "tray": {
+        "icon-size": 16,
+        "rotate": 0,
+        "spacing": 3
+    },
+    "network": {
+        "tooltip": true,
+        "format-wifi": "{icon} ",
+        "format-icons": [
+            "󰤟",
+            "󰤢",
+            "󰤥"
+        ],
+        "rotate": 0,
+        "format-ethernet": "󰈀 ",
+        "tooltip-format": "Network: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
+        "format-linked": "󰈀 {ifname} (No IP)",
+        "format-disconnected": " ",
+        "tooltip-format-disconnected": "Disconnected",
+        "on-click": "/usr/local/bin/ags -t ControlPanel",
+        "interval": 2
+    },
+    "group/expand-audio": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 600,
+            "children-class": "not-power",
+            "transition-to-left": true,
+            "click-to-reveal": true
+        },
+        "modules": [
+            "pulseaudio",
+            "pulseaudio/slider"
+        ]
+    },
+    "pulseaudio": {
+        "format": "{icon}",
+        "rotate": 0,
+        "format-muted": "婢",
+        "tooltip-format": "{icon} {desc} // {volume}%",
+        "scroll-step": 5,
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": [
+                "",
+                "",
+                ""
+            ]
+        }
+    },
+    "pulseaudio/slider": {
+        "min": 5,
+        "max": 100,
+        "rotate": 0,
+        "device": "pulseaudio",
+        "scroll-step": 1
+    },
+    "memory": {
+        "interval": 1,
+        "rotate": 270,
+        "format": "{icon}",
+        "format-icons": [
+            "󰝦",
+            "󰪞",
+            "󰪟",
+            "󰪠",
+            "󰪡",
+            "󰪢",
+            "󰪣",
+            "󰪤",
+            "󰪥"
+        ],
+        "max-length": 10
+    },
+    "cpu": {
+        "interval": 1,
+        "format": "{icon}",
+        "rotate": 270,
+        "format-icons": [
+            "󰝦",
+            "󰪞",
+            "󰪟",
+            "󰪠",
+            "󰪡",
+            "󰪢",
+            "󰪣",
+            "󰪤",
+            "󰪥"
+        ]
     }
 }
