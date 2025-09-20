@@ -13,6 +13,7 @@
 !kitty/
 !xdg-desktop-portal/
 !fuzzel/
+!waybar/
 
 # Explicitly re-excluded files (has to include each parent directories)
 !/hypr/

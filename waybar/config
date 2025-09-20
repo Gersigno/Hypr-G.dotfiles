@@ -1,0 +1,39 @@
+{
+    "layer": "top",
+    "position": "top",
+    "heigth": 6,
+    "margin-top": 8,
+    "margin-left": 8,
+    "margin-right": 8,
+    "reload_style_on_change": true,
+    "modules-left": [
+        "hyprland/workspaces",
+        "hyprland/window",
+        "mpris"
+    ],
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "default": "○",
+            "active": "●"
+        }
+    },
+    "hyprland/window": {
+        "format": "<span  weight='bold' >{class}</span>",
+        "max-length": 120,
+        "icon": false,
+        "icon-size": 13
+    },
+    "mpris": {
+        "format": "{player_icon} {dynamic}",
+        "format-paused": "<span color='grey'>{status_icon} {dynamic}</span>",
+        "max-length": 50,
+        "player-icons": {
+            "default": "⏸",
+            "mpv": "🎵"
+        },
+        "status-icons": {
+            "paused": "▶" 
+        }
+    }
+}
