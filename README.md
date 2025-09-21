@@ -42,7 +42,10 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 
 ## 📝 TODO/Roadmap
 - Setting GUI app
-- ...Implement top bar
 - Install, Update & Uninstall scripts
-- Credits section
 - Packages list
+
+## Credits
+- [end-4](https://github.com/end-4) - Hyprland config inspiration
+- [Anik200 *(Myhem)*](https://github.com/Anik200) - Waybar config inspiration
+- [Tinghan Zhu *(KZDKM)*](https://github.com/KZDKM) - Waybar config inspiration
