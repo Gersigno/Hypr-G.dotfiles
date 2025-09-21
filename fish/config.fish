@@ -19,17 +19,4 @@ function wallpaper --description "Sets the wallpaper using the provided path"
 end
 
 alias clear "printf '\033[2J\033[3J\033[1;1H'"
-alias neofetch fastfetch
 alias ya yazi
-
-# temp ugly code
-alias light "set kvantum_theme_name 'Kv-Gnome-Light' \
-&& gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita' \
-&& gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' \
-&& echo 'Theme set to light mode'"
-
-# temp ugly code
-alias dark "set kvantum_theme_name 'Kv-Gnome-Dark' \
-&& gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark' \
-&& gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' \
-&& echo 'Theme set to dark mode'"
