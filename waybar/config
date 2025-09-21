@@ -201,13 +201,19 @@
         },
         "modules": [
             "custom/audio-button",
-            "pulseaudio/slider"
+            "pulseaudio/slider",
+            "custom/audio-settings"
         ]
     },
 
     "custom/audio-button": {
         "format": "󰕾",
         "tooltip": false
+    },
+    "custom/audio-settings": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "pavucontrol"
     },
 
     "pulseaudio/slider": {
