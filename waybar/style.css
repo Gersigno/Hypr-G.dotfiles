@@ -1,3 +1,9 @@
+@define-color active rgba(51, 204, 255, 0.933);
+@define-color background rgba(27, 24, 24, 0.9);
+@define-color inactive rgba(89, 89, 89, 0.667);
+@define-color yellow orange;
+@define-color red red;
+
 * {
     font-size: 10px;
 }
@@ -5,34 +11,55 @@
 #waybar {
     background: transparent;
     color: white;
-    font-family: "CaskaydiaCove Nerd Font";
+    font-family: "CaskaydiaCove Nerd Font Propo";
 }
 
+#window {
+    font-family: "SF Pro Display Bold";
+}
+
+/* Base styles for all modules */
 #workspaces,
 #window,
 #mpris,
 #clock,
 #expand-tray,
 #expand-audio,
-tooltip {
-    background: rgba(27, 24, 24, 0.9);
-    /* Background color */
+#expand-brightness,
+#expand-controls,
+#network,
+#battery,
+#temperature,
+#expand-system,
+#memory,
+#cpu,
+tooltip,
+#group-minimized,
+#group-expand-system {
+    background: @background;
     border-radius: 14px;
     margin: 0 4px;
     padding: 0 10px;
-    border: 1px solid rgba(89, 89, 89, 0.667);
-    /* Active color */
+    border: 1px solid @inactive;
     transition: border 539ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/*TODO: Fix the outline focus disapearing on workspaces section when workspace button is hovered */
+/* Hover effect */
 #window:hover,
 #mpris:hover,
 #clock:hover,
 #expand-tray:hover,
 #expand-audio:hover,
-tooltip:hover {
-    border: 1px solid rgba(51, 204, 255, 0.933); /* Active color */
+#expand-brightness:hover,
+#expand-controls:hover,
+#network:hover,
+#expand-system:hover,
+#group-minimized:hover,
+#power-menu:hover,
+#custom-shutdown:hover,
+#custom-reboot:hover,
+#custom-lock:hover {
+    border: 1px solid @active;
 }
 
 #workspaces {
@@ -48,21 +75,31 @@ tooltip:hover {
     border-radius: 50%;
 }
 
-#expand-tray {
-    padding: 0 4px;
-}
 
 #group-minimized {
     border-left: solid;
-    border-left-width: 0.5;
+    border-left-width: 0.5px;
 }
 
-#pulseaudio-slider {
+#pulseaudio-slider,
+#backlight-slider {
     margin: 0;
     padding: 0 4px;
 }
 
-#pulseaudio-slider slider {
+#temperature,
+#memory,
+#system-info-button {
+    margin: 0;
+}
+
+#clock {
+    font-family: "SF Pro Display Bold";
+}
+
+
+#pulseaudio-slider slider,
+#backlight-slider slider {
     min-height: 0px;
     min-width: 0px;
     opacity: 0;
@@ -70,12 +107,96 @@ tooltip:hover {
     border: none;
     box-shadow: none;
 }
-#pulseaudio-slider trough {
-  min-width: 80px;
-  min-height: 4px;
-  border-radius: 8px;
+
+#pulseaudio-slider trough,
+#backlight-slider trough {
+    min-width: 80px;
+    min-height: 4px;
+    border-radius: 8px;
 }
-#pulseaudio-slider highlight {
-  border-radius: 8px;
-  background-color: rgba(51, 204, 255, 0.933); /* Active color */
+
+#pulseaudio-slider highlight,
+#backlight-slider highlight {
+    border-radius: 8px;
+    background-color: @active;
 }
+
+#power-menu {
+    padding: 0;
+    margin: 4px;
+}
+
+#power-menu .group-drawer {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+#custom-power-menu-button {
+    padding: 0 10px;
+}
+
+#custom-shutdown,
+#custom-reboot,
+#custom-lock {
+    padding: 0 10px;
+    background: @background;
+    border-radius: 14px;
+    border: 1px solid @inactive;
+}
+
+#custom-shutdown:hover,
+#custom-reboot:hover,
+#custom-lock:hover {
+    border: 1px solid @active;
+}
+
+#expand-system {
+    padding: 0;
+}
+
+#expand-system .drawer {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+#custom-system-info-button,
+#battery {
+    padding: 0 8px;
+}
+#expand-tray,
+#expand-audio {
+    padding: 0 6px;
+}
+
+#custom-dark-light,
+#network,
+#expand-brightness {
+    padding: 0 5px;
+}
+
+#custom-dark-light {
+    margin: 0;
+}
+
+#expand-system .module:not(#custom-system-info-button) {
+    background: @background;
+    border-radius: 14px;
+    border: 1px solid @inactive;
+    transition: border 539ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#gexpand-system .drawer:hover .module:not(#custom-system-info-button):hover {
+    border: 1px solid @active;
+}
+
+#battery.sad {
+    color: @yellow;
+}
+
+#battery.critical {
+    color: @red;
+}
+

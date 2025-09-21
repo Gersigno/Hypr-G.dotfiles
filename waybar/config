@@ -1,7 +1,6 @@
 {
     "layer": "top",
     "position": "top",
-    "heigth": 6,
     "margin-top": 8,
     "margin-left": 8,
     "margin-right": 8,
@@ -16,11 +15,13 @@
     ],
     "modules-right": [
         "group/expand-tray",
+        "group/expand-system",
         "group/expand-audio",
+        "group/expand-brightness",
         "network",
-        "memory",
-        "cpu"
+        "battery"
     ],
+
     "hyprland/workspaces": {
         "format": "{icon}",
         "format-icons": {
@@ -28,13 +29,14 @@
             "active": "●"
         }
     },
+
     "hyprland/window": {
-        "format": "<span  weight='bold' >{class}</span>",
         "max-length": 120,
         "icon": false,
         "icon-size": 13,
         "tooltip": false
     },
+
     "mpris": {
         "format": "{player_icon} {dynamic}",
         "format-paused": "<span color='grey'>{status_icon} {dynamic}</span>",
@@ -47,11 +49,13 @@
             "paused": "▶"
         }
     },
+
     "clock": {
         "format": "{:%H:%M}",
         "format-alt": "{:%b %d, %H:%M}",
         "tooltip-format": "{:%A, %B %d, %Y - %H:%M:%S}"
     },
+
     "group/expand-tray": {
         "orientation": "horizontal",
         "drawer": {
@@ -65,32 +69,128 @@
             "tray"
         ]
     },
+
     "custom/menu": {
-        "format": "󰅃",
-        "rotate": 90
+        "tooltip": false,
+        "format": "󰍜"
     },
+
     "tray": {
-        "icon-size": 16,
-        "rotate": 0,
-        "spacing": 3
+        "icon-size": 14,
+        "rotate": 0
     },
+
+    "group/expand-system": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 600,
+            "children-class": "not-power",
+            "transition-to-left": true,
+            "click-to-reveal": true
+        },
+        "modules": [
+            "custom/system-info-button",
+            "memory",
+            "cpu",
+            "temperature"
+        ]
+    },
+
+    "custom/system-info-button": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "System informations"
+    },
+    
+    "memory": {
+        "interval": 1,
+        "rotate": 0,
+        "format": "󰍛 {percentage}%",
+        "format-icons": [
+            "󰝦",
+            "󰪞",
+            "󰪟",
+            "󰪠",
+            "󰪡",
+            "󰪢",
+            "󰪣",
+            "󰪤",
+            "󰪥"
+        ],
+        "max-length": 10,
+        "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB"
+    },
+
+    "cpu": {
+        "interval": 1,
+        "format": "󰻠 {usage}%",
+        "rotate": 0,
+        "format-icons": [
+            "󰝦",
+            "󰪞",
+            "󰪟",
+            "󰪠",
+            "󰪡",
+            "󰪢",
+            "󰪣",
+            "󰪤",
+            "󰪥"
+        ],
+        "tooltip-format": "CPU: {usage}%",
+        "tooltip": true
+    },
+    
+    "temperature": {
+        "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
+        "format": "󰔐 {temperatureC}°C",
+        "critical-threshold": 80,
+        "format-critical": "󰔑 {temperatureC}°C",
+        "tooltip": true,
+        "tooltip-format": "Temperature: {temperatureC}°C"
+    },
+
     "network": {
         "tooltip": true,
-        "format-wifi": "{icon} ",
+        "format-wifi": "{icon}",
         "format-icons": [
             "󰤟",
             "󰤢",
             "󰤥"
         ],
-        "rotate": 0,
-        "format-ethernet": "󰈀 ",
+        "format-ethernet": "󰈀",
         "tooltip-format": "Network: <big><b>{essid}</b></big>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
-        "format-linked": "󰈀 {ifname} (No IP)",
-        "format-disconnected": " ",
+        "format-linked": "󰈀< {ifname} (No IP)",
+        "format-disconnected": "",
         "tooltip-format-disconnected": "Disconnected",
-        "on-click": "/usr/local/bin/ags -t ControlPanel",
-        "interval": 2
+        "interval": 8
     },
+
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 20
+        },
+        "format": "{icon}",
+        "format-charging": "<span color='#a6d189'>󱐋</span>",
+        "format-plugged": "󰂄",
+        "format-alt": "<span weight='bold' color='#c2864a'>{time} <span weight='bold' color='white'>| <span weight='bold' color='#82d457'>{capacity}%</span></span></span>",
+        "format-icons": [
+            "󰂎",
+            "󰁺",
+            "󰁻",
+            "󰁼",
+            "󰁽",
+            "󰁾",
+            "󰁿",
+            "󰂀",
+            "󰂁",
+            "󰂂",
+            "󰁹"
+        ],
+        "on-click-right": "pkill waybar & hyprctl dispatch exec waybar"
+    },
+
     "group/expand-audio": {
         "orientation": "horizontal",
         "drawer": {
@@ -100,68 +200,60 @@
             "click-to-reveal": true
         },
         "modules": [
-            "pulseaudio",
+            "custom/audio-button",
             "pulseaudio/slider"
         ]
     },
-    "pulseaudio": {
-        "format": "{icon}",
-        "rotate": 0,
-        "format-muted": "婢",
-        "tooltip-format": "{icon} {desc} // {volume}%",
-        "scroll-step": 5,
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": [
-                "",
-                "",
-                ""
-            ]
-        }
+
+    "custom/audio-button": {
+        "format": "󰕾",
+        "tooltip": false
     },
+
     "pulseaudio/slider": {
-        "min": 5,
+        "format": "",
+        "min": 0,
         "max": 100,
-        "rotate": 0,
-        "device": "pulseaudio",
-        "scroll-step": 1
+        "orientation": "horizontal",
+        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
     },
-    "memory": {
-        "interval": 1,
-        "rotate": 270,
-        "format": "{icon}",
-        "format-icons": [
-            "󰝦",
-            "󰪞",
-            "󰪟",
-            "󰪠",
-            "󰪡",
-            "󰪢",
-            "󰪣",
-            "󰪤",
-            "󰪥"
-        ],
-        "max-length": 10
-    },
-    "cpu": {
-        "interval": 1,
-        "format": "{icon}",
-        "rotate": 270,
-        "format-icons": [
-            "󰝦",
-            "󰪞",
-            "󰪟",
-            "󰪠",
-            "󰪡",
-            "󰪢",
-            "󰪣",
-            "󰪤",
-            "󰪥"
+
+    "group/expand-brightness": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 600,
+            "children-class": "not-power",
+            "transition-to-left": true,
+            "click-to-reveal": true
+        },
+        "modules": [
+            "custom/brightness-button",
+            "backlight/slider",
+            "custom/dark-light"
         ]
+    },
+
+    "custom/brightness-button": {
+        "format": "󰃟",
+        "tooltip": false,
+        "on-scroll-up": "brightnessctl set +5%",
+        "on-scroll-down": "brightnessctl set 5%-"
+    },
+
+    "backlight/slider": {
+        "format": "",
+        "min": 0,
+        "max": 100,
+        "orientation": "horizontal",
+        "device": "intel_backlight",
+        "on-scroll-up": "brightnessctl set +5%",
+        "on-scroll-down": "brightnessctl set 5%-"
+    },
+    "custom/dark-light": {
+        "tooltip": true,
+        "tooltip-format": "Switch to light/dark mode",
+        "format": "󰔎",
+        "on-click": "~/.config/hypr/hypr-g/scripts/toggle-theme.sh" 
     }
 }
