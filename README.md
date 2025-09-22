@@ -3,8 +3,7 @@
 ⚠️ Work in progress ⚠️
 
 ## 🐟 Fish custom commands : 
-- `light` switch theme to light mode
-- `dark` switch theme to dark mode
+- `wallpaper <IMAGE_PATH>` set the system/lock-screen wallpaper
 
 ## ⌨️ Keybinds
 💡*Note: the* `⌘` *key is your 'Windows' key on most keyboards*
@@ -16,6 +15,8 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `C` Open new **IDE** *(VSCode only for now)*
 - `⌘` + `W` Open new **web-browser** *(Zen for now)*
 - `⌘` + `L` **Lock** current session
+
+<small>You can define the default application to launch via keybinds **(Terminal, IDE, Web-browser...)** in `~/.config/hypr/custom/programs.conf`.</small>
 #### Focused Window
 - `⌘` + `Q` **Close**
 - `⌘` + `D` **Maximize**
@@ -40,7 +41,6 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `Ctrl` + `Alt`+ `←` **Switch** to left workspace
 
 ## 📝 TODO/Roadmap
-- update opacity of waybar & fuzzel background
 - Setting GUI app
 - Install, Update & Uninstall scripts
 - Packages list
