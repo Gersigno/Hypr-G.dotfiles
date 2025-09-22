@@ -5,7 +5,7 @@ input_path = '~/.config/matugen/hyprland.conf.tpl'
 output_path = '~/.config/hypr/hypr-g/hyprland/colors.conf'
 
 [templates.hyprlock]
-input_path = '~/.config/matugen/hyprland.conf.tpl'
+input_path = '~/.config/matugen/hyprlock.conf.tpl'
 output_path = '~/.config/hypr/hypr-g/hyprlock/colors.conf'
 post_hook = 'hyprctl reload'
 
@@ -16,3 +16,7 @@ output_path = '~/.config/waybar/colors.css'
 [templates.yazi]
 input_path = '~/.config/matugen/yazi-theme.toml.tpl'
 output_path = '~/.config/yazi/theme.toml'
+
+[templates.fuzzel]
+input_path = '~/.config/matugen/fuzzel.ini.tpl'
+output_path = '~/.config/fuzzel/colors.ini'

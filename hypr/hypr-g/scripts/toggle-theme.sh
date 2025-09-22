@@ -1,9 +1,6 @@
 #!/bin/bash
 
 # --- Configuration ---
-# Set the path to your Waybar style file
-WAYBAR_STYLE="$HOME/.config/waybar/style.css"
-
 # Path to the Hyprland environment file
 THEME_FILE="$HOME/.config/hypr/hypr-g/hyprland/env.conf"
 
@@ -20,7 +17,9 @@ DARK_KITTY_THEME="dark_theme.conf"
 
 # Hyprland reload command
 HYPRLAND_RELOAD="hyprctl reload"
-WALLPAPER_PATH="~/.config/hypr/hypr-g/hyprlock/wallpaper.png"
+
+# Path to the wallpaper script
+GET_WALLPAPER_SCRIPT="$HOME/.config/hypr/hypr-g/scripts/get_wallpaper.sh"
 
 # Function to toggle the theme
 toggle_theme() {
@@ -45,6 +44,17 @@ toggle_theme() {
     # Use sed to update the theme_mode line in the Hyprland env.conf file
     sed -i "s|^env = THEME_MODE.*$|env = THEME_MODE,$NEW_MODE|" "$THEME_FILE"
 
+    # Get the current wallpaper path by executing the get_wallpaper script
+    WALLPAPER_PATH=$("$GET_WALLPAPER_SCRIPT")
+
+    if [ -z "$WALLPAPER_PATH" ]; then
+        echo "Error: Could not get wallpaper path. Matugen requires a valid path." >&2
+        exit 1
+    fi
+    
+    # Regenerate the Matugen color palette with the new mode
+    matugen image "$WALLPAPER_PATH" --mode "$NEW_MODE"
+
     if [ "$NEW_MODE" = "dark" ]; then
         # Switch to dark themes
         # Set GTK theme
@@ -53,10 +63,6 @@ toggle_theme() {
 
         # Set Kitty theme
         sed -i 's|^include.*$|include '"$DARK_KITTY_THEME"'|' "$KITTY_CONFIG"
-
-        # Set Waybar theme (find light colors and replace with dark)
-        sed -i 's/@define-color background rgba(240, 240, 240, 0.9);/@define-color background rgba(27, 24, 24, 0.9);/g' "$WAYBAR_STYLE"
-        sed -i 's/color: black;/color: white;/g' "$WAYBAR_STYLE"
     else
         # Switch to light themes
         # Set GTK theme
@@ -65,10 +71,6 @@ toggle_theme() {
 
         # Set Kitty theme
         sed -i 's|^include.*$|include '"$LIGHT_KITTY_THEME"'|' "$KITTY_CONFIG"
-
-        # Set Waybar theme (find dark colors and replace with light)
-        sed -i 's/@define-color background rgba(27, 24, 24, 0.9);/@define-color background rgba(240, 240, 240, 0.9);/g' "$WAYBAR_STYLE"
-        sed -i 's/color: white;/color: black;/g' "$WAYBAR_STYLE"
     fi
 
     # Reload Hyprland to apply changes
