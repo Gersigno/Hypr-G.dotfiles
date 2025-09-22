@@ -5,7 +5,6 @@
 ## 🐟 Fish custom commands : 
 - `light` switch theme to light mode
 - `dark` switch theme to dark mode
-- `wallpaper <PNG_FILE_PATH>` set the desktop/lock screen wallpaper (only support png for now..)
 
 ## ⌨️ Keybinds
 💡*Note: the* `⌘` *key is your 'Windows' key on most keyboards*
@@ -41,6 +40,7 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `Ctrl` + `Alt`+ `←` **Switch** to left workspace
 
 ## 📝 TODO/Roadmap
+- update opacity of waybar & fuzzel background
 - Setting GUI app
 - Install, Update & Uninstall scripts
 - Packages list
