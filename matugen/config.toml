@@ -20,3 +20,8 @@ output_path = '~/.config/yazi/theme.toml'
 [templates.fuzzel]
 input_path = '~/.config/matugen/fuzzel.ini.tpl'
 output_path = '~/.config/fuzzel/colors.ini'
+
+[templates.kitty]
+input_path = '~/.config/matugen/kitty.conf.tpl'
+output_path = '~/.config/kitty/colors.conf'
+post_hook = 'pkill -SIGUSR1 kitty'

@@ -11,10 +11,6 @@ DARK_GTK_THEME="Adwaita-dark"
 # Kitty configuration file
 KITTY_CONFIG="$HOME/.config/kitty/kitty.conf"
 
-# Kitty theme names
-LIGHT_KITTY_THEME="light_theme.conf"
-DARK_KITTY_THEME="dark_theme.conf"
-
 # Hyprland reload command
 HYPRLAND_RELOAD="hyprctl reload"
 
@@ -60,17 +56,11 @@ toggle_theme() {
         # Set GTK theme
         gsettings set org.gnome.desktop.interface gtk-theme "$DARK_GTK_THEME"
         gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
-
-        # Set Kitty theme
-        sed -i 's|^include.*$|include '"$DARK_KITTY_THEME"'|' "$KITTY_CONFIG"
     else
         # Switch to light themes
         # Set GTK theme
         gsettings set org.gnome.desktop.interface gtk-theme "$LIGHT_GTK_THEME"
         gsettings set org.gnome.desktop.interface color-scheme "prefer-light"
-
-        # Set Kitty theme
-        sed -i 's|^include.*$|include '"$LIGHT_KITTY_THEME"'|' "$KITTY_CONFIG"
     fi
 
     # Reload Hyprland to apply changes
