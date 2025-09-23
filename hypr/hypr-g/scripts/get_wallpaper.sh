@@ -4,7 +4,6 @@
 SWWW_OUTPUT=$(swww query)
 
 # Use grep to find the line for the main monitor and then awk to extract the path.
-# Replace 'eDP-1' with the name of your main screen.
 WALLPAPER_PATH=$(echo "$SWWW_OUTPUT" | grep 'eDP-1' | awk '{print $NF}')
 
 # Check if a path was found and print it

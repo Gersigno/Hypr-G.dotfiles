@@ -1,15 +1,12 @@
 @import "colors.css";
 
-@define-color background rgba(27, 24, 24, 0.9);
-@define-color yellow orange;
-
 * {
     font-size: 10px;
 }
 
 #waybar {
     background: transparent;
-    color: white;
+    color: @on_background;
     font-family: "CaskaydiaCove Nerd Font Propo";
 }
 
@@ -155,12 +152,6 @@ tooltip,
     padding: 0;
 }
 
-#expand-system .drawer {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
 #custom-system-info-button,
 #battery {
     padding: 0 8px;
@@ -192,7 +183,7 @@ tooltip,
 }
 
 #battery.sad {
-    color: @yellow;
+    color: orange;
 }
 
 #battery.critical {

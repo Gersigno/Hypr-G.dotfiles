@@ -10,7 +10,7 @@ output_path = '~/.config/hypr/hypr-g/hyprlock/colors.conf'
 post_hook = 'hyprctl reload'
 
 [templates.waybar]
-input_path = '~/.config/matugen/waybar.conf.tpl'
+input_path = '~/.config/matugen/waybar.css.tpl'
 output_path = '~/.config/waybar/colors.css'
 
 [templates.yazi]
