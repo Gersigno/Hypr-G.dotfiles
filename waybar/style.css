@@ -25,10 +25,7 @@
 #expand-controls,
 #network,
 #battery,
-#temperature,
 #expand-system,
-#memory,
-#cpu,
 tooltip,
 #group-minimized,
 #group-expand-system {
@@ -37,7 +34,7 @@ tooltip,
     margin: 0 4px;
     padding: 0 10px;
     border: 1px solid @on_primary;
-    transition: border 539ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: 539ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* Hover effect */
@@ -56,6 +53,20 @@ tooltip,
 #custom-reboot:hover,
 #custom-lock:hover {
     border: 1px solid @primary;
+}
+
+#memory,
+#cpu,
+#temperature {
+    border-radius: 14px;
+    margin: 0 2px;
+    padding: 0 6px;
+}
+
+#memory:hover,
+#cpu:hover,
+#temperature:hover {
+    background: @surface_bright;
 }
 
 #workspaces {
@@ -142,12 +153,6 @@ tooltip,
     border: 1px solid @on_surface;
 }
 
-#custom-shutdown:hover,
-#custom-reboot:hover,
-#custom-lock:hover {
-    border: 1px solid @primary;
-}
-
 #expand-system {
     padding: 0;
 }
@@ -169,17 +174,6 @@ tooltip,
 
 #custom-dark-light {
     margin: 0;
-}
-
-#expand-system .module:not(#custom-system-info-button) {
-    background: @background;
-    border-radius: 14px;
-    border: 1px solid @on_surface;
-    transition: border 539ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-#gexpand-system .drawer:hover .module:not(#custom-system-info-button):hover {
-    border: 1px solid @primary;
 }
 
 #battery.sad {
