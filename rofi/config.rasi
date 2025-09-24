@@ -1,0 +1,102 @@
+@import "colors.rasi"
+
+configuration {
+  modi: "drun,run,ssh,window";
+  display-drun: "Apps";
+  display-run: "Run";
+  display-ssh: "SSH";
+  display-window: "Windows";
+  drun-match-fields: "name,generic,exec";
+  show-icons: true;
+}
+
+* {
+  font: "CaskaydiaCove Nerd Font 10";
+  spacing: 5;
+  background-color: transparent;
+  text-color: @on-surface;
+}
+
+window {
+  width: 40%;
+  location: center;
+  anchor: center;
+  background-color: @background;
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+inputbar {
+  children: [prompt, textbox-prompt-colon, entry];
+  background-color: @surface-variant;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+prompt {
+  enabled: true;
+  background-color: @primary;
+  text-color: @on-primary;
+  border-radius: 4px;
+  padding: 0 5px;
+  margin: 0 5px 0 0;
+}
+
+entry {
+  placeholder: "Search...";
+  placeholder-color: @on-surface-variant;
+}
+
+listview {
+  columns: 1;
+  lines: 10;
+  cycle: true;
+  dynamic: true;
+  layout: vertical;
+}
+
+element {
+  padding: 8px;
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+element-icon {
+  size: 1.2em;
+  background-color: transparent;
+}
+
+element-text {
+  text-color: @on-surface;
+}
+
+element.normal.normal {
+  background-color: transparent;
+  text-color: @on-surface;
+}
+
+element.normal.urgent {
+  background-color: @error-container;
+  text-color: @on-error-container;
+}
+
+element.normal.active {
+  background-color: @primary-container;
+  text-color: @on-primary-container;
+}
+
+element.selected.normal {
+  background-color: @primary;
+  text-color: @on-primary;
+}
+
+element.selected.urgent {
+  background-color: @error;
+  text-color: @on-error;
+}
+
+element.selected.active {
+  background-color: @on-primary-container;
+  text-color: @primary-container;
+}

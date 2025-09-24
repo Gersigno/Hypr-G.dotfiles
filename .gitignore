@@ -16,6 +16,7 @@
 !waybar/
 !matugen/
 !yazi/
+!rofi/
 
 # Explicitly re-excluded files (has to include each parent directories)
 !/hypr/

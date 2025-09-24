@@ -1,5 +1,6 @@
 @import "colors.css";
 
+
 * {
     font-size: 10px;
 }
@@ -29,7 +30,7 @@
 tooltip,
 #group-minimized,
 #group-expand-system {
-    background: @background;
+    background: alpha(@background, 0.85);
     border-radius: 14px;
     margin: 0 4px;
     padding: 0 10px;
