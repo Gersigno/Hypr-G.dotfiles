@@ -1,4 +1,4 @@
-@import "colors.rasi"
+@theme "colors.rasi"
 
 configuration {
   modi: "drun,run,ssh,window";
@@ -11,14 +11,13 @@ configuration {
 }
 
 * {
-  font: "CaskaydiaCove Nerd Font 10";
+  font: "SF Pro Display Regular 10";
   spacing: 5;
   background-color: transparent;
-  text-color: @on-surface;
 }
 
 window {
-  width: 40%;
+  width: 30%;
   location: center;
   anchor: center;
   background-color: @background;
@@ -28,10 +27,10 @@ window {
 }
 
 inputbar {
-  children: [prompt, textbox-prompt-colon, entry];
-  background-color: @surface-variant;
+  children: [prompt, entry];
+  background-color: @surface;
   border-radius: 8px;
-  padding: 5px;
+  padding: 10px;
 }
 
 prompt {
@@ -50,7 +49,7 @@ entry {
 
 listview {
   columns: 1;
-  lines: 10;
+  lines: 5;
   cycle: true;
   dynamic: true;
   layout: vertical;
@@ -68,12 +67,11 @@ element-icon {
 }
 
 element-text {
-  text-color: @on-surface;
+  text-color: @on-primary-container;
 }
 
-element.normal.normal {
-  background-color: transparent;
-  text-color: @on-surface;
+element-text.selected {
+  text-color: @on-primary;
 }
 
 element.normal.urgent {

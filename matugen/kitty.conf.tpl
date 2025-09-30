@@ -25,7 +25,7 @@ color11  #c4c19e
 
 # blue
 /* color4  #8f8aac */
-color4  {{colors.primary.default.hex}}
+color4  {{colors.primary_container.default.hex}}
 color12 #a39ec4
 
 # magenta

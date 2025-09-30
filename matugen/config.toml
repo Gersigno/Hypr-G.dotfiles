@@ -29,3 +29,8 @@ post_hook = 'pkill -SIGUSR1 kitty'
 [templates.rofi]
 input_path = '~/.config/matugen/rofi.rasi.tpl'
 output_path = '~/.config/rofi/colors.rasi'
+
+# [templates.webcord]
+# input_path = '~/.config/matugen/webcord.css.tpl'
+# output_path = '~/.config/WebCord/colors.css'
+# post_hook = 'echo "@import url(\"file://$HOME/.config/WebCord/colors.css\");" > ~/.config/WebCord/Themes/theme.css'
