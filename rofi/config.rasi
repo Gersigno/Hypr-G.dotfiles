@@ -44,7 +44,8 @@ prompt {
 
 entry {
   placeholder: "Search...";
-  placeholder-color: @on-surface-variant;
+  placeholder-color: @surface-variant;
+  text-color: @on-primary-container;
 }
 
 listview {

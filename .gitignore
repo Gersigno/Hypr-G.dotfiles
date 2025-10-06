@@ -6,7 +6,7 @@
 !fish/config.fish
 
 # Top level directories
-!fastfetch
+!fastfetch/
 !gtk-3.0/
 !gtk-4.0/
 !hypr/
@@ -15,8 +15,9 @@
 !fuzzel/
 !waybar/
 !matugen/
-!yazi/
 !rofi/
+
+!yazi/theme.toml
 
 # Explicitly re-excluded files (has to include each parent directories)
 !/hypr/

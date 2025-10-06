@@ -15,6 +15,7 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `C` Open new **IDE** *(VSCode only for now)*
 - `⌘` + `W` Open new **web-browser** *(Zen for now)*
 - `⌘` + `L` **Lock** current session
+- `⌘` + `B` Toggle **Topbar**
 
 <small>You can define the default application to launch via keybinds **(Terminal, IDE, Web-browser...)** in `~/.config/hypr/custom/programs.conf`.</small>
 #### Focused Window

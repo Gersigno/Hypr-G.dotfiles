@@ -17,7 +17,8 @@
     {
       "type": "chassis",
       "key": "  󰇺 Chassis",
-      "format": "{1} {2} {3}"
+      "format": "{1} {2} {3}",
+      "keyColor": "red"
     },
     {
       "type": "os",
@@ -58,13 +59,13 @@
       "type": "cpu",
       "format": "{1} @ {7}",
       "key": "   CPU",
-      "keyColor": "blue"
+      "keyColor": "cyan"
     },
     {
       "type": "gpu",
       "format": "{1} {2}",
       "key": "  󰊴 GPU",
-      "keyColor": "blue"
+      "keyColor": "cyan"
     },
     {
       "type": "gpu",
