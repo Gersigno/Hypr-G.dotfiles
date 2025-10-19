@@ -46,7 +46,14 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - Install, Update & Uninstall scripts
 - Packages list
 
+##   Fonts list
+- `JetBrains Mono Nerd.ttf`
+- `StretchPro.otf`
+- `SF Pro Display Bold.otf` & `SF Pro Display Regular.otf`
+- `StretchPro.otf`
+
 ## Credits
 - [end-4](https://github.com/end-4) - Hyprland config inspiration
 - [Anik200 *(Myhem)*](https://github.com/Anik200) - Waybar config inspiration
 - [Tinghan Zhu *(KZDKM)*](https://github.com/KZDKM) - Waybar config inspiration
+- [Kevin L. O. *(Kvn0l)*](https://github.com/Kvn0l) - Swaync config inspiration

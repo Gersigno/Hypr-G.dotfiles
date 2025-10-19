@@ -18,5 +18,7 @@ function wallpaper --description "Sets the wallpaper using the provided path"
     ~/.config/hypr/hypr-g/scripts/set_wallpaper.sh "$full_path"
 end
 
+set fish_greeting ""
+
 alias clear "printf '\033[2J\033[3J\033[1;1H'"
 alias ya yazi

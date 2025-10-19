@@ -1,0 +1,274 @@
+@import "colors.css";
+
+/* Mapping provided colors to theme roles */
+@define-color matu-primary @primary;
+@define-color matu-on-primary @on_primary;
+@define-color matu-surface @background;
+@define-color matu-surface-alt @container_low;
+@define-color matu-surface-focus @container_high;
+@define-color matu-on-surface @foreground;
+@define-color matu-error @error;
+
+@define-color noti-radius 14px;
+@define-color noti-border-color alpha(@matu-on-surface, 0.1);
+@define-color noti-bg alpha(@matu-surface, 0.75);
+@define-color noti-bg-alt alpha(@matu-surface-alt, 0.85);
+@define-color noti-fg @matu-on-surface;
+@define-color noti-bg-hover alpha(@matu-on-surface, 0.1);
+@define-color noti-bg-focus @noti-bg-hover;
+@define-color noti-close-bg alpha(@matu-on-surface, 0.15);
+@define-color noti-close-bg-hover alpha(@matu-on-surface, 0.25);
+@define-color noti-urgent @matu-error;
+@define-color bg-selected @matu-primary;
+@define-color fg-selected @matu-on-primary;
+
+
+*{
+  font-family: "SF Pro Display Bold", "Inter", sans-serif;
+  color: @noti-fg;
+}
+
+/* Base Window for Transparency/Blur */
+.floating-notifications, .control-center {
+  background-color: transparent;
+  transition: 539ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* --- 2. Notification Styles --- */
+
+.notification-row {
+  outline: none;
+}
+
+.notification-row:focus,
+.notification-row:hover {
+  background: transparent;
+}
+
+.notification {
+  background-color: @noti-bg; 
+  border: none;
+  border-radius: @noti-radius;
+  margin: 8px 12px;
+  box-shadow: 0 4px 12px alpha(#000000, 0.2), inset 0 0 0 1px @noti-border-color;
+  padding: 0;
+}
+
+.notification:hover {
+  /* Slightly less translucent on hover */
+  background-color: alpha(@matu-surface, 0.85); 
+  box-shadow: 0 6px 16px alpha(#000000, 0.3), inset 0 0 0 1px @noti-border-color;
+}
+
+.critical {
+  border: 2px solid @noti-urgent;
+}
+
+.notification-content {
+  background: transparent;
+  padding: 8px;
+  border-radius: @noti-radius;
+}
+
+/* Close Button (Small, circular) */
+.close-button {
+  background: @noti-close-bg;
+  color: @noti-fg;
+  text-shadow: none;
+  padding: 0;
+  border-radius: 100%;
+  margin-top: 10px;
+  margin-right: 10px;
+  box-shadow: none;
+  border: none;
+  min-width: 24px;
+  min-height: 24px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.close-button:hover {
+  box-shadow: none;
+  background: @noti-close-bg-hover;
+  transition: all 0.15s ease-in-out;
+}
+
+/* Notification Actions (Buttons) */
+.notification-default-action,
+.notification-action {
+  padding: 8px 12px;
+  margin: 0;
+  box-shadow: none;
+  background: @noti-bg-alt;
+  border: none;
+  color: @noti-fg;
+  font-weight: 600;
+}
+
+.notification-default-action:hover,
+.notification-action:hover {
+  background: @noti-bg-hover;
+}
+
+.notification-default-action {
+  border-radius: 8px;
+}
+
+/* Multple Actions: Buttons should seamlessly tile at the bottom */
+.notification-default-action:not(:only-child) {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.notification-action {
+  border-radius: 0px;
+  border-top: 1px solid @noti-border-color;
+  border-right: none;
+}
+
+.notification-action:first-child {
+  border-bottom-left-radius: @noti-radius;
+  border-bottom-right-radius: 0;
+}
+
+.notification-action:last-child {
+  border-bottom-right-radius: @noti-radius;
+  border-bottom-left-radius: 0;
+  border-right: none;
+  border-left: 1px solid @noti-border-color;
+}
+
+/* Typography */
+.summary {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.time {
+  font-size: 13px;
+  color: alpha(@noti-fg, 0.7);
+  margin-right: 10px;
+}
+
+.body {
+  font-size: 13px;
+  font-weight: normal;
+}
+
+/* --- 3. Control Center Styles --- */
+
+.control-center {
+  /* Use Matugen alt color, but very transparent, relying on compositor blur */
+  background-color: alpha(@matu-surface-alt, 0.75); 
+  border-radius: 16px; 
+  border: 1px solid @bg-selected;
+  box-shadow: 0 8px 24px alpha(#000000, 0.3);
+  margin: 8px;
+}
+
+/* Title widget (Notifications / Clear All) */
+.widget-title {
+  margin: 12px 12px 8px 12px;
+  font-size: 16px;
+}
+
+.widget-title>button {
+  font-size: 13px;
+  color: @noti-fg;
+  background: @noti-bg-alt;
+  border: none;
+  box-shadow: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-weight: 600;
+}
+
+.widget-title>button:hover {
+  background: @noti-bg-focus;
+}
+
+/* DND widget (Toggles) */
+.widget-dnd {
+  margin: 8px 12px;
+  padding: 12px;
+  background-color: @noti-bg-alt;
+  border-radius: 12px;
+  font-size: 1.1rem;
+}
+
+.widget-dnd>switch {
+  border-radius: 10px;
+  background: @noti-close-bg;
+  border: none;
+}
+
+.widget-dnd>switch:checked {
+  background: @bg-selected;
+}
+
+.widget-dnd>switch slider {
+  background: @fg-selected;
+  border-radius: 100%;
+}
+
+/* Sliders (Volume/Brightness) - Mimic Mac's horizontal modules */
+.widget-volume, .widget-backlight {
+  background-color: @noti-bg-alt;
+  padding: 12px;
+  margin: 0px 4px 8px 4px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.widget-volume {
+  margin-left: 12px;
+}
+.widget-backlight {
+  margin-right: 12px;
+}
+
+
+/* Slider Trough/Highlight/Slider */
+scale trough {
+  background-color: @noti-close-bg;
+  min-height: 8px;
+  border-radius: 4px;
+}
+
+scale highlight {
+  background-color: @bg-selected;
+  border-radius: 4px;
+}
+
+scale slider {
+  background-color: @noti-fg;
+  border-radius: 100%;
+  min-width: 12px;
+  min-height: 12px;
+}
+
+/* General Button Grid (like the toggle blocks on macOS) */
+.widget-buttons-grid {
+  padding: 8px 4px 8px 4px;
+  margin: 0px 12px 8px;
+  border-radius: 12px;
+  background-color: @noti-bg-alt;
+}
+
+.widget-buttons-grid>flowbox>flowboxchild>button{
+  background: transparent;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.widget-buttons-grid>flowbox>flowboxchild>button:hover {
+  background: @noti-bg-hover;
+}
+
+/* Checked/Active Button Style - VERY Apple */
+.widget-buttons-grid>flowbox>flowboxchild>button:checked {
+  background: @bg-selected;
+  color: @fg-selected;
+  font-weight: bold;
+}
