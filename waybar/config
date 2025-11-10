@@ -53,7 +53,7 @@
     "clock": {
         "format": "{:%H:%M}",
         "format-alt": "{:%b %d, %H:%M}",
-        "tooltip-format": "{:%A, %B %d, %Y - %H:%M:%S}",
+        "tooltip-format": "{:%A, %B %d, %Y - %H:%M:%S}"
     },
 
     "group/expand-tray": {

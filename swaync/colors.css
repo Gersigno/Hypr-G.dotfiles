@@ -4,28 +4,28 @@
  */
 
 /* Main colors from the Material You palette */
-@define-color primary #8ad6b8;
-@define-color on_primary #003829;
-@define-color primary_container #00513d;
-@define-color on_primary_container #a5f2d3;
+@define-color primary #d5bbfc;
+@define-color on_primary #3a255b;
+@define-color primary_container #513c73;
+@define-color on_primary_container #ecdcff;
 
-@define-color secondary #b3ccc0;
-@define-color on_secondary #1e352c;
+@define-color secondary #cec2db;
+@define-color on_secondary #352d40;
 
-@define-color tertiary #a7cce0;
-@define-color on_tertiary #0a3445;
+@define-color tertiary #f1b7c3;
+@define-color on_tertiary #4b252e;
 
-@define-color background_dark #0f1512;
-@define-color background_light #343b37;
+@define-color background_dark #151218;
+@define-color background_light #3b383e;
 
 /* Text and general surface colors */
-@define-color foreground #dee4df;
-@define-color background #0f1512;
-@define-color background_variant #404944;
-@define-color on_background #dee4df;
-@define-color container #1b211e;
-@define-color container_high #252b28;
-@define-color container_low #171d1a;
+@define-color foreground #e7e0e8;
+@define-color background #151218;
+@define-color background_variant #49454e;
+@define-color on_background #e7e0e8;
+@define-color container #211e24;
+@define-color container_high #2c292f;
+@define-color container_low #1d1a20;
 
 /* Status and feedback colors */
 @define-color error #ffb4ab;
@@ -33,6 +33,6 @@
 @define-color error_container #93000a;
 
 /* Accent and decorative colors */
-@define-color outline #89938d;
-@define-color outline_variant #404944;
-@define-color on_surface_variant #bfc9c3;
+@define-color outline #958e99;
+@define-color outline_variant #49454e;
+@define-color on_surface_variant #cbc4cf;

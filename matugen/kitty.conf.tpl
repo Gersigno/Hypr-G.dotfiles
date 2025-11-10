@@ -8,7 +8,7 @@ selection_background  {{colors.secondary_fixed_dim.default.hex}}
 url_color             {{colors.primary.default.hex}}
 
 # black
-color8   #262626
+color8   {{colors.surface.default.hex}}
 color0   #4c4c4c
 
 # red
@@ -25,7 +25,7 @@ color11  #c4c19e
 
 # blue
 color4  {{colors.primary_container.default.hex}}
-color12 #a39ec4
+color12 {{colors.primary.default.hex}}
 
 # magenta
 color5   #ac8aac

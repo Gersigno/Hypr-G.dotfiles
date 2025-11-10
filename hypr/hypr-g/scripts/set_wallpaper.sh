@@ -19,7 +19,7 @@ if [ -f "$WALLPAPER_PATH" ]; then
     # Update swww for the desktop wallpaper
     swww img "$WALLPAPER_PATH" -t any --transition-duration 2.5
     # Generate and apply a color palette using Matugen with the stored mode
-    matugen image "$WALLPAPER_PATH" --mode "$THEME_MODE" 
+    matugen image "$WALLPAPER_PATH" --mode "$THEME_MODE"
     
     echo "✅ Wallpaper and color palette set."
 else
