@@ -33,7 +33,7 @@ output_path = '~/.config/rofi/colors.rasi'
 [templates.swaync]
 input_path = '~/.config/matugen/swaync.css.tpl'
 output_path = '~/.config/swaync/colors.css'
-post_hook = 'swaync-client -rs' # Reloads both config and CSS
+# post_hook = 'swaync-client -rs' # Reloads both config and CSS
 
 # [templates.webcord]
 # input_path = '~/.config/matugen/webcord.css.tpl'

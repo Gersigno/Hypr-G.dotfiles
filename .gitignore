@@ -16,7 +16,8 @@
 !waybar/
 !matugen/
 !rofi/
-!swaync/
+!quickshell/
+!dunst/
 
 !yazi/theme.toml
 
@@ -25,3 +26,10 @@
 !/hypr/hypr-g/
 !/hypr/hypr-g/hyprlock/
 /hypr/hypr-g/hyprlock/wallpaper.png
+
+# Exclude cache and generated files
+**/.cache/
+**/cache/
+**/*.log
+**/*.swp
+**/*~
