@@ -4,6 +4,7 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
+import "../../utils/" as Utils
 import "../common/"
 
 Item {
@@ -54,9 +55,9 @@ Item {
                 id: buttonsRectangle
                 Layout.fillWidth: true
                 Layout.preferredHeight: 140
-                color: Qt.rgba(0.85, 0.29, 0.31, 0.4) 
+                color: Utils.Colors.background
                 radius: 16
-                border.color: Qt.rgba(0.58, 0.56, 0.56, 0.4)
+                border.color: Utils.Colors.on_tertiary
                 border.width: 1
 
                 GridLayout {
@@ -176,9 +177,9 @@ Item {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 140
-                color: Qt.rgba(0.62, 0.85, 0.29, 0.4) 
+                color: Utils.Colors.background
                 radius: 16
-                border.color: Qt.rgba(0.58, 0.56, 0.56, 0.4)
+                border.color: Utils.Colors.on_tertiary
                 border.width: 1
 
                 ColumnLayout {
@@ -212,9 +213,9 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 140
-            color: Qt.rgba(0.85, 0.62, 0.29, 0.4) 
+            color: Utils.Colors.background
             radius: 16
-            border.color: Qt.rgba(0.58, 0.56, 0.56, 0.4)
+            border.color: Utils.Colors.on_tertiary
             border.width: 1
 
             ColumnLayout {
@@ -234,9 +235,9 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.preferredHeight: 180
-            color: Qt.rgba(0.29, 0.62, 0.85, 0.4) 
+            color: Utils.Colors.background
             radius: 16
-            border.color: Qt.rgba(0.58, 0.56, 0.56, 0.4)
+            border.color: Utils.Colors.on_tertiary
             border.width: 1
 
             ColumnLayout {
