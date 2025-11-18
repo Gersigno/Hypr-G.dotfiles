@@ -7,14 +7,12 @@ import Quickshell.Hyprland
 
 Scope {
     id: root
-    property int controlCenterWidth: 400
+    property int controlCenterWidth: 340
     property int hyprlandGapsOut: 8
     property int elevationMargin: 8
-    property var globalNotifications: null
 
     Component.onCompleted: {
-        console.log("[ControlCenter] Composant chargé")
-        console.log("[ControlCenter] globalNotifications:", globalNotifications)
+        console.log("[ControlCenter] Component loaded")
     }
 
     // États globaux temporaires
@@ -68,7 +66,6 @@ Scope {
             }
 
             sourceComponent: ControlCenterContent {
-                globalNotifications: root.globalNotifications
             }
         }
     }

@@ -5,6 +5,7 @@ Rectangle {
     id: toggle
     property string icon: ""
     property bool checked: false
+    property bool autoToggle: true
     signal clicked()
 
     width: 60
@@ -26,7 +27,9 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         onClicked: {
-            toggle.checked = !toggle.checked
+            if (toggle.autoToggle) {
+                toggle.checked = !toggle.checked
+            }
             toggle.clicked()
         }
     }
