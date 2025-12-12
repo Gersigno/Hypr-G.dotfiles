@@ -54,16 +54,24 @@ Item {
             Rectangle {
                 id: buttonsRectangle
                 Layout.fillWidth: true
+                Layout.preferredWidth: advancerSettingsOpened ? parent.width : parent.width / 2
                 Layout.preferredHeight: 140
                 color: Utils.Colors.background
                 radius: 16
                 border.color: Utils.Colors.on_tertiary
                 border.width: 1
 
+                Behavior on Layout.preferredWidth {
+                    NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
+                }
+                Behavior on height {
+                    NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
+                }
+
                 GridLayout {
                     anchors.fill: parent
                     anchors.margins: 10
-                    columns: 2
+                    columns: advancerSettingsOpened ? 4 : 2
                     rows: 2
                     columnSpacing: 10
                     rowSpacing: 10
@@ -115,13 +123,6 @@ Item {
                         icon: "󰀝"
                         ToolTip.text: "Airplane Mode"
                         onClicked: console.log("Airplane Mode toggled")
-
-                        Behavior on opacity {
-                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                        }
-                        Behavior on scale {
-                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                        }
                     }
 
                     // Advanced2 (dans layout quand ouvert)
@@ -134,13 +135,6 @@ Item {
                         icon: "󱈏"
                         ToolTip.text: "Low Power Mode"
                         onClicked: console.log("Low power mode toggled")
-
-                        Behavior on opacity {
-                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                        }
-                        Behavior on scale {
-                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                        }
                     }
 
                     // Advanced3 (dans layout quand ouvert)
@@ -150,16 +144,57 @@ Item {
                         scale: visible ? 1 : 0
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        icon: "C"
-                        ToolTip.text: "TBD"
-                        onClicked: console.log("Advanced3 toggled")
+                        icon: ""
+                        ToolTip.text: "System settings"
+                        onClicked: console.log("System Settings toggled")
+                    }
 
-                        Behavior on opacity {
-                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                        }
-                        Behavior on scale {
-                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                        }
+                    // Advanced4
+                    QuickToggle {
+                        visible: advancerSettingsOpened
+                        opacity: visible ? 1 : 0
+                        scale: visible ? 1 : 0
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        icon: "?"
+                        ToolTip.text: "TBD"
+                        onClicked: console.log("System Settings toggled")
+                    }
+
+                    // Advanced5
+                    QuickToggle {
+                        visible: advancerSettingsOpened
+                        opacity: visible ? 1 : 0
+                        scale: visible ? 1 : 0
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        icon: "?"
+                        ToolTip.text: "TBD"
+                        onClicked: console.log("System Settings toggled")
+                    }
+
+                    // Advanced5
+                    QuickToggle {
+                        visible: advancerSettingsOpened
+                        opacity: visible ? 1 : 0
+                        scale: visible ? 1 : 0
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        icon: "?"
+                        ToolTip.text: "TBD"
+                        onClicked: console.log("System Settings toggled")
+                    }
+
+                    // Advanced5
+                    QuickToggle {
+                        visible: advancerSettingsOpened
+                        opacity: visible ? 1 : 0
+                        scale: visible ? 1 : 0
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        icon: "?"
+                        ToolTip.text: "TBD"
+                        onClicked: console.log("System Settings toggled")
                     }
 
                     // Advanced Settings
@@ -169,6 +204,13 @@ Item {
                         icon: advancerSettingsOpened ? "-" : "+"
                         ToolTip.text: "Advanced settings"
                         onClicked: advancerSettingsOpened = !advancerSettingsOpened
+
+                        Behavior on x {
+                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
+                        }
+                        Behavior on y {
+                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
+                        }
                     }
                 }
             }
@@ -176,12 +218,20 @@ Item {
             // Sliders section
             Rectangle {
                 Layout.fillWidth: true
+                Layout.preferredWidth: advancerSettingsOpened ? 0 : parent.width / 2
                 Layout.preferredHeight: 140
                 color: Utils.Colors.background
                 radius: 16
                 border.color: Utils.Colors.on_tertiary
                 border.width: 1
+                opacity: advancerSettingsOpened ? 0 : 1
 
+                Behavior on Layout.preferredWidth {
+                    NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
+                }
+                Behavior on opacity {
+                    NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
+                }
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 10
