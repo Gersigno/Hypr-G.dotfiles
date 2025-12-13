@@ -12,15 +12,16 @@ Scope {
     property bool barVisible: true
     property bool clockExpanded: false
     
+    onClockExpandedChanged: {
+        console.log("[TopBar] root.clockExpanded changed to:", clockExpanded)
+    }
+    
     Component.onCompleted: {
         console.log("[TopBar] Component loaded")
+        console.log("[TopBar] Initial clockExpanded state:", root.clockExpanded)
     }
 
-    // Clock panel (floating)
-    ClockExpanded {
-        expanded: root.clockExpanded
-        topBarHeight: root.barHeight
-    }
+
     
     Variants {
         model: Quickshell.screens
@@ -62,7 +63,25 @@ Scope {
                     top: parent.top
                 }
                 height: panelHeight
-                onExpandedChanged: root.clockExpanded = expanded
+                width: implicitWidth
+                z: 10
+                
+                Component.onCompleted: {
+                    console.log("[TopBar Clock] Width after layout:", width, "Height:", height)
+                }
+                
+                onExpandedChanged: {
+                    console.log("[Clock] expanded changed to:", expanded)
+                    root.clockExpanded = expanded
+                }
+            }
+            
+            Connections {
+                target: clockExpanded
+                function onExpandedChanged() {
+                    console.log("[TopBar] ClockExpanded.onExpandedChanged signal received, clockExpanded.expanded:", clockExpanded.expanded)
+                    clock.expanded = clockExpanded.expanded
+                }
             }
             
             ActiveWindowTitle {
@@ -74,7 +93,22 @@ Scope {
                     rightMargin: 8
                 }
                 height: panelHeight
+                
+                Component.onCompleted: {
+                    console.log("[ActiveWindowTitle] Width:", width, "X position:", x, "LeftMargin:", Math.max(workspaces.width + 8, clock.width / 2 + 60))
+                }
             }
+        }
+    }
+
+    // Clock panel (floating)
+    ClockExpanded {
+        id: clockExpanded
+        expanded: root.clockExpanded
+        topBarHeight: root.barHeight
+        
+        Component.onCompleted: {
+            console.log("[ClockExpanded] Component completed")
         }
     }
     

@@ -10,6 +10,10 @@ Item {
     
     implicitWidth: collapsedWidth
     implicitHeight: parent.height
+    
+    Component.onCompleted: {
+        console.log("[Clock] Component completed. Width:", width, "Height:", height, "Implicit width:", implicitWidth)
+    }
 
     // Container for centered background
     Item {
@@ -17,6 +21,7 @@ Item {
         anchors.centerIn: parent
         width: compactTime.width + (GlobalStates.cornerRadius * 2)
         height: parent.height
+        enabled: false
 
         // Inverse corner on the left
         Canvas {
@@ -162,8 +167,20 @@ Item {
     // Click handler
     MouseArea {
         anchors.fill: parent
+        hoverEnabled: true
+        
+        onEntered: {
+            console.log("[Clock MouseArea] Mouse entered")
+        }
+        
+        onExited: {
+            console.log("[Clock MouseArea] Mouse exited")
+        }
+        
         onClicked: {
+            console.log("[Clock] Clicked! current expanded:", root.expanded, "will toggle to:", !root.expanded)
             root.expanded = !root.expanded;
+            console.log("[Clock] After toggle, expanded is now:", root.expanded)
         }
     }
 }

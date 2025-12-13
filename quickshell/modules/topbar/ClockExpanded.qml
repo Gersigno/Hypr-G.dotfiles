@@ -9,7 +9,53 @@ Scope {
     property bool expanded: false
     property int expandedWidth: 420
     property int expandedHeight: 180
+    property int collapsedWidth: 50
     property int topBarHeight: 24
+    
+    // Animated widths and heights
+    property real animatedWidth: root.expanded ? expandedWidth : collapsedWidth
+    property real animatedHeight: root.expanded ? expandedHeight : topBarHeight
+    property real contentOpacity: root.expanded ? 1.0 : 0.0
+    
+    onExpandedChanged: {
+        console.log("[ClockExpanded] expanded changed to:", expanded)
+    }
+    
+    onAnimatedWidthChanged: {
+        console.log("[ClockExpanded] animatedWidth changed to:", animatedWidth)
+    }
+    
+    onContentOpacityChanged: {
+        console.log("[ClockExpanded] contentOpacity changed to:", contentOpacity)
+    }
+    
+    onAnimatedHeightChanged: {
+        console.log("[ClockExpanded] animatedHeight changed to:", animatedHeight)
+    }
+    
+    Behavior on animatedWidth {
+        NumberAnimation {
+            duration: 1000
+            easing.type: Easing.Bezier
+            easing.bezierCurve: [0.18, 0.95, 0.2, 1.08]
+        }
+    }
+    
+    Behavior on animatedHeight {
+        NumberAnimation {
+            duration: 1000
+            easing.type: Easing.Bezier
+            easing.bezierCurve: [0.18, 0.95, 0.2, 1.08]
+        }
+    }
+    
+    Behavior on contentOpacity {
+        NumberAnimation {
+            duration: 1000
+            easing.type: Easing.Bezier
+            easing.bezierCurve: [0.18, 0.95, 0.2, 1.08]
+        }
+    }
     
     // Floating panel window for each screen
     Variants {
@@ -19,15 +65,15 @@ Scope {
             property var modelData
             screen: modelData
             
-            visible: true //root.expanded
+            visible: root.expanded
             color: "transparent"
             
             WlrLayershell.namespace: "quickshell:clockExpanded"
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.exclusiveZone: 0
             
-            width: expandedWidth
-            height: expandedHeight
+            implicitWidth: root.animatedWidth
+            implicitHeight: root.animatedHeight
             margins {
                 top: (topBarHeight * -1)
             }
@@ -42,6 +88,8 @@ Scope {
                 y: 0
                 width: GlobalStates.cornerRadius
                 height: GlobalStates.cornerRadius
+                visible: root.expanded
+                opacity: root.contentOpacity
                 
                 onPaint: {
                     const ctx = getContext("2d");
@@ -64,10 +112,12 @@ Scope {
             
             // Top-right inverse corner
             Canvas {
-                x: expandedWidth - GlobalStates.cornerRadius
+                x: root.animatedWidth - GlobalStates.cornerRadius
                 y: 0
                 width: GlobalStates.cornerRadius
                 height: GlobalStates.cornerRadius
+                visible: root.expanded
+                opacity: root.contentOpacity
                 
                 onPaint: {
                     const ctx = getContext("2d");
@@ -92,18 +142,20 @@ Scope {
             Rectangle {
                 x: GlobalStates.cornerRadius
                 y: 0
-                width: expandedWidth - GlobalStates.cornerRadius * 2
-                height: expandedHeight - 2 * GlobalStates.cornerRadius + GlobalStates.cornerRadius
-                color: "red"//GlobalStates.backgroundColor
-                opacity: 0.5
+                width: root.animatedWidth - GlobalStates.cornerRadius * 2
+                height: root.animatedHeight - 2 * GlobalStates.cornerRadius + GlobalStates.cornerRadius
+                color: GlobalStates.backgroundColor
+                opacity: root.contentOpacity
             }
             
             // Bottom-left corner (normal)
             Canvas {
                 x: GlobalStates.cornerRadius
-                y: expandedHeight - GlobalStates.cornerRadius
+                y: root.animatedHeight - GlobalStates.cornerRadius
                 width: GlobalStates.cornerRadius
                 height: GlobalStates.cornerRadius
+                visible: root.expanded
+                opacity: root.contentOpacity
                 
                 onPaint: {
                     const ctx = getContext("2d");
@@ -125,13 +177,13 @@ Scope {
                     ctx.fill();
                 }
             }
-            
-            // Bottom-right corner (normal)
             Canvas {
-                x: expandedWidth - (GlobalStates.cornerRadius * 2)
-                y: expandedHeight - GlobalStates.cornerRadius
+                x: root.animatedWidth - (GlobalStates.cornerRadius * 2)
+                y: root.animatedHeight - GlobalStates.cornerRadius
                 width: GlobalStates.cornerRadius
                 height: GlobalStates.cornerRadius
+                visible: root.expanded
+                opacity: root.contentOpacity
                 
                 onPaint: {
                     const ctx = getContext("2d");
@@ -156,10 +208,11 @@ Scope {
             // Bottom rectangle strip between corners
             Rectangle {
                 x: GlobalStates.cornerRadius + GlobalStates.cornerRadius
-                y: expandedHeight - GlobalStates.cornerRadius
-                width: expandedWidth - 2 * GlobalStates.cornerRadius - (GlobalStates.cornerRadius * 2)
+                y: root.animatedHeight - GlobalStates.cornerRadius
+                width: root.animatedWidth - 2 * GlobalStates.cornerRadius - (GlobalStates.cornerRadius * 2)
                 height: GlobalStates.cornerRadius
                 color: GlobalStates.backgroundColor
+                opacity: root.contentOpacity
             }
             
             // Content
@@ -167,6 +220,8 @@ Scope {
                 anchors.centerIn: parent
                 anchors.verticalCenterOffset: -8
                 spacing: 4
+                opacity: root.contentOpacity
+                visible: root.contentOpacity > 0
                 
                 // Hour
                 Text {
@@ -212,7 +267,8 @@ Scope {
                 running: root.expanded
                 repeat: true
                 onTriggered: {
-                    expandedTime.text = new Date().toLocaleTimeString(Qt.locale(), "HH:mm:ss");
+                    expandedHour.text = new Date().toLocaleTimeString(Qt.locale(), "HH");
+                    expandedMinutes.text = new Date().toLocaleTimeString(Qt.locale(), "mm");
                     dateText.text = new Date().toLocaleDateString(Qt.locale(), "dddd d MMMM");
                 }
             }
@@ -221,7 +277,14 @@ Scope {
             MouseArea {
                 anchors.fill: parent
                 z: -1
+                enabled: root.expanded
+                
+                onEntered: {
+                    console.log("[ClockExpanded MouseArea] Entered (enabled:", enabled, ")")
+                }
+                
                 onClicked: {
+                    console.log("[ClockExpanded] MouseArea clicked, closing panel (enabled was:", enabled, ")")
                     root.expanded = false;
                 }
             }
