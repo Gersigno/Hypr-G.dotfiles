@@ -8,7 +8,7 @@ Scope {
     
     property bool expanded: false
     property int expandedWidth: 420
-    property int expandedHeight: 200
+    property int expandedHeight: 180
     property int topBarHeight: 24
     
     // Floating panel window for each screen
@@ -34,10 +34,6 @@ Scope {
 
             anchors {
                 top: true
-            }
-            
-            Component.onCompleted: {
-                console.log("parent", parent);
             }
             
             // Top-left inverse corner
@@ -164,7 +160,6 @@ Scope {
                 width: expandedWidth - 2 * GlobalStates.cornerRadius - (GlobalStates.cornerRadius * 2)
                 height: GlobalStates.cornerRadius
                 color: GlobalStates.backgroundColor
-                opacity: 0.3
             }
             
             // Content
@@ -183,7 +178,6 @@ Scope {
                     font.family: "StretchPro"
                     font.preferTypoLineMetrics: true
                     leftPadding: -60
-                    topPadding: -20
                 }
 
                 // Minutes
