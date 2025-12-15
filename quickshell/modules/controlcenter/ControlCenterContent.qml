@@ -10,9 +10,17 @@ import "../.."
 
 Item {
     id: root
+
+    property real animProgress: 0.0
     property bool isDarkMode: true
     
     anchors.fill: parent 
+
+    onAnimProgressChanged: {
+        bottomLeftInvert.requestPaint()
+        bottomSection.requestPaint()
+        bottomLeftCorner.requestPaint()
+    }
 
     FileView {
         id: themeFile
@@ -54,10 +62,10 @@ Item {
                     const ctx = getContext("2d");
                     const w = width;
                     const h = height;
-                    const r = GlobalStates.cornerRadius;
+                    const r = GlobalStates.cornerRadius + (GlobalStates.gapsOut * root.animProgress / 100);
                     
                     ctx.reset();
-                    ctx.fillStyle = "red"//GlobalStates.backgroundColor;
+                    ctx.fillStyle = GlobalStates.backgroundColor;
                     
                     // Top-left inverse corner (L-shape)
                     ctx.beginPath();
@@ -79,6 +87,7 @@ Item {
 
             //Bottom left invert corner
             Canvas {
+                id: bottomLeftInvert
                 width: GlobalStates.cornerRadius
                 height: GlobalStates.cornerRadius
                 
@@ -86,10 +95,11 @@ Item {
                     const ctx = getContext("2d");
                     const w = width;
                     const h = height;
-                    const r = GlobalStates.cornerRadius;
+                    const factor = Math.min(2.0, Math.max(1.0, root.animProgress / 50)) - 1
+                    const r = GlobalStates.cornerRadius * factor //(GlobalStates.cornerRadius + (GlobalStates.gapsOut * root.animProgress / 100)) * factor;
                     
                     ctx.reset();
-                    ctx.fillStyle = "cyan"//GlobalStates.backgroundColor;
+                    ctx.fillStyle = GlobalStates.backgroundColor;
                     ctx.beginPath();
                     ctx.moveTo(w, h);
                     ctx.lineTo(w - r, h);
@@ -110,6 +120,7 @@ Item {
     }
 
     Canvas {
+        id: bottomSection
         width: parent.width - GlobalStates.cornerRadius
         height: GlobalStates.cornerRadius
 
@@ -120,10 +131,11 @@ Item {
             const ctx = getContext("2d");
             const w = width;
             const h = height;
-            const r = GlobalStates.cornerRadius;
+            const factor = Math.min(root.animProgress / 50, 1.0);
+            const r = GlobalStates.cornerRadius * (1 - factor);
 
             ctx.reset();
-            ctx.fillStyle = "green"//GlobalStates.backgroundColor;
+            ctx.fillStyle = GlobalStates.backgroundColor;
             
             ctx.beginPath();
             ctx.moveTo(0, 0);
@@ -138,22 +150,28 @@ Item {
     }
 
     Canvas {
-        width: GlobalStates.cornerRadius + GlobalStates.gapsOut
-        height: GlobalStates.cornerRadius + GlobalStates.gapsOut
-
-        x: parent.width - (GlobalStates.cornerRadius + GlobalStates.gapsOut)
-        y: parent.height
+        id: bottomLeftCorner
+        readonly property real initialSize: GlobalStates.cornerRadius + GlobalStates.gapsOut
+        
+        width: initialSize
+        height: initialSize
+        x: parent.width - initialSize
+        y: parent.height 
+        
+        transform: Scale {
+            yScale: 1.0 - (root.animProgress / 100) 
+            origin: Transform.Bottom
+        }
         
         onPaint: {
             const ctx = getContext("2d");
-            const w = width;
-            const h = height;
-            const r = GlobalStates.cornerRadius + GlobalStates.gapsOut;
+            const w = width; 
+            const h = height; 
+            const r = initialSize; 
             
             ctx.reset();
-            ctx.fillStyle = "yellow"//GlobalStates.backgroundColor;
+            ctx.fillStyle = GlobalStates.backgroundColor;
             
-            // Top-left inverse corner (L-shape)
             ctx.beginPath();
             ctx.moveTo(w, 0);
             ctx.lineTo(w, r);

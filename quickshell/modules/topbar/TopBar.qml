@@ -123,6 +123,14 @@ Scope {
                 Component.onCompleted: {
                     root.quickSettingsRef = quicksettings
                 }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("QuickSettings clicked, toggling ControlCenter");
+                        controlCenterComponent.controlCenterOpen = true;
+                    }
+                }
             }
         }
     }

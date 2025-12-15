@@ -11,7 +11,9 @@ ShellRoot {
     property bool enableScreenCorners: true
     property bool enableTopBar: true
 
-    ControlCenter { }
+    ControlCenter {
+        id: controlCenterComponent
+     }
     ScreenCorners { }
     TopBar {
         id: topBarComponent

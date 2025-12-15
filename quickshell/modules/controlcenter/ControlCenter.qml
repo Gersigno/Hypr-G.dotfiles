@@ -10,7 +10,7 @@ Scope {
     
     // --- Configuration et États ---
     property bool controlCenterOpen: false
-    readonly property int animationDuration: 100000
+    readonly property int animationDuration: 250
     
     // Valeurs par défaut
     readonly property real defaultQsWidth: 50 
@@ -105,11 +105,29 @@ Scope {
             states: [
                 State {
                     name: "Closed"
-                    PropertyChanges { target: controlCenterContentLoader; width: root.quickSettingsWidth; height: root.quickSettingsHeight }
+                    // On définit animProgress à 0 quand c'est fermé
+                    PropertyChanges { 
+                        target: controlCenterContentLoader.item
+                        animProgress: 0 
+                    }
+                    PropertyChanges { 
+                        target: controlCenterContentLoader
+                        width: root.quickSettingsWidth
+                        height: root.quickSettingsHeight 
+                    }
                 },
                 State {
                     name: "Opened"
-                    PropertyChanges { target: controlCenterContentLoader; width: root.finalWidth; height: root.finalHeight }
+                    // On définit animProgress à 100 quand c'est ouvert
+                    PropertyChanges { 
+                        target: controlCenterContentLoader.item
+                        animProgress: 100 
+                    }
+                    PropertyChanges { 
+                        target: controlCenterContentLoader
+                        width: root.finalWidth
+                        height: root.finalHeight 
+                    }
                 }
             ]
             
@@ -117,13 +135,22 @@ Scope {
             transitions: [
                 Transition {
                     from: "Closed"; to: "Opened"
-                    // Animation pour l'ouverture
-                    NumberAnimation { properties: "width,height"; duration: root.animationDuration; easing.type: Easing.Bezier; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
+                    // On anime width, height ET animProgress
+                    NumberAnimation { 
+                        properties: "width,height,animProgress" 
+                        duration: root.animationDuration 
+                        easing.type: Easing.InOutQuad
+                        //easing.type: Easing.Bezier 
+                        //easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] 
+                    }
                 },
                 Transition {
                     from: "Opened"; to: "Closed"
-                    // SNAP-BACK : Pas d'animation à la fermeture (durée 0)
-                    NumberAnimation { properties: "width,height"; duration: 0 }
+                    // Snap-back instantané (ou tu peux ajouter une durée si tu veux)
+                    NumberAnimation { 
+                        properties: "width,height,animProgress" 
+                        duration: 0 
+                    }
                 }
             ]
             
