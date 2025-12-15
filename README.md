@@ -53,7 +53,7 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `StretchPro.otf`
 
 ## Credits
-- [end-4](https://github.com/end-4) - Hyprland config inspiration
+- [end-4](https://github.com/end-4) - Hyprland config inspiration, Quickshell services etc..
 - [Anik200 *(Myhem)*](https://github.com/Anik200) - Waybar config inspiration
 - [Tinghan Zhu *(KZDKM)*](https://github.com/KZDKM) - Waybar config inspiration
 - [Kevin L. O. *(Kvn0l)*](https://github.com/Kvn0l) - Swaync config inspiration

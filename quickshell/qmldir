@@ -1,2 +1,6 @@
 module qs.services
 singleton GlobalStates 1.0 GlobalStates.qml
+singleton Battery 1.0 services/Battery.qml
+singleton Audio 1.0 services/Audio.qml
+singleton Network 1.0 services/Network.qml
+singleton Bluetooth 1.0 services/Bluetooth.qml

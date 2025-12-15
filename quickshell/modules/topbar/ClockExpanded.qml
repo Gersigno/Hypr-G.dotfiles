@@ -11,6 +11,7 @@ Scope {
     property int expandedHeight: 180
     property int collapsedWidth: 50
     property int topBarHeight: 24
+    property int animationDuration: 100
     
     // Animated widths and heights
     property real animatedWidth: root.expanded ? expandedWidth : collapsedWidth
@@ -18,24 +19,44 @@ Scope {
     property real contentOpacity: root.expanded ? 1.0 : 0.0
     
     onExpandedChanged: {
-        console.log("[ClockExpanded] expanded changed to:", expanded)
+        //console.log("[ClockExpanded] expanded changed to:", expanded)        
+        if (expanded) {
+            // Show immediately when expanding
+            panelVisibilityTimer.stop()
+            panelVisible = true
+        } else {
+            // Start timer to hide after animation completes
+            panelVisibilityTimer.restart()
+        }
+    }
+    
+    property bool panelVisible: true
+    
+    Timer {
+        id: panelVisibilityTimer
+        interval: 1050 // Slightly longer than animation duration
+        running: false
+        onTriggered: {
+            //console.log("[ClockExpanded] Animation done, hiding panel")
+            panelVisible = false
+        }    
     }
     
     onAnimatedWidthChanged: {
-        console.log("[ClockExpanded] animatedWidth changed to:", animatedWidth)
+        //console.log("[ClockExpanded] animatedWidth changed to:", animatedWidth)
     }
     
     onContentOpacityChanged: {
-        console.log("[ClockExpanded] contentOpacity changed to:", contentOpacity)
+        //console.log("[ClockExpanded] contentOpacity changed to:", contentOpacity)
     }
     
     onAnimatedHeightChanged: {
-        console.log("[ClockExpanded] animatedHeight changed to:", animatedHeight)
+        //console.log("[ClockExpanded] animatedHeight changed to:", animatedHeight)
     }
     
     Behavior on animatedWidth {
         NumberAnimation {
-            duration: 1000
+            duration: animationDuration
             easing.type: Easing.Bezier
             easing.bezierCurve: [0.18, 0.95, 0.2, 1.08]
         }
@@ -43,7 +64,7 @@ Scope {
     
     Behavior on animatedHeight {
         NumberAnimation {
-            duration: 1000
+            duration: animationDuration
             easing.type: Easing.Bezier
             easing.bezierCurve: [0.18, 0.95, 0.2, 1.08]
         }
@@ -51,7 +72,7 @@ Scope {
     
     Behavior on contentOpacity {
         NumberAnimation {
-            duration: 1000
+            duration: animationDuration
             easing.type: Easing.Bezier
             easing.bezierCurve: [0.18, 0.95, 0.2, 1.08]
         }
@@ -65,11 +86,11 @@ Scope {
             property var modelData
             screen: modelData
             
-            visible: root.expanded
+            visible: root.panelVisible
             color: "transparent"
             
             WlrLayershell.namespace: "quickshell:clockExpanded"
-            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.layer: root.expanded ? WlrLayer.Overlay : WlrLayer.Bottom
             WlrLayershell.exclusiveZone: 0
             
             implicitWidth: root.animatedWidth
@@ -280,7 +301,7 @@ Scope {
                 enabled: root.expanded
                 
                 onEntered: {
-                    console.log("[ClockExpanded MouseArea] Entered (enabled:", enabled, ")")
+                    //console.log("[ClockExpanded MouseArea] Entered (enabled:", enabled, ")")
                 }
                 
                 onClicked: {

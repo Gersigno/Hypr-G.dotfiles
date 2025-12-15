@@ -12,14 +12,14 @@ Item {
     implicitHeight: parent.height
     
     Component.onCompleted: {
-        console.log("[Clock] Component completed. Width:", width, "Height:", height, "Implicit width:", implicitWidth)
+        console.log("[Clock] Component completed.")
     }
 
     // Container for centered background
     Item {
         id: bgContainer
         anchors.centerIn: parent
-        width: compactTime.width + (GlobalStates.cornerRadius * 2)
+        width: compactRow.width + (GlobalStates.cornerRadius * 2)
         height: parent.height
         enabled: false
 
@@ -88,9 +88,9 @@ Item {
 
         // Bottom section with normal right corner
         Canvas {
-            x: bgContainer.width / 2
+            x: bgContainer.width / 2 - 1
             y: parent.height - GlobalStates.cornerRadius
-            width: bgContainer.width / 2
+            width: bgContainer.width / 2 + 1
             height: GlobalStates.cornerRadius
             
             onPaint: {
@@ -138,16 +138,48 @@ Item {
                 ctx.fill();
             }
         }
-        
-        // Compact time display
-        Text {
-            id: compactTime
+
+        Row {
+            id: compactRow
+
             anchors.centerIn: parent
-            text: new Date().toLocaleTimeString(Qt.locale(), "HH:mm")
-            color: "white"
-            font.pixelSize: 10
-            opacity: root.expanded ? 0 : 1
-            
+            height: parent.height
+            spacing: 4
+
+            // Compact time display
+            Text {
+                id: compactTime
+
+                text: new Date().toLocaleTimeString(Qt.locale(), "HH:mm")
+                color: "white"
+                font.pixelSize: 12
+                font.family: "SF Pro Display"
+                font.bold: true
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            // Cut
+            Text {
+                text: "·"
+                color: "white"
+                font.pixelSize: 12
+                font.family: "SF Pro Display"
+                font.bold: true
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            //Compact date
+            Text {
+                id: compactDate
+
+                font.family: "SF Pro Display"
+                text: new Date().toLocaleDateString(Qt.locale(), "dddd, d MMM")
+                color: "white"
+                font.pixelSize: 12
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
             Behavior on opacity {
                 NumberAnimation { duration: 200 }
             }
@@ -161,6 +193,7 @@ Item {
         repeat: true
         onTriggered: {
             compactTime.text = new Date().toLocaleTimeString(Qt.locale(), "HH:mm");
+            compactDate.text = new Date().toLocaleDateString(Qt.locale(), "dddd, d MMM");
         }
     }
     
@@ -170,17 +203,17 @@ Item {
         hoverEnabled: true
         
         onEntered: {
-            console.log("[Clock MouseArea] Mouse entered")
+            //console.log("[Clock MouseArea] Mouse entered")
         }
         
         onExited: {
-            console.log("[Clock MouseArea] Mouse exited")
+            //console.log("[Clock MouseArea] Mouse exited")
         }
         
         onClicked: {
-            console.log("[Clock] Clicked! current expanded:", root.expanded, "will toggle to:", !root.expanded)
-            root.expanded = !root.expanded;
-            console.log("[Clock] After toggle, expanded is now:", root.expanded)
+            //console.log("[Clock] Clicked! current expanded:", root.expanded, "will toggle to:", !root.expanded)
+            root.expanded = true;
+            //console.log("[Clock] After toggle, expanded is now:", root.expanded)
         }
     }
 }

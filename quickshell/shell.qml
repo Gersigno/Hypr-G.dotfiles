@@ -11,21 +11,9 @@ ShellRoot {
     property bool enableScreenCorners: true
     property bool enableTopBar: true
 
-    ControlCenter {
-    }
-
-    ScreenCorners {
-    }
-
+    ControlCenter { }
+    ScreenCorners { }
     TopBar {
+        id: topBarComponent
     }
-
-
-    /*PanelLoader { identifier: "ControlCenter"; component: ControlCenter {} }
-
-    component PanelLoader: LazyLoader {
-        required property string identifier
-        property bool extraCondition: true
-        active: Config.ready && Config.options.enabledPanels.includes(identifier) && extraCondition
-    }*/
 }

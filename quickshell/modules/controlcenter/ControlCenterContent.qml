@@ -4,15 +4,15 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
-import "../../utils/" as Utils
-import "../common/"
+import qs.services
+import "../.."
+
 
 Item {
     id: root
-    property int controlCenterWidth: 340
-    property int controlCenterPadding: 10
-    property bool advancerSettingsOpened: false
-    property bool isDarkMode: true  // default to dark
+    property bool isDarkMode: true
+    
+    anchors.fill: parent 
 
     FileView {
         id: themeFile
@@ -36,270 +36,131 @@ Item {
         readTheme()
     }
 
-    implicitHeight: contentColumn.implicitHeight
-    implicitWidth: controlCenterWidth
+    Row {
+        width: parent.width
+        height: parent.height 
 
-    ColumnLayout {
-        id: contentColumn
-        anchors.fill: parent
-        anchors.margins: controlCenterPadding
-        spacing: controlCenterPadding
+        //Inverted corner radius
+        Column {
+            width: GlobalStates.cornerRadius
+            height: parent.height
 
-        // Controls section
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 10
-
-            // Buttons section
-            Rectangle {
-                id: buttonsRectangle
-                Layout.fillWidth: true
-                Layout.preferredWidth: advancerSettingsOpened ? parent.width : parent.width / 2
-                Layout.preferredHeight: 140
-                color: Utils.Colors.background
-                radius: 16
-                border.color: Utils.Colors.on_tertiary
-                border.width: 1
-
-                Behavior on Layout.preferredWidth {
-                    NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                }
-                Behavior on height {
-                    NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                }
-
-                GridLayout {
-                    anchors.fill: parent
-                    anchors.margins: 10
-                    columns: advancerSettingsOpened ? 4 : 2
-                    rows: 2
-                    columnSpacing: 10
-                    rowSpacing: 10
-
-                    // WiFi
-                    QuickToggle {
-                        visible: !advancerSettingsOpened
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "󰖩"
-                        ToolTip.text: "Network"
-                        onClicked: console.log("WiFi toggled")
-                    }
-
-                    // Bluetooth
-                    QuickToggle {
-                        visible: !advancerSettingsOpened
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "󰂯"
-                        ToolTip.text: "Bluetooth"
-                        onClicked: console.log("Bluetooth toggled")
-                    }
-
-                    // Dark Mode
-                    QuickToggle {
-                        visible: !advancerSettingsOpened
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        checked: root.isDarkMode
-                        icon: root.isDarkMode ? "󰖔" : "󰖙"
-                        autoToggle: false
-                        ToolTip.text: "Light / Dark Mode"
-                        onClicked: {
-                            root.isDarkMode = !root.isDarkMode
-                            Hyprland.dispatch("exec ~/.config/hypr/hypr-g/scripts/toggle-theme.sh")
-                        }
-                    }                
-
-                    //---Advanced settings---  
+            //Top left invert corner
+            Canvas {
+                width: GlobalStates.cornerRadius
+                height: GlobalStates.cornerRadius
+                
+                onPaint: {
+                    const ctx = getContext("2d");
+                    const w = width;
+                    const h = height;
+                    const r = GlobalStates.cornerRadius;
                     
-                    // Advanced1 (dans layout quand ouvert)
-                    QuickToggle {
-                        visible: advancerSettingsOpened
-                        opacity: visible ? 1 : 0
-                        scale: visible ? 1 : 0
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "󰀝"
-                        ToolTip.text: "Airplane Mode"
-                        onClicked: console.log("Airplane Mode toggled")
-                    }
-
-                    // Advanced2 (dans layout quand ouvert)
-                    QuickToggle {
-                        visible: advancerSettingsOpened
-                        opacity: visible ? 1 : 0
-                        scale: visible ? 1 : 0
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "󱈏"
-                        ToolTip.text: "Low Power Mode"
-                        onClicked: console.log("Low power mode toggled")
-                    }
-
-                    // Advanced3 (dans layout quand ouvert)
-                    QuickToggle {
-                        visible: advancerSettingsOpened
-                        opacity: visible ? 1 : 0
-                        scale: visible ? 1 : 0
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: ""
-                        ToolTip.text: "System settings"
-                        onClicked: console.log("System Settings toggled")
-                    }
-
-                    // Advanced4
-                    QuickToggle {
-                        visible: advancerSettingsOpened
-                        opacity: visible ? 1 : 0
-                        scale: visible ? 1 : 0
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "?"
-                        ToolTip.text: "TBD"
-                        onClicked: console.log("System Settings toggled")
-                    }
-
-                    // Advanced5
-                    QuickToggle {
-                        visible: advancerSettingsOpened
-                        opacity: visible ? 1 : 0
-                        scale: visible ? 1 : 0
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "?"
-                        ToolTip.text: "TBD"
-                        onClicked: console.log("System Settings toggled")
-                    }
-
-                    // Advanced5
-                    QuickToggle {
-                        visible: advancerSettingsOpened
-                        opacity: visible ? 1 : 0
-                        scale: visible ? 1 : 0
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "?"
-                        ToolTip.text: "TBD"
-                        onClicked: console.log("System Settings toggled")
-                    }
-
-                    // Advanced5
-                    QuickToggle {
-                        visible: advancerSettingsOpened
-                        opacity: visible ? 1 : 0
-                        scale: visible ? 1 : 0
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "?"
-                        ToolTip.text: "TBD"
-                        onClicked: console.log("System Settings toggled")
-                    }
-
-                    // Advanced Settings
-                    QuickToggle {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: advancerSettingsOpened ? "-" : "+"
-                        ToolTip.text: "Advanced settings"
-                        onClicked: advancerSettingsOpened = !advancerSettingsOpened
-
-                        Behavior on x {
-                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                        }
-                        Behavior on y {
-                            NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                        }
-                    }
+                    ctx.reset();
+                    ctx.fillStyle = "red"//GlobalStates.backgroundColor;
+                    
+                    // Top-left inverse corner (L-shape)
+                    ctx.beginPath();
+                    ctx.moveTo(w, 0);
+                    ctx.lineTo(w, r);
+                    ctx.arc(w - r, r, r, 0, 1.5 * Math.PI, true);
+                    ctx.lineTo(w, 0);
+                    ctx.closePath();
+                    ctx.fill();
                 }
             }
 
-            // Sliders section
+            //Filler
             Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredWidth: advancerSettingsOpened ? 0 : parent.width / 2
-                Layout.preferredHeight: 140
-                color: Utils.Colors.background
-                radius: 16
-                border.color: Utils.Colors.on_tertiary
-                border.width: 1
-                opacity: advancerSettingsOpened ? 0 : 1
+                width: GlobalStates.cornerRadius
+                height: parent.height - GlobalStates.cornerRadius * 2
+                color: "transparent"
+            }
 
-                Behavior on Layout.preferredWidth {
-                    NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                }
-                Behavior on opacity {
-                    NumberAnimation { duration: 300; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
-                }
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 10
-                    spacing: 10
-
-                    // Brightness slider
-                    SliderItem {
-                        Layout.fillWidth: true
-                        icon: "󰃠"
-                        min: 0
-                        max: 1
-                        onSliderValueChanged: (val) => console.log("Brightness:", val)
-                    }
-
-                    // Volume slider
-                    SliderItem {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        icon: "󰕾"
-                        min: 0
-                        max: 1
-                        onSliderValueChanged: (val) => console.log("Volume:", val)
-                    }
+            //Bottom left invert corner
+            Canvas {
+                width: GlobalStates.cornerRadius
+                height: GlobalStates.cornerRadius
+                
+                onPaint: {
+                    const ctx = getContext("2d");
+                    const w = width;
+                    const h = height;
+                    const r = GlobalStates.cornerRadius;
+                    
+                    ctx.reset();
+                    ctx.fillStyle = "cyan"//GlobalStates.backgroundColor;
+                    ctx.beginPath();
+                    ctx.moveTo(w, h);
+                    ctx.lineTo(w - r, h);
+                    ctx.arc(w - r, h - r, r, 0.5 * Math.PI, 0, true);
+                    ctx.lineTo(w, h);
+                    ctx.closePath();
+                    ctx.fill();
                 }
             }
         }
 
-        //Medias controller section
         Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 140
-            color: Utils.Colors.background
-            radius: 16
-            border.color: Utils.Colors.on_tertiary
-            border.width: 1
-
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 10
-
-                Text {
-                    text: "TODO: Media controls"
-                    color: "white"
-                }
-            }
+            id: container
+            width: parent.width 
+            height: parent.height - GlobalStates.cornerRadius
+            color: GlobalStates.backgroundColor;
         }
+    }
 
-        // Notifications section 
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.preferredHeight: 180
-            color: Utils.Colors.background
-            radius: 16
-            border.color: Utils.Colors.on_tertiary
-            border.width: 1
+    Canvas {
+        width: parent.width - GlobalStates.cornerRadius
+        height: GlobalStates.cornerRadius
 
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 10
+        x: GlobalStates.cornerRadius
+        y: parent.height - GlobalStates.cornerRadius
 
-                Text {
-                    text: "TODO: Notifications list"
-                    color: "white"
-                }
-            }
+        onPaint: {
+            const ctx = getContext("2d");
+            const w = width;
+            const h = height;
+            const r = GlobalStates.cornerRadius;
+
+            ctx.reset();
+            ctx.fillStyle = "green"//GlobalStates.backgroundColor;
+            
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(w, 0);
+            ctx.lineTo(w, h);
+            ctx.lineTo(r, h);
+            ctx.arc(r, h - r, r, 0.5 * Math.PI, Math.PI, false);
+            ctx.lineTo(0, 0);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+
+    Canvas {
+        width: GlobalStates.cornerRadius + GlobalStates.gapsOut
+        height: GlobalStates.cornerRadius + GlobalStates.gapsOut
+
+        x: parent.width - (GlobalStates.cornerRadius + GlobalStates.gapsOut)
+        y: parent.height
+        
+        onPaint: {
+            const ctx = getContext("2d");
+            const w = width;
+            const h = height;
+            const r = GlobalStates.cornerRadius + GlobalStates.gapsOut;
+            
+            ctx.reset();
+            ctx.fillStyle = "yellow"//GlobalStates.backgroundColor;
+            
+            // Top-left inverse corner (L-shape)
+            ctx.beginPath();
+            ctx.moveTo(w, 0);
+            ctx.lineTo(w, r);
+            ctx.arc(w - r, r, r, 0, 1.5 * Math.PI, true);
+            ctx.lineTo(w, 0);
+            ctx.closePath();
+            ctx.fill();
         }
     }
 }

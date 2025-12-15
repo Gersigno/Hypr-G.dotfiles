@@ -7,36 +7,71 @@ import Quickshell.Hyprland
 
 Scope {
     id: root
-    property int controlCenterWidth: 340
-    property int hyprlandGapsOut: 8
-    property int elevationMargin: 8
+    
+    // --- Configuration et États ---
+    property bool controlCenterOpen: false
+    readonly property int animationDuration: 100000
+    
+    // Valeurs par défaut
+    readonly property real defaultQsWidth: 50 
+    readonly property real defaultQsHeight: 100
+    
+    // --- Références TopBar/QuickSettings ---
+    property int topBarHeight: topBarComponent.barVisible ? topBarComponent.barHeight : 0
+    property var qsQsObject: topBarComponent.quickSettingsRef 
+    
+    // --- Propriétés de Taille ---
+    
+    readonly property int finalWidth: 340
+    
+    // Hauteur de l'écran (Corrigé précédemment)
+    readonly property real finalHeight: Quickshell.screens.length > 0 ? Quickshell.screens[0].height : 1080 
 
-    Component.onCompleted: {
-        console.log("[ControlCenter] Component loaded")
+    // Initialisation aux valeurs lues ou par défaut
+    property real quickSettingsHeight: root.defaultQsHeight
+    property real quickSettingsWidth: root.defaultQsWidth
+
+    // Gère l'initialisation asynchrone des tailles
+    onQsQsObjectChanged: {
+        if (qsQsObject) {
+            root.quickSettingsWidth = qsQsObject.renderedWidth
+            root.quickSettingsHeight = qsQsObject.renderedHeight
+            
+            console.log("DEBUG: E-02 QuickSettings object LINKED. Final Width (read from QS):", root.quickSettingsWidth);
+        } else {
+            console.log("DEBUG: E-02 QuickSettings object UNLINKED (null/undefined).");
+        }
     }
 
-    // États globaux temporaires
-    property bool controlCenterOpen: false
+    Component.onCompleted: {
+        console.log("--- DEBUG INITIALISATION COMPLETE ---");
+        console.log("DEBUG: E-01 ControlCenter ROOT Component loaded.");
+        console.log("DEBUG: E-01 PanelWindow Anchor Height (100px issue):", controlCenterRoot.height);
+        console.log("DEBUG: E-01 Final Height (Screen Target):", finalHeight);
+        console.log("DEBUG: E-01 QuickSettings initial Width (source):", quickSettingsWidth);
+        console.log("-----------------------------------");
+    }
 
     PanelWindow {
         id: controlCenterRoot
+        
         visible: root.controlCenterOpen
-
-        function hide() {
-            root.controlCenterOpen = false
-        }
-
+        
+        function hide() { root.controlCenterOpen = false }
         exclusiveZone: 0
-        implicitWidth: controlCenterWidth
-        WlrLayershell.namespace: "quickshell:controlCenter"
-        WlrLayershell.layer: WlrLayer.Top
-        color: "transparent"
 
-        anchors {
-            top: true
-            right: true
-            bottom: true
-        }
+        WlrLayershell.namespace: "quickshell:controlCenter"
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.exclusiveZone: 0
+        color: "transparent"
+        
+        margins { top: (topBarHeight * -1) }
+        
+        // CORRECTION DE LA LARGEUR TEMPORAIRE: Maintenue pour forcer le PanelWindow à la taille finale
+        implicitWidth: root.finalWidth
+        implicitHeight: root.finalHeight 
+        
+        anchors { top: true; right: true; bottom: true }
 
         HyprlandFocusGrab {
             id: grab
@@ -49,14 +84,52 @@ Scope {
 
         Loader {
             id: controlCenterContentLoader
-            active: root.controlCenterOpen
-            anchors {
-                fill: parent
-                margins: hyprlandGapsOut
-                leftMargin: elevationMargin
+            
+            active: root.controlCenterOpen 
+            
+            onActiveChanged: {
+                if (active) {
+                    console.log(`DEBUG: E-03 Loader ACTIVATED. Target Width: ${width} Target Height: ${height}`);
+                    console.log(`DEBUG: E-03 Current quickSettingsWidth: ${root.quickSettingsWidth}`);
+                }
             }
-            width: controlCenterWidth - hyprlandGapsOut - elevationMargin
-            height: parent.height - hyprlandGapsOut * 2
+            
+            anchors { top: parent.top; right: parent.right }
+            
+            // --- NOUVELLE LOGIQUE D'ÉTAT ET DE TRANSITION ---
+            
+            // L'état du Loader suit l'état d'ouverture/fermeture
+            state: root.controlCenterOpen ? "Opened" : "Closed"
+
+            // Définition des propriétés de chaque état
+            states: [
+                State {
+                    name: "Closed"
+                    PropertyChanges { target: controlCenterContentLoader; width: root.quickSettingsWidth; height: root.quickSettingsHeight }
+                },
+                State {
+                    name: "Opened"
+                    PropertyChanges { target: controlCenterContentLoader; width: root.finalWidth; height: root.finalHeight }
+                }
+            ]
+            
+            // Définition des animations entre les états
+            transitions: [
+                Transition {
+                    from: "Closed"; to: "Opened"
+                    // Animation pour l'ouverture
+                    NumberAnimation { properties: "width,height"; duration: root.animationDuration; easing.type: Easing.Bezier; easing.bezierCurve: [0.18, 0.95, 0.2, 1.08] }
+                },
+                Transition {
+                    from: "Opened"; to: "Closed"
+                    // SNAP-BACK : Pas d'animation à la fermeture (durée 0)
+                    NumberAnimation { properties: "width,height"; duration: 0 }
+                }
+            ]
+            
+            // --- FIN NOUVELLE LOGIQUE ---
+            
+            // Les propriétés width/height sont maintenant définies dans les states, donc on les retire des bindings
 
             focus: root.controlCenterOpen
             Keys.onPressed: (event) => {
@@ -66,50 +139,18 @@ Scope {
             }
 
             sourceComponent: ControlCenterContent {
+                id: controlCenterContent
+                Component.onCompleted: { console.log("DEBUG: ControlCenterContent loaded"); }
             }
         }
     }
 
-    IpcHandler {
-        target: "controlCenter"
+    // --- IPC et Raccourcis Globaux ---
+    IpcHandler { target: "controlCenter"; function toggle(): void { root.controlCenterOpen = !root.controlCenterOpen; }
+        function close(): void { root.controlCenterOpen = false; }
+        function open(): void { root.controlCenterOpen = true; } }
 
-        function toggle(): void {
-            root.controlCenterOpen = !root.controlCenterOpen;
-        }
-
-        function close(): void {
-            root.controlCenterOpen = false;
-        }
-
-        function open(): void {
-            root.controlCenterOpen = true;
-        }
-    }
-
-    GlobalShortcut {
-        name: "controlCenterToggle"
-        description: "Toggles control center on press"
-
-        onPressed: {
-            root.controlCenterOpen = !root.controlCenterOpen;
-        }
-    }
-
-    GlobalShortcut {
-        name: "controlCenterOpen"
-        description: "Opens control center on press"
-
-        onPressed: {
-            root.controlCenterOpen = true;
-        }
-    }
-
-    GlobalShortcut {
-        name: "controlCenterClose"
-        description: "Closes control center on press"
-
-        onPressed: {
-            root.controlCenterOpen = false;
-        }
-    }
+    GlobalShortcut { name: "controlCenterToggle"; description: "Toggles control center on press"; onPressed: { root.controlCenterOpen = !root.controlCenterOpen; } }
+    GlobalShortcut { name: "controlCenterOpen"; description: "Opens control center on press"; onPressed: { root.controlCenterOpen = true; } }
+    GlobalShortcut { name: "controlCenterClose"; description: "Closes control center on press"; onPressed: { root.controlCenterOpen = false; } }
 }

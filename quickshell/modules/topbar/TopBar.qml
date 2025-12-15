@@ -11,14 +11,17 @@ Scope {
     property int barHeight: 24
     property bool barVisible: true
     property bool clockExpanded: false
+
+    // Property expose references
+    property var quickSettingsRef: null
     
     onClockExpandedChanged: {
-        console.log("[TopBar] root.clockExpanded changed to:", clockExpanded)
+        //console.log("[TopBar] root.clockExpanded changed to:", clockExpanded)
     }
     
     Component.onCompleted: {
         console.log("[TopBar] Component loaded")
-        console.log("[TopBar] Initial clockExpanded state:", root.clockExpanded)
+        //console.log("[TopBar] Initial clockExpanded state:", root.clockExpanded)
     }
 
 
@@ -67,11 +70,11 @@ Scope {
                 z: 10
                 
                 Component.onCompleted: {
-                    console.log("[TopBar Clock] Width after layout:", width, "Height:", height)
+                    //console.log("[TopBar Clock] Width after layout:", width, "Height:", height)
                 }
                 
                 onExpandedChanged: {
-                    console.log("[Clock] expanded changed to:", expanded)
+                    //console.log("[Clock] expanded changed to:", expanded)
                     root.clockExpanded = expanded
                 }
             }
@@ -79,7 +82,7 @@ Scope {
             Connections {
                 target: clockExpanded
                 function onExpandedChanged() {
-                    console.log("[TopBar] ClockExpanded.onExpandedChanged signal received, clockExpanded.expanded:", clockExpanded.expanded)
+                    //console.log("[TopBar] ClockExpanded.onExpandedChanged signal received, clockExpanded.expanded:", clockExpanded.expanded)
                     clock.expanded = clockExpanded.expanded
                 }
             }
@@ -89,13 +92,36 @@ Scope {
                     left: parent.left
                     right: parent.right
                     top: parent.top
-                    leftMargin: Math.max(workspaces.width + 8, clock.width / 2 + 60)
+                    leftMargin: workspaces.width
                     rightMargin: 8
                 }
                 height: panelHeight
                 
                 Component.onCompleted: {
-                    console.log("[ActiveWindowTitle] Width:", width, "X position:", x, "LeftMargin:", Math.max(workspaces.width + 8, clock.width / 2 + 60))
+                    //console.log("[ActiveWindowTitle] Width:", width, "X position:", x, "LeftMargin:", Math.max(workspaces.width + 8, clock.width / 2 + 60))
+                }
+            }
+
+            TrayIcons {
+                id: trayIcons
+                anchors {
+                    right: parent.right
+                    top: parent.top
+                    rightMargin: quicksettings.visible ? quicksettings.width + 8 : 8
+                }
+                height: panelHeight
+            }
+
+            QuickSettings {
+                id: quicksettings
+                anchors {
+                    right: parent.right
+                    top: parent.top
+                }
+                height: panelHeight
+
+                Component.onCompleted: {
+                    root.quickSettingsRef = quicksettings
                 }
             }
         }
@@ -108,7 +134,12 @@ Scope {
         topBarHeight: root.barHeight
         
         Component.onCompleted: {
-            console.log("[ClockExpanded] Component completed")
+            //console.log("[ClockExpanded] Component completed")
+        }
+
+        onExpandedChanged: {
+            //console.log("[ClockExpanded from TopBar] onExpandedChanged fired, expanded is now:", expanded)
+            root.clockExpanded = expanded
         }
     }
     
