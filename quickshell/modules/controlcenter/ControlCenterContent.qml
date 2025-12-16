@@ -159,8 +159,7 @@ Item {
         y: parent.height 
         
         transform: Scale {
-            yScale: 1.0 - (root.animProgress / 100) 
-            //origin: Transform.Bottom
+            yScale: 1.0 - (root.animProgress / 100)
         }
         
         onPaint: {

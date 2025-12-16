@@ -24,34 +24,27 @@ Item {
     property real quickSettingsHeight: root.defaultQsHeight
     property real quickSettingsWidth: root.defaultQsWidth
 
-    property var controlCenterContentRef: null
+    property var animationProgress: 0.0
 
 
-    onQsQsObjectChanged: {
-        if (qsQsObject) {
-            root.quickSettingsWidth = qsQsObject.renderedWidth
-            root.quickSettingsHeight = qsQsObject.renderedHeight
-            
-            //console.log("DEBUG: E-02 QuickSettings object LINKED. Final Width (read from QS):", root.quickSettingsWidth);
-        } else {
-            //console.log("DEBUG: E-02 QuickSettings object UNLINKED (null/undefined).");
-        }
+    Binding {
+        target: root
+        property: "quickSettingsWidth"
+        value: qsQsObject ? qsQsObject.renderedWidth : root.defaultQsWidth
+        restoreMode: Binding.RestoreBindingOrValue
     }
 
-    Component.onCompleted: {
-        //console.log("--- DEBUG INITIALISATION COMPLETE ---");
-        //console.log("DEBUG: E-01 ControlCenter ROOT Component loaded.");
-        //console.log("DEBUG: E-01 PanelWindow Anchor Height (100px issue):", controlCenterRoot.height);
-        //console.log("DEBUG: E-01 Final Height (Screen Target):", finalHeight);
-        //console.log("DEBUG: E-01 QuickSettings initial Width (source):", quickSettingsWidth);
-        //console.log("-----------------------------------");
+    Binding {
+        target: root
+        property: "quickSettingsHeight"
+        value: qsQsObject ? qsQsObject.renderedHeight : root.defaultQsHeight
+        restoreMode: Binding.RestoreBindingOrValue
     }
 
     PanelWindow {
         id: controlCenterRoot
         
         visible: root.controlCenterOpen || root.isAnimating
-        screen: Hyprland.focusedMonitor
 
         function hide() { root.controlCenterOpen = false }
         exclusiveZone: 0
@@ -67,7 +60,11 @@ Item {
         implicitWidth: root.finalWidth
         implicitHeight: root.finalHeight 
         
-        anchors { top: true; right: true; bottom: true }
+        anchors { 
+            top: true; 
+            right: true; 
+            bottom: true 
+        }
 
         HyprlandFocusGrab {
             id: grab
@@ -84,10 +81,17 @@ Item {
             width: root.quickSettingsWidth
             height: root.quickSettingsHeight
             
-            active: parent.visible
-            onItemChanged: { root.controlCenterContentRef = controlCenterContentLoader.item }
-            
-            //property real currentAnimProgress: item ? item.animProgress : 0
+            active: true
+            //onItemChanged: { root.controlCenterContentRef = controlCenterContentLoader.item }
+
+            Connections {
+                target: controlCenterContentLoader.item
+                ignoreUnknownSignals: true 
+                
+                function onAnimProgressChanged() {
+                    root.animationProgress = controlCenterContentLoader.item.animProgress;
+                }
+            }
 
             onStateChanged: {
                 if (state === "Closed") {
@@ -131,8 +135,18 @@ Item {
                 Transition {
                     from: "Closed"; to: "Opened"
                     ParallelAnimation {
-                        NumberAnimation { properties: "width,height"; duration: root.animationDuration; easing.type: Easing.InOutQuint }
-                        NumberAnimation { target: controlCenterContentLoader.item; property: "animProgress"; to: 100; duration: root.animationDuration; easing.type: Easing.InOutQuint }
+                        NumberAnimation { 
+                            properties: "width,height"; 
+                            duration: root.animationDuration; 
+                            easing.type: Easing.InOutQuint 
+                        }
+                        NumberAnimation { 
+                            target: controlCenterContentLoader.item; 
+                            property: "animProgress"; 
+                            to: 100; 
+                            duration: root.animationDuration; 
+                            easing.type: Easing.InOutQuint;
+                        }
                     }
                 },
                 Transition {
@@ -140,15 +154,24 @@ Item {
                     ParallelAnimation {
                         NumberAnimation { 
                             target: controlCenterContentLoader
-                            properties: "width"; to: root.quickSettingsWidth; duration: root.animationDuration; easing.type: Easing.InOutQuint 
+                            properties: "width"; 
+                            to: root.quickSettingsWidth; 
+                            duration: root.animationDuration; 
+                            easing.type: Easing.InOutQuint 
                         }
                         NumberAnimation { 
                             target: controlCenterContentLoader
-                            properties: "height"; to: root.quickSettingsHeight; duration: root.animationDuration; easing.type: Easing.InOutQuint 
+                            properties: "height"; 
+                            to: root.quickSettingsHeight; 
+                            duration: root.animationDuration; 
+                            easing.type: Easing.InOutQuint 
                         }
                         NumberAnimation {
                             target: controlCenterContentLoader.item
-                            property: "animProgress"; to: 0; duration: root.animationDuration; easing.type: Easing.InOutQuint
+                            property: "animProgress"; 
+                            to: 0; 
+                            duration: root.animationDuration; 
+                            easing.type: Easing.InOutQuint
                         }
                     }
                 }

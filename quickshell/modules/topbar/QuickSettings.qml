@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import qs.services
+import QtQuick.Effects
 import "../.."
 
 Item {
@@ -40,7 +41,7 @@ Item {
             if (Network.networkStrength > 25) return "󰤢";
             return "󰤟";
         }
-        if (Network.wifiStatus === "connecting") return "󰤪";
+        if (Network.wifiStatus === "connecting") return "󰤬"
         if (Network.wifiEnabled) return "󰤭";
         return "󰤮";
     }
@@ -62,10 +63,6 @@ Item {
 
     implicitWidth: container.width
     height: parent.height
-
-    Component.onCompleted: {
-        console.log("[QuickSettings] Component completed")
-    }
 
     Item {
         id: container
@@ -146,6 +143,23 @@ Item {
             height: parent.height
 
             spacing: 12
+
+            readonly property bool isCurrentScreen: {
+                if (!Quickshell.screens || !Hyprland.focusedMonitor) return false;
+                return screen.name === Hyprland.focusedMonitor.name
+            }
+
+            opacity: isCurrentScreen 
+                     ? 1.0 - (controlCenterComponent.animationProgress / 100) 
+                     : 1.0
+
+            layer.enabled: isCurrentScreen && controlCenterComponent.animationProgress > 0
+            layer.effect: MultiEffect {
+                source: settingsRow
+                anchors.fill: settingsRow
+                blurEnabled: true
+                blur: (controlCenterComponent.animationProgress / 20)
+            }
 
 
             //Bluetooth
