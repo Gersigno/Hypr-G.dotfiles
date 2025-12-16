@@ -160,7 +160,7 @@ Item {
         
         transform: Scale {
             yScale: 1.0 - (root.animProgress / 100) 
-            origin: Transform.Bottom
+            //origin: Transform.Bottom
         }
         
         onPaint: {

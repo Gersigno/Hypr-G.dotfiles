@@ -6,15 +6,14 @@ import "./modules/screencorners/"
 import "./modules/topbar/"
 
 ShellRoot {
-    // Enable/disable modules here
-    property bool enableControlCenter: true
-    property bool enableScreenCorners: true
-    property bool enableTopBar: true
+    id: rootShell
 
     ControlCenter {
         id: controlCenterComponent
-     }
-    ScreenCorners { }
+    }
+    ScreenCorners {
+        id: screenCornersComponent
+    }
     TopBar {
         id: topBarComponent
     }

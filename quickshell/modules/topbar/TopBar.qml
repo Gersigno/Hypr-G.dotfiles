@@ -5,7 +5,7 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import "../.."
 
-Scope {
+Item {
     id: root
     
     property int barHeight: 24
@@ -38,7 +38,7 @@ Scope {
             color: "transparent"
             
             WlrLayershell.namespace: "quickshell:topBar"
-            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.exclusiveZone: root.barVisible ? panelHeight : 0
             
             implicitHeight: panelHeight
@@ -104,10 +104,17 @@ Scope {
 
             TrayIcons {
                 id: trayIcons
+
+                Component.onCompleted: {
+                    var offset = controlCenterComponent.controlCenterContentRef;
+                    //console.log("############ ControlCenterContent: ", offset);
+                }
+
                 anchors {
                     right: parent.right
                     top: parent.top
-                    rightMargin: quicksettings.visible ? quicksettings.width + 8 : 8
+                    rightMargin : (quicksettings.width + 8)
+                    //rightMargin: controlCenterComponent.controlCenterContentRef ? (controlCenterComponent.controlCenterContentRef.width + 8) : (quicksettings.width + 8)
                 }
                 height: panelHeight
             }
