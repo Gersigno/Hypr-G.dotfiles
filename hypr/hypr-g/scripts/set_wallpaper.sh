@@ -18,11 +18,11 @@ fi
 if [ -f "$WALLPAPER_PATH" ]; then
     # Update swww for the desktop wallpaper
     cursor=$(hyprctl cursorpos | tr -d ' ') # Get current cursor position
-    swww img "$WALLPAPER_PATH" -t grow --transition-duration 2.5 --transition-pos $cursor --invert-y
+    swww img "$WALLPAPER_PATH" -t grow --transition-duration 2.5
     # Generate and apply a color palette using Matugen with the stored mode
     matugen image "$WALLPAPER_PATH" --mode "$THEME_MODE"
     
-    echo "✅ Wallpaper and color palette set."
+    echo "Done."
 else
     echo "Error: Wallpaper file not found at $WALLPAPER_PATH" >&2
     exit 1

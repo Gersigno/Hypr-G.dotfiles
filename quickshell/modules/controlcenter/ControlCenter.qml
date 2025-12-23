@@ -10,7 +10,7 @@ Item {
     
     property bool controlCenterOpen: false
     property bool isAnimating: false
-    readonly property int animationDuration: 350
+    readonly property int animationDuration: 450
     readonly property real defaultQsWidth: 50 
     readonly property real defaultQsHeight: 100
     

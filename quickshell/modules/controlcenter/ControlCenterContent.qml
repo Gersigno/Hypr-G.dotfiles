@@ -13,12 +13,13 @@ Item {
 
     property real animProgress: 0.0
     property bool isDarkMode: true
+    property real finalHeight: Hyprland.focusedMonitor.height
     
     anchors.fill: parent 
+    signal animValueChanged(real animProgress)
 
     onAnimProgressChanged: {
         bottomLeftInvert.requestPaint()
-        bottomSection.requestPaint()
         bottomLeftCorner.requestPaint()
     }
 
@@ -80,23 +81,33 @@ Item {
 
             //Filler
             Rectangle {
-                width: GlobalStates.cornerRadius
-                height: parent.height - GlobalStates.cornerRadius * 2
+                width: parent.width
+                height: finalHeight - GlobalStates.cornerRadius * 2
                 color: "transparent"
             }
 
-            //Bottom left invert corner
             Canvas {
                 id: bottomLeftInvert
                 width: GlobalStates.cornerRadius
                 height: GlobalStates.cornerRadius
+                //y: finalHeight - (GlobalStates.cornerRadius + GlobalStates.gapsOut)
+                //x: 0 - width
+
                 
                 onPaint: {
                     const ctx = getContext("2d");
                     const w = width;
                     const h = height;
-                    const factor = Math.min(2.0, Math.max(1.0, root.animProgress / 50)) - 1
-                    const r = GlobalStates.cornerRadius * factor //(GlobalStates.cornerRadius + (GlobalStates.gapsOut * root.animProgress / 100)) * factor;
+                    //const baseToMiddle = GlobalStates.cornerRadius + (Math.min(1.0, Math.max(0.0, root.animProgress / 50) * 2)) * 20;
+                    //const final = baseToMiddle * ((Math.min(2.0, Math.max(1.0, root.animProgress / 50))) - 2) * -1;
+                    //console.log(middleToEnd);
+                    const limit = 95;
+                    let factor = 0;
+                    if (root.animProgress >= limit) {
+                        factor = (root.animProgress - limit) / 20;
+                    }
+                    
+                    const r = (GlobalStates.cornerRadius + GlobalStates.gapsOut) * factor //(GlobalStates.cornerRadius + (GlobalStates.gapsOut * root.animProgress / 100)) * factor;
                     
                     ctx.reset();
                     ctx.fillStyle = GlobalStates.backgroundColor;
@@ -111,15 +122,32 @@ Item {
             }
         }
 
+        // Body
         Rectangle {
             id: container
             width: parent.width 
-            height: parent.height - GlobalStates.cornerRadius
+            height: parent.height
             color: GlobalStates.backgroundColor;
+
+            property real factor: 200;
+            property real firstHalf: (GlobalStates.cornerRadius + (Math.min(1.0, Math.max(0.0, root.animProgress / 100) * 2)) * 200);
+            property real full: firstHalf * ((Math.min(2.0, Math.max(1.0, root.animProgress / 50))) - 2) * -1
+
+            bottomLeftRadius: full;
+
+            //bottomLeftRadius: 20
+            /*Component.onUpdate: {
+                const baseToMiddle = GlobalStates.cornerRadius + (Math.min(1.0, Math.max(0.0, root.animProgress / 50) * 2)) * 20;
+                const final = baseToMiddle * ((Math.min(2.0, Math.max(1.0, root.animProgress / 50))) - 2) * -1;
+
+                container.bottomLeftRadius = final;
+            }*/
         }
     }
+                
+    //Bottom left invert corner
 
-    Canvas {
+    /*Canvas {
         id: bottomSection
         width: parent.width - GlobalStates.cornerRadius
         height: GlobalStates.cornerRadius
@@ -147,7 +175,7 @@ Item {
             ctx.closePath();
             ctx.fill();
         }
-    }
+    }*/
 
     Canvas {
         id: bottomLeftCorner
