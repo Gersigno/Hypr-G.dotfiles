@@ -1,6 +1,9 @@
 import QtQuick
 import Quickshell
-import "../.."
+import Quickshell.Io
+import qs.services
+import QtQuick.Effects
+import "../.." 
 
 Item {
     id: root
@@ -146,6 +149,42 @@ Item {
             height: parent.height
             spacing: 4
 
+            // Media play icon
+            Text {
+                id: mediaIcon
+                text: ""
+                color: "white"
+                font.pixelSize: 12
+                font.family: "SF Pro Display"
+                font.bold: true
+                anchors.verticalCenter: parent.verticalCenter
+                width: Media.isPlaying ? implicitWidth : 0
+                opacity: Media.isPlaying ? 1 : 0
+                
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    blurEnabled: !Media.isPlaying
+                    source: mediaIcon
+                    blur: Media.isPlaying ? 0 : 1
+                    Behavior on blur {
+                        NumberAnimation { duration: 300 }
+                    }
+                }
+
+                Behavior on width {
+                    NumberAnimation { 
+                        duration: 300
+                        easing.type: Easing.InOutQuint 
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation { 
+                        duration: 300
+                    }
+                }
+            }
+
             // Compact time display
             Text {
                 id: compactTime
@@ -178,6 +217,78 @@ Item {
                 font.pixelSize: 12
 
                 anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Text {
+                id: micInUseIcon
+                text: " "
+                color: "white"
+                font.pixelSize: 12
+                font.family: "SF Pro Display"
+                font.bold: true
+                anchors.verticalCenter: parent.verticalCenter
+
+                width: InputsUsage.micInUse ? implicitWidth : 0
+                opacity: InputsUsage.micInUse ? 1 : 0
+                
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    blurEnabled: !InputsUsage.micInUse
+                    source: micInUseIcon
+                    blur: InputsUsage.micInUse ? 0 : 1
+                    Behavior on blur {
+                        NumberAnimation { duration: 300 }
+                    }
+                }
+
+                Behavior on width {
+                    NumberAnimation { 
+                        duration: 300
+                        easing.type: Easing.InOutQuint 
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation { 
+                        duration: 300
+                    }
+                }
+            }
+            Text {
+                id: cameraInUseIcon
+                text: " "
+                color: "white"
+                font.pixelSize: 12
+                font.family: "SF Pro Display"
+                font.bold: true
+                anchors.verticalCenter: parent.verticalCenter
+                //visible: InputsUsage.cameraInUse
+
+                width: InputsUsage.cameraInUse ? implicitWidth : 0
+                opacity: InputsUsage.cameraInUse ? 1 : 0
+                
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    blurEnabled: !InputsUsage.cameraInUse
+                    source: cameraInUseIcon
+                    blur: InputsUsage.cameraInUse ? 0 : 1
+                    Behavior on blur {
+                        NumberAnimation { duration: 300 }
+                    }
+                }
+
+                Behavior on width {
+                    NumberAnimation { 
+                        duration: 300
+                        easing.type: Easing.InOutQuint 
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation { 
+                        duration: 300
+                    }
+                }
             }
 
             Behavior on opacity {
