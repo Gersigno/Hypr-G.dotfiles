@@ -1,211 +1,452 @@
+import qs.services
+import QtCore
 import QtQuick
-import QtQuick.Layouts
-import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
-import Quickshell.Hyprland
-import qs.services
-import "../.."
-
+import Qt5Compat.GraphicalEffects
+import QtQuick.Effects
+import "../.." 
+import "../common" 
 
 Item {
     id: root
+    anchors.fill: parent
+    width: parent.width
 
     property real animProgress: 0.0
+    property real animDuration: 250
     property bool isDarkMode: true
-    property real finalHeight: Hyprland.focusedMonitor.height
-    
-    anchors.fill: parent 
-    signal animValueChanged(real animProgress)
 
-    onAnimProgressChanged: {
-        bottomLeftInvert.requestPaint()
-        bottomLeftCorner.requestPaint()
-    }
+    enabled: animProgress > 20
 
-    FileView {
-        id: themeFile
-        path: "/home/gersigno/.config/hypr/hypr-g/hyprland/env.conf"
-        onTextChanged: readTheme()
-    }
+    readonly property string userName: home.split('/').pop().charAt(0).toUpperCase() + home.split('/').pop().slice(1)
 
-    function readTheme() {
-        var lines = themeFile.text().split('\n');
-        for (var i = 0; i < lines.length; i++) {
-            if (lines[i].startsWith("env = THEME_MODE")) {
-                var mode = lines[i].split(',')[1];
-                isDarkMode = (mode === "dark");
-                break;
-            }
+    readonly property real profilePictureSize: 50
+    readonly property string home: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
+
+    Column {
+        id: mainColumn
+        anchors.fill: parent
+        spacing: (GlobalStates.gapsOut * 2)
+
+        opacity: animationProgress / 100
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            source: mainColumn
+            anchors.fill: mainColumn
+            blurEnabled: true
+            blur: 1 - (animationProgress / 100)
         }
-    }
 
-    Component.onCompleted: {
-        console.log("[ControlCenterContent] Component loaded")
-        readTheme()
-    }
+        // Top section
+        Item {
+            width: parent.width
+            height: profilePictureSize
 
-    Row {
-        width: parent.width
-        height: parent.height 
-
-        //Inverted corner radius
-        Column {
-            width: GlobalStates.cornerRadius
-            height: parent.height
-
-            //Top left invert corner
-            Canvas {
-                width: GlobalStates.cornerRadius
-                height: GlobalStates.cornerRadius
-                
-                onPaint: {
-                    const ctx = getContext("2d");
-                    const w = width;
-                    const h = height;
-                    const r = GlobalStates.cornerRadius + (GlobalStates.gapsOut * root.animProgress / 100);
-                    
-                    ctx.reset();
-                    ctx.fillStyle = GlobalStates.backgroundColor;
-                    
-                    // Top-left inverse corner (L-shape)
-                    ctx.beginPath();
-                    ctx.moveTo(w, 0);
-                    ctx.lineTo(w, r);
-                    ctx.arc(w - r, r, r, 0, 1.5 * Math.PI, true);
-                    ctx.lineTo(w, 0);
-                    ctx.closePath();
-                    ctx.fill();
-                }
-            }
-
-            //Filler
+            //Profile picture
             Rectangle {
-                width: parent.width
-                height: finalHeight - GlobalStates.cornerRadius * 2
-                color: "transparent"
+                id: profilePicture
+                width: profilePictureSize
+                height: profilePictureSize
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                radius: GlobalStates.cornerRadius
+                clip: true
+                /*Rectangle {
+                    anchors.fill: parent
+                    color: "yellow"
+                }*/
+                Image {
+                    anchors.fill: parent
+                    source: home + "/.face.png"
+                    fillMode: Image.PreserveAspectCrop
+                    layer.enabled: true
+                    layer.effect: OpacityMask {
+                        maskSource: Rectangle {
+                            width: profilePictureSize
+                            height: profilePictureSize
+                            radius: GlobalStates.cornerRadius
+                        }
+                    }
+                    onStatusChanged: {
+                        if (status == Image.Error) {
+                            source = home + "/.config/quickshell/assets/default_face.png"
+                        }
+                    }
+                    Component.onCompleted: {
+                        console.log("GlobalStates.cornerRadius: ", GlobalStates.cornerRadius);
+                    }
+                }
             }
 
-            Canvas {
-                id: bottomLeftInvert
-                width: GlobalStates.cornerRadius
-                height: GlobalStates.cornerRadius
-                //y: finalHeight - (GlobalStates.cornerRadius + GlobalStates.gapsOut)
-                //x: 0 - width
+            //User infos
+            Column {
+                id: userInfoColumn
+                anchors.left: profilePicture.right
+                anchors.leftMargin: 4
+                anchors.right: powerMenu.left
+                anchors.rightMargin: 4
+                anchors.verticalCenter: parent.verticalCenter
+                Text {
+                    text: userName.charAt(0).toUpperCase() + userName.slice(1)
+                    font.pixelSize: 16
+                    font.family: "SF Pro Display"
+                    font.bold: true
+                    color: "white"
+                }
+                Text {
+                    id: uptimeText
+                    text: "Up time: "
+                    font.pixelSize: 13
+                    font.family: "SF Pro Display"
+                    color: "lightgray"
 
-                
-                onPaint: {
-                    const ctx = getContext("2d");
-                    const w = width;
-                    const h = height;
-                    //const baseToMiddle = GlobalStates.cornerRadius + (Math.min(1.0, Math.max(0.0, root.animProgress / 50) * 2)) * 20;
-                    //const final = baseToMiddle * ((Math.min(2.0, Math.max(1.0, root.animProgress / 50))) - 2) * -1;
-                    //console.log(middleToEnd);
-                    const limit = 95;
-                    let factor = 0;
-                    if (root.animProgress >= limit) {
-                        factor = (root.animProgress - limit) / 20;
+                    function formatUptime(seconds) {
+                        let h = Math.floor(seconds / 3600);
+                        let m = Math.floor((seconds % 3600) / 60);
+                        return h.toString().padStart(2, '0') + "h " + 
+                            m.toString().padStart(2, '0') + "m";
                     }
-                    
-                    const r = (GlobalStates.cornerRadius + GlobalStates.gapsOut) * factor //(GlobalStates.cornerRadius + (GlobalStates.gapsOut * root.animProgress / 100)) * factor;
-                    
-                    ctx.reset();
-                    ctx.fillStyle = GlobalStates.backgroundColor;
-                    ctx.beginPath();
-                    ctx.moveTo(w, h);
-                    ctx.lineTo(w - r, h);
-                    ctx.arc(w - r, h - r, r, 0.5 * Math.PI, 0, true);
-                    ctx.lineTo(w, h);
-                    ctx.closePath();
-                    ctx.fill();
+
+                    Process {
+                        id: uptimeProcess
+                        command: ["cat", "/proc/uptime"]
+                        running: true
+                        stdout: SplitParser {
+                            onRead: (data) => {
+                                // data contient la ligne de /proc/uptime
+                                const uptimeSeconds = parseFloat(data.split(" ")[0]);
+                                uptimeText.text = "Uptime: " + uptimeText.formatUptime(uptimeSeconds);
+                            }
+                        }
+                    }
+
+                    // On rafraîchit toutes les minutes
+                    Timer {
+                        interval: 60000
+                        running: true
+                        repeat: true
+                        triggeredOnStart: true
+                        onTriggered: uptimeProcess.start()
+                    }
+                }
+            }
+
+            //Power menu
+            Row {
+                id: powerMenu
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 4
+                property bool expanded: false
+
+                // Lock button
+                Rectangle {
+                    width: powerMenu.expanded ? 26 : 0
+                    height: 26
+                    color: "white"
+                    radius: 50
+                    opacity: powerMenu.expanded ? 1 : 0
+                    Text {
+                        anchors.centerIn: parent
+                        text: ""
+                        font.pixelSize: 14
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: console.log("Lock clicked")
+                    }
+                    Behavior on width { 
+                        NumberAnimation { 
+                            duration: animDuration 
+                            easing.type: Easing.InOutQuint
+                        } 
+                    }
+                    Behavior on opacity { 
+                        NumberAnimation { 
+                            duration: animDuration 
+                            easing.type: Easing.InOutQuint
+                        } 
+                    }
+                }
+
+                // Logout button
+                Rectangle {
+                    width: powerMenu.expanded ? 26 : 0
+                    height: 26
+                    color: "white"
+                    radius: 50
+                    opacity: powerMenu.expanded ? 1 : 0
+                    Text {
+                        anchors.centerIn: parent
+                        text: "󰍂"
+                        color: "black"
+                        font.pixelSize: 14
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: console.log("Logout clicked")
+                    }
+                    Behavior on width { 
+                        NumberAnimation { 
+                            duration: animDuration 
+                            easing.type: Easing.InOutQuint
+                        }
+                    }
+                    Behavior on opacity { 
+                        NumberAnimation { 
+                            duration: animDuration 
+                            easing.type: Easing.InOutQuint
+                        }
+                    }
+                }
+
+                // Restart button
+                Rectangle {
+                    width: powerMenu.expanded ? 26 : 0
+                    height: 26
+                    color: "white"
+                    radius: 50
+                    opacity: powerMenu.expanded ? 1 : 0
+                    Text {
+                        anchors.centerIn: parent
+                        text: ""
+                        font.pixelSize: 14
+                        color: "black"
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: console.log("Restart clicked")
+                    }
+                    Behavior on width { 
+                        NumberAnimation { 
+                            duration: animDuration
+                            easing.type: Easing.InOutQuint 
+                        } 
+                    }
+                    Behavior on opacity { 
+                        NumberAnimation { 
+                            duration: animDuration
+                            easing.type: Easing.InOutQuint 
+                        } 
+                    }
+                }
+
+                // Shutdown button
+                Rectangle {
+                    width: powerMenu.expanded ? 26 : 0
+                    height: 26
+                    color: "white"
+                    radius: 50
+                    opacity: powerMenu.expanded ? 1 : 0
+                    Text {
+                        anchors.centerIn: parent
+                        text: "⏻"
+                        font.pixelSize: 14
+                        color: "black"
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: console.log("Shutdown clicked")
+                    }
+                    Behavior on width { 
+                        NumberAnimation { 
+                            duration: animDuration 
+                            easing.type: Easing.InOutQuint 
+                        } 
+                    }
+                    Behavior on opacity { 
+                        NumberAnimation { 
+                            duration: animDuration 
+                            easing.type: Easing.InOutQuint 
+                        } 
+                    }
+                }
+
+                // Menu toggle button
+                Rectangle {
+                    width: 26
+                    height: 26
+                    color: powerMenu.expanded ? "gray" : "white"
+                    radius: 50
+                    Text {
+                        id: toggleIcon
+                        anchors.centerIn: parent
+                        text: powerMenu.expanded ? "×" : "⏻"
+                        font.pixelSize: 14
+                        color: "black"
+                        transform: 
+                        Rotation {
+                            origin.x: toggleIcon.width / 2
+                            origin.y: toggleIcon.height / 2
+                            angle: powerMenu.expanded ? 180 : 0
+                            Behavior on angle {
+                                NumberAnimation {
+                                    duration: root.animDuration
+                                    easing.type: Easing.InOutQuint
+                                }
+                            }
+                        }
+                        Scale {
+                            origin.x: toggleIcon.width / 2
+                            origin.y: toggleIcon.height / 2
+                            xScale: 1.0
+                            yScale: 1.0
+                            Behavior on xScale {
+                                NumberAnimation {
+                                    duration: root.animDuration
+                                    easing.type: Easing.InOutQuint
+                                }
+                            }
+                            Behavior on yScale {
+                                NumberAnimation {
+                                    duration: root.animDuration
+                                    easing.type: Easing.InOutQuint
+                                }
+                            }
+                        }
+                    }
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: root.animDuration
+                            easing.type: Easing.InOutQuint
+                        }
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            powerMenu.expanded = !powerMenu.expanded
+                            toggleIcon.transform[1].xScale = 0
+                            toggleIcon.transform[1].yScale = 0
+                        }
+                    }
                 }
             }
         }
 
-        // Body
-        Rectangle {
-            id: container
-            width: parent.width 
-            height: parent.height
-            color: GlobalStates.backgroundColor;
+        Column {
+            width: parent.width
+            spacing: GlobalStates.gapsOut
 
-            property real factor: 200;
-            property real firstHalf: (GlobalStates.cornerRadius + (Math.min(1.0, Math.max(0.0, root.animProgress / 100) * 2)) * 200);
-            property real full: firstHalf * ((Math.min(2.0, Math.max(1.0, root.animProgress / 50))) - 2) * -1
+            // Network and bluetooth toggles
+            Item {
+                width: parent.width
+                height: 32
 
-            bottomLeftRadius: full;
+                Row {
+                    anchors.fill: parent
+                    spacing: 8
 
-            //bottomLeftRadius: 20
-            /*Component.onUpdate: {
-                const baseToMiddle = GlobalStates.cornerRadius + (Math.min(1.0, Math.max(0.0, root.animProgress / 50) * 2)) * 20;
-                const final = baseToMiddle * ((Math.min(2.0, Math.max(1.0, root.animProgress / 50))) - 2) * -1;
+                    // WiFi toggle
+                    DetailedToggle {
+                        id: wifiToggle
+                        active: Network.wifi                    
+                        useArrow: true                    
+                        icon: Network.wifi ? "󰤨" : "󰤭"
+                        text: Network.wifi ? (Network.networkName || "Connected") : (Network.wifiEnabled ? "Connecting..." : "WiFi Off")
+                        onClicked: console.log("WiFi menu opened")
+                        width: parent.width / 2 - GlobalStates.gapsOut / 2
+                        options: Network.wifiScanning ? 
+                        [{text: "Loading...", icon: "󰇚", action: function() {}}] : 
+                        (Network.friendlyWifiNetworks.length > 0 ? 
+                            Network.friendlyWifiNetworks.map(function(n) { return {
+                                text: n.ssid,
+                                icon: n.active ? "" : n.strength > 75 ? "󰤨" : n.strength > 50 ? "󰤥" : n.strength > 25 ? "󰤢" : "󰤟",
+                                action: function() { Network.connectToWifiNetwork(n) }
+                            }}) : 
+                            [{text: "No networks found", icon: "󰤮", action: function() {}}])
+                    }
 
-                container.bottomLeftRadius = final;
-            }*/
-        }
-    }
+                    DetailedToggle {
+                        active: Bluetooth.enabled                    
+                        useArrow: true                    
+                        icon: {
+                            if (!Bluetooth.available) return "󰂲";
+                            if (Bluetooth.connected) return "󰂱";
+                            if (Bluetooth.enabled) return "󰂯";
+                            return "󰂲";
+                        }
+                        text: Bluetooth.connected ? "Connected" : (Bluetooth.enabled ? "On" : "Bluetooth Off")
+                        width: parent.width / 2 - GlobalStates.gapsOut / 2
+                        options: Bluetooth.friendlyDeviceList.length > 0 ? Bluetooth.friendlyDeviceList.map(function(d) { 
+                            return {
+                                text: d.name + (d.connected ? " (Connected)" : ""),
+                                icon: d.connected ? "󰂱" : "󰂯",
+                                action: function() { if (d.connected) { d.disconnect() } else { d.connect() } }
+                            }}) : 
+                            [{text: "No devices found", icon: "󰂲", action: function() {}}]
+                        onClicked: console.log("Bluetooth menu opened")
+                    }
+                }
+            }
+
+            //Dnd and light mode toggles
+            Item {
+                width: parent.width
+                height: 32
                 
-    //Bottom left invert corner
+                Row {
+                    anchors.fill: parent
+                    spacing: 8
 
-    /*Canvas {
-        id: bottomSection
-        width: parent.width - GlobalStates.cornerRadius
-        height: GlobalStates.cornerRadius
+                    DetailedToggle {
+                        id: dndToggle
+                        active: Notifications.dnd
+                        useArrow: false
+                        icon: Notifications.dnd ? "󰂛" : ""
+                        text: "Do Not Disturb"
+                        width: parent.width / 2 - GlobalStates.gapsOut / 2
+                        onClicked: console.log("DND menu opened")
+                    }
 
-        x: GlobalStates.cornerRadius
-        y: parent.height - GlobalStates.cornerRadius
+                    DetailedToggle {
+                        id: airplaneModeToggle
+                        active: false
+                        useArrow: false
+                        icon: "󰀝"
+                        text: "Airplane Mode"
+                        width: parent.width / 2 - GlobalStates.gapsOut / 2
+                        onClicked: console.log("Airplane mode clicked")
+                    }
+                }
+            }
 
-        onPaint: {
-            const ctx = getContext("2d");
-            const w = width;
-            const h = height;
-            const factor = Math.min(root.animProgress / 50, 1.0);
-            const r = GlobalStates.cornerRadius * (1 - factor);
+            // Screenshot and ?
+            Item {
+                width: parent.width
+                height: 32
+                
+                Row {
+                    anchors.fill: parent
+                    spacing: 8
 
-            ctx.reset();
-            ctx.fillStyle = GlobalStates.backgroundColor;
-            
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(w, 0);
-            ctx.lineTo(w, h);
-            ctx.lineTo(r, h);
-            ctx.arc(r, h - r, r, 0.5 * Math.PI, Math.PI, false);
-            ctx.lineTo(0, 0);
-            ctx.closePath();
-            ctx.fill();
-        }
-    }*/
+                    DetailedToggle {
+                        id: lightModeToggle
+                        active: GlobalStates.lightMode
+                        useArrow: false
+                        icon: GlobalStates.lightMode ? "󰖙" : "󰖚"
+                        text: "Light Mode"
+                        width: parent.width / 2 - GlobalStates.gapsOut / 2
+                        onClicked: console.log("Light mode toggled")
+                    }
 
-    Canvas {
-        id: bottomLeftCorner
-        readonly property real initialSize: GlobalStates.cornerRadius + GlobalStates.gapsOut
-        
-        width: initialSize
-        height: initialSize
-        x: parent.width - initialSize
-        y: parent.height 
-        
-        transform: Scale {
-            yScale: 1.0 - (root.animProgress / 100)
-        }
-        
-        onPaint: {
-            const ctx = getContext("2d");
-            const w = width; 
-            const h = height; 
-            const r = initialSize; 
-            
-            ctx.reset();
-            ctx.fillStyle = GlobalStates.backgroundColor;
-            
-            ctx.beginPath();
-            ctx.moveTo(w, 0);
-            ctx.lineTo(w, r);
-            ctx.arc(w - r, r, r, 0, 1.5 * Math.PI, true);
-            ctx.lineTo(w, 0);
-            ctx.closePath();
-            ctx.fill();
+                    DetailedToggle {
+                        id: screenshotToggle
+                        active: false
+                        useArrow: true
+                        icon: ""
+                        text: "Screenshot"
+                        width: parent.width / 2 - GlobalStates.gapsOut / 2
+                        options: [
+                            {text: "Region", icon: "󰹑", command: ["hyprshot", "-m", "region"]},
+                            {text: "Window", icon: "󰖯", command: ["hyprshot", "-m", "window"]},
+                            {text: "Monitor", icon: "󰍹", command: ["hyprshot", "-m", "output"]},
+                            {text: "Active Window", icon: "󰖲", command: ["hyprshot", "-m", "active"]}
+                        ]
+                        onClicked: console.log("Screenshot menu opened")
+                    }
+                }
+            }
         }
     }
 }

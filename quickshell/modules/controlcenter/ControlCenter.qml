@@ -50,7 +50,7 @@ Item {
         exclusiveZone: 0
 
         WlrLayershell.namespace: "quickshell:controlCenter"
-        WlrLayershell.layer: (root.controlCenterOpen && controlCenterContentLoader.shouldBeOverlay) 
+        WlrLayershell.layer: (root.controlCenterOpen && controlCenterLayoutLoader.shouldBeOverlay) 
                      ? WlrLayer.Overlay 
                      : WlrLayer.Top
         color: "transparent"
@@ -76,20 +76,20 @@ Item {
         }
 
         Loader {
-            id: controlCenterContentLoader
+            id: controlCenterLayoutLoader
 
             width: root.quickSettingsWidth
             height: root.quickSettingsHeight
             
             active: true
-            //onItemChanged: { root.controlCenterContentRef = controlCenterContentLoader.item }
+            //onItemChanged: { root.controlCenterContentRef = controlCenterLayoutLoader.item }
 
             Connections {
-                target: controlCenterContentLoader.item
+                target: controlCenterLayoutLoader.item
                 ignoreUnknownSignals: true 
                 
                 function onAnimProgressChanged() {
-                    root.animationProgress = controlCenterContentLoader.item.animProgress;
+                    root.animationProgress = controlCenterLayoutLoader.item.animProgress;
                 }
             }
 
@@ -111,7 +111,7 @@ Item {
                 }
 
                 //console.log("============================")
-                //console.log("state: ", controlCenterContentLoader.item.animProgress)
+                //console.log("state: ", controlCenterLayoutLoader.item.animProgress)
                 //console.log("============================")
             }
             
@@ -127,7 +127,7 @@ Item {
                 State { name: "Closed" },
                 State {
                     name: "Opened"
-                    PropertyChanges { target: controlCenterContentLoader; width: root.finalWidth; height: root.finalHeight }
+                    PropertyChanges { target: controlCenterLayoutLoader; width: root.finalWidth; height: root.finalHeight }
                 }
             ]
             
@@ -141,7 +141,7 @@ Item {
                             easing.type: Easing.InOutQuint 
                         }
                         NumberAnimation { 
-                            target: controlCenterContentLoader.item; 
+                            target: controlCenterLayoutLoader.item; 
                             property: "animProgress"; 
                             to: 100; 
                             duration: root.animationDuration; 
@@ -153,21 +153,21 @@ Item {
                     from: "Opened"; to: "Closed"
                     ParallelAnimation {
                         NumberAnimation { 
-                            target: controlCenterContentLoader
+                            target: controlCenterLayoutLoader
                             properties: "width"; 
                             to: root.quickSettingsWidth; 
                             duration: root.animationDuration; 
                             easing.type: Easing.InOutQuint 
                         }
                         NumberAnimation { 
-                            target: controlCenterContentLoader
+                            target: controlCenterLayoutLoader
                             properties: "height"; 
                             to: root.quickSettingsHeight; 
                             duration: root.animationDuration; 
                             easing.type: Easing.InOutQuint 
                         }
                         NumberAnimation {
-                            target: controlCenterContentLoader.item
+                            target: controlCenterLayoutLoader.item
                             property: "animProgress"; 
                             to: 0; 
                             duration: root.animationDuration; 
@@ -188,10 +188,10 @@ Item {
                 }
             }
 
-            sourceComponent: ControlCenterContent {
-                id: controlCenterContent
+            sourceComponent: ControlCenterLayout {
+                id: controlCenterLayout
                 Component.onCompleted: { 
-                    //console.log("DEBUG: ControlCenterContent loaded"); 
+                    //console.log("DEBUG: ControlCenterLayout loaded"); 
                 }
             }
         }

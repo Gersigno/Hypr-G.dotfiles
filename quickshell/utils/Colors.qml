@@ -4,104 +4,104 @@ import QtQuick
 QtObject {
     id: colors
     
-    property color background: "#191113"
+    property color background: "#101417"
     
     property color error: "#ffb4ab"
     
     property color error_container: "#93000a"
     
-    property color inverse_on_surface: "#382e30"
+    property color inverse_on_surface: "#2d3135"
     
-    property color inverse_primary: "#8c4a5e"
+    property color inverse_primary: "#216487"
     
-    property color inverse_surface: "#efdfe1"
+    property color inverse_surface: "#dfe3e7"
     
-    property color on_background: "#efdfe1"
+    property color on_background: "#dfe3e7"
     
     property color on_error: "#690005"
     
     property color on_error_container: "#ffdad6"
     
-    property color on_primary: "#551d30"
+    property color on_primary: "#00344c"
     
-    property color on_primary_container: "#ffd9e1"
+    property color on_primary_container: "#c7e7ff"
     
-    property color on_primary_fixed: "#3a071b"
+    property color on_primary_fixed: "#001e2e"
     
-    property color on_primary_fixed_variant: "#703346"
+    property color on_primary_fixed_variant: "#004c6c"
     
-    property color on_secondary: "#422930"
+    property color on_secondary: "#21323e"
     
-    property color on_secondary_container: "#ffd9e1"
+    property color on_secondary_container: "#d2e5f5"
     
-    property color on_secondary_fixed: "#2b151b"
+    property color on_secondary_fixed: "#0b1d29"
     
-    property color on_secondary_fixed_variant: "#5b3f46"
+    property color on_secondary_fixed_variant: "#374955"
     
-    property color on_surface: "#efdfe1"
+    property color on_surface: "#dfe3e7"
     
-    property color on_surface_variant: "#d6c2c5"
+    property color on_surface_variant: "#c1c7ce"
     
-    property color on_tertiary: "#472a0a"
+    property color on_tertiary: "#342b4b"
     
-    property color on_tertiary_container: "#ffdcc0"
+    property color on_tertiary_container: "#e8ddff"
     
-    property color on_tertiary_fixed: "#2d1600"
+    property color on_tertiary_fixed: "#1e1635"
     
-    property color on_tertiary_fixed_variant: "#613f1f"
+    property color on_tertiary_fixed_variant: "#4a4263"
     
-    property color outline: "#9e8c90"
+    property color outline: "#8b9198"
     
-    property color outline_variant: "#514346"
+    property color outline_variant: "#41484d"
     
-    property color primary: "#ffb1c5"
+    property color primary: "#92cef5"
     
-    property color primary_container: "#703346"
+    property color primary_container: "#004c6c"
     
-    property color primary_fixed: "#ffd9e1"
+    property color primary_fixed: "#c7e7ff"
     
-    property color primary_fixed_dim: "#ffb1c5"
+    property color primary_fixed_dim: "#92cef5"
     
     property color scrim: "#000000"
     
-    property color secondary: "#e3bdc5"
+    property color secondary: "#b6c9d8"
     
-    property color secondary_container: "#5b3f46"
+    property color secondary_container: "#374955"
     
-    property color secondary_fixed: "#ffd9e1"
+    property color secondary_fixed: "#d2e5f5"
     
-    property color secondary_fixed_dim: "#e3bdc5"
+    property color secondary_fixed_dim: "#b6c9d8"
     
     property color shadow: "#000000"
     
-    property color source_color: "#d56589"
+    property color source_color: "#029bd7"
     
-    property color surface: "#191113"
+    property color surface: "#101417"
     
-    property color surface_bright: "#413739"
+    property color surface_bright: "#353a3d"
     
-    property color surface_container: "#261d1f"
+    property color surface_container: "#1c2024"
     
-    property color surface_container_high: "#31282a"
+    property color surface_container_high: "#262a2e"
     
-    property color surface_container_highest: "#3c3234"
+    property color surface_container_highest: "#313539"
     
-    property color surface_container_low: "#22191b"
+    property color surface_container_low: "#181c20"
     
-    property color surface_container_lowest: "#140c0e"
+    property color surface_container_lowest: "#0a0f12"
     
-    property color surface_dim: "#191113"
+    property color surface_dim: "#101417"
     
-    property color surface_tint: "#ffb1c5"
+    property color surface_tint: "#92cef5"
     
-    property color surface_variant: "#514346"
+    property color surface_variant: "#41484d"
     
-    property color tertiary: "#eebd93"
+    property color tertiary: "#ccc0e9"
     
-    property color tertiary_container: "#613f1f"
+    property color tertiary_container: "#4a4263"
     
-    property color tertiary_fixed: "#ffdcc0"
+    property color tertiary_fixed: "#e8ddff"
     
-    property color tertiary_fixed_dim: "#eebd93"
+    property color tertiary_fixed_dim: "#ccc0e9"
     
 }

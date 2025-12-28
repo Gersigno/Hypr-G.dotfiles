@@ -106,7 +106,7 @@ Item {
                 id: trayIcons
 
                 Component.onCompleted: {
-                    var offset = controlCenterComponent.controlCenterContentRef;
+                    //var offset = controlCenterComponent.controlCenterContentRef;
                     //console.log("############ ControlCenterContent: ", offset);
                 }
 
