@@ -76,7 +76,7 @@ Singleton {
 
     property bool silent: false
     property int unread: 0
-    property string filePath: "file://" + StandardPaths.writableLocation(StandardPaths.GenericCacheLocation) + "/notifications/notifications.json"
+    property string filePath: StandardPaths.writableLocation(StandardPaths.GenericCacheLocation) + "/notifications/notifications.json"
     property list<Notif> list: []
     property var popupList: list.filter((notif) => notif.popup);
     property bool popupInhibited: (GlobalStates?.sidebarRightOpen ?? false) || silent
@@ -269,6 +269,7 @@ Singleton {
     FileView {
         id: notifFileView
         path: filePath
+        
         onLoaded: {
             const fileContents = notifFileView.text()
             root.list = JSON.parse(fileContents).map((notif) => {
@@ -291,6 +292,7 @@ Singleton {
             })
 
             console.log("[Notifications] File loaded")
+            console.log("[Notifications] Using file path: " + filePath);
             root.idOffset = maxId
             root.initDone()
         }

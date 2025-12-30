@@ -663,13 +663,52 @@ Item {
                                 spacing: GlobalStates.gapsOut
 
                                 // App icon
-                                Text {
-                                    text: modelData.appIcon || "󰵅"
-                                    font.pixelSize: 20
-                                    color: "white"
-                                    font.family: "Symbols Nerd Font"
-                                    Layout.preferredWidth: 30
-                                    horizontalAlignment: Text.AlignHCenter
+                                Item {
+                                    Layout.preferredWidth: 35
+                                    Layout.preferredHeight: 35
+
+                                    Image {
+                                        id: notifImage
+                                        anchors.fill: parent
+                                        fillMode: Image.PreserveAspectFit
+                                        
+                                        source: {
+                                            let icon = modelData.appIcon;
+                                            if (!icon) return "";
+
+                                            // 1. Si c'est un chemin absolu (ex: Arch logo ou Screenshot)
+                                            if (icon.startsWith("/")) {
+                                                return "file://" + icon;
+                                            }
+
+                                            // 2. On demande à Quickshell comment charger cette icône
+                                            let resolved = Quickshell.iconPath(icon, 32);
+                                            
+                                            if (resolved) {
+                                                // SI le résultat contient déjà "image://", on l'utilise TEL QUEL
+                                                if (resolved.startsWith("image://")) {
+                                                    return resolved;
+                                                }
+                                                // SINON, c'est un chemin de fichier, on ajoute file://
+                                                return "file://" + resolved;
+                                            }
+
+                                            return "";
+                                        }
+
+                                        // On ne montre l'image que si elle est prête (Ready)
+                                        visible: status === Image.Ready
+                                    }
+
+                                    // Icône de secours Nerd Font si l'image échoue ou est absente
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "󰵅" 
+                                        font.pixelSize: 22
+                                        color: "white"
+                                        font.family: "Symbols Nerd Font"
+                                        visible: notifImage.status !== Image.Ready
+                                    }
                                 }
 
                                 // Notification content
