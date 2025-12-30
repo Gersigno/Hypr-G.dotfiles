@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 
 import qs.modules.common
 import qs
+import QtCore
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -75,11 +76,12 @@ Singleton {
 
     property bool silent: false
     property int unread: 0
-    property var filePath: Directories.notificationsPath
+    property string filePath: "file://" + StandardPaths.writableLocation(StandardPaths.GenericCacheLocation) + "/notifications/notifications.json"
     property list<Notif> list: []
     property var popupList: list.filter((notif) => notif.popup);
     property bool popupInhibited: (GlobalStates?.sidebarRightOpen ?? false) || silent
     property var latestTimeForApp: ({})
+
     Component {
         id: notifComponent
         Notif {}
@@ -174,7 +176,7 @@ Singleton {
                 if (notification.expireTimeout != 0) {
                     newNotifObject.timer = notifTimerComponent.createObject(root, {
                         "notificationId": newNotifObject.notificationId,
-                        "interval": notification.expireTimeout < 0 ? (Config?.options.notifications.timeout ?? 7000) : notification.expireTimeout,
+                        "interval": notification.expireTimeout < 0 ? 7000 : notification.expireTimeout,
                     });
                 }
                 root.unread++;
@@ -266,7 +268,7 @@ Singleton {
 
     FileView {
         id: notifFileView
-        path: Qt.resolvedUrl(filePath)
+        path: filePath
         onLoaded: {
             const fileContents = notifFileView.text()
             root.list = JSON.parse(fileContents).map((notif) => {

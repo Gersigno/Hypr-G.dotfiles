@@ -13,7 +13,7 @@ Item {
     id: root
 
     property real animProgress: 0.0
-    property real finalHeight: Hyprland.focusedMonitor.height
+    property real finalHeight: Hyprland.focusedMonitor?.height ?? 1080 
     
     anchors.fill: parent 
     signal animValueChanged(real animProgress)

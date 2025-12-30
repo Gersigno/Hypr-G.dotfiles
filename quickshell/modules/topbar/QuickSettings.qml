@@ -55,10 +55,10 @@ Item {
     }
 
     readonly property string bluetoothIconText: {
-        if (!Bluetooth.available) return "󰂲";
+        if (!Bluetooth.available) return "";
         if (Bluetooth.connected) return "󰂱";
         if (Bluetooth.enabled) return "󰂯";
-        return "󰂲";
+        return "";
     }
 
     implicitWidth: container.width

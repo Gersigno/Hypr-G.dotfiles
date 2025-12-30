@@ -1,6 +1,8 @@
 import qs.services
 import QtCore
 import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Qt5Compat.GraphicalEffects
@@ -16,6 +18,78 @@ Item {
     property real animProgress: 0.0
     property real animDuration: 250
     property bool isDarkMode: true
+    property bool airplaneMode: false
+
+    onAirplaneModeChanged: {
+        rfkillProcess.command = airplaneMode ? ["rfkill", "block", "all"] : ["rfkill", "unblock", "all"]
+        rfkillProcess.running = false
+        rfkillProcess.running = true
+    }
+
+    Process {
+        id: checkAirplane
+        command: ["bash", "-c", "rfkill list | grep -q 'Soft blocked: yes' && echo 'true' || echo 'false'"]
+        running: true
+        stdout: SplitParser {
+            onRead: (data) => {
+                const isBlocked = data.trim() === "true"
+                root.airplaneMode = isBlocked
+            }
+        }
+    }
+
+    Process {
+        id: rfkillProcess
+        running: false
+    }
+
+    Process {
+        id: bluetoothProcess
+        running: false
+    }
+
+    Process {
+        id: wifiProcess
+        running: false
+    }
+
+    Process {
+        id: screenshotProcess
+        running: false
+    }
+
+    Process {
+        id: brightnessSetProcess
+        running: true
+    }
+
+    Process {
+        id: brightnessGetProcess
+        command: ["bash", "-c", "brightnessctl -m | awk -F, '{print $4}' | tr -d '%'"]
+        running: true
+        stdout: SplitParser {
+            onRead: (data) => {
+                const val = parseFloat(data.trim()) / 100;
+                // On ne met à jour le slider que si l'utilisateur n'est pas en train de le manipuler
+                if (!brightnessSlider.pressed) {
+                    brightnessSlider.value = val;
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: brightnessSyncTimer
+        interval: 300 // Vérifie toutes les secondes
+        running: true
+        repeat: true
+        triggeredOnStart: true 
+        onTriggered: {
+            brightnessGetProcess.running = false;
+            brightnessGetProcess.running = true;
+        }
+    }
+
 
     enabled: animProgress > 20
 
@@ -24,10 +98,10 @@ Item {
     readonly property real profilePictureSize: 50
     readonly property string home: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
 
-    Column {
+    ColumnLayout {
         id: mainColumn
         anchors.fill: parent
-        spacing: (GlobalStates.gapsOut * 2)
+        spacing: (GlobalStates.gapsOut * 3)
 
         opacity: animationProgress / 100
         layer.enabled: true
@@ -40,8 +114,8 @@ Item {
 
         // Top section
         Item {
-            width: parent.width
-            height: profilePictureSize
+            Layout.fillWidth: true 
+            implicitHeight: profilePictureSize
 
             //Profile picture
             Rectangle {
@@ -127,7 +201,10 @@ Item {
                         running: true
                         repeat: true
                         triggeredOnStart: true
-                        onTriggered: uptimeProcess.start()
+                        onTriggered: {
+                            uptimeProcess.running = false;
+                            uptimeProcess.running = true;
+                        }
                     }
                 }
             }
@@ -324,18 +401,19 @@ Item {
             }
         }
 
-        Column {
-            width: parent.width
+        // Actions buttons
+        ColumnLayout {
+            Layout.fillWidth: true
             spacing: GlobalStates.gapsOut
 
             // Network and bluetooth toggles
             Item {
-                width: parent.width
-                height: 32
+                Layout.fillWidth: true
+                implicitHeight: 32
 
                 Row {
                     anchors.fill: parent
-                    spacing: 8
+                    spacing: GlobalStates.gapsOut
 
                     // WiFi toggle
                     DetailedToggle {
@@ -344,7 +422,11 @@ Item {
                         useArrow: true                    
                         icon: Network.wifi ? "󰤨" : "󰤭"
                         text: Network.wifi ? (Network.networkName || "Connected") : (Network.wifiEnabled ? "Connecting..." : "WiFi Off")
-                        onClicked: console.log("WiFi menu opened")
+                        onClicked: {
+                            wifiProcess.command = Network.wifiEnabled ? ["rfkill", "block", "wifi"] : ["rfkill", "unblock", "wifi"]
+                            wifiProcess.running = false
+                            wifiProcess.running = true
+                        }
                         width: parent.width / 2 - GlobalStates.gapsOut / 2
                         options: Network.wifiScanning ? 
                         [{text: "Loading...", icon: "󰇚", action: function() {}}] : 
@@ -367,6 +449,11 @@ Item {
                             return "󰂲";
                         }
                         text: Bluetooth.connected ? "Connected" : (Bluetooth.enabled ? "On" : "Bluetooth Off")
+                        onClicked: {
+                            bluetoothProcess.command = Bluetooth.enabled ? ["rfkill", "block", "bluetooth"] : ["rfkill", "unblock", "bluetooth"]
+                            bluetoothProcess.running = false
+                            bluetoothProcess.running = true
+                        }
                         width: parent.width / 2 - GlobalStates.gapsOut / 2
                         options: Bluetooth.friendlyDeviceList.length > 0 ? Bluetooth.friendlyDeviceList.map(function(d) { 
                             return {
@@ -375,56 +462,55 @@ Item {
                                 action: function() { if (d.connected) { d.disconnect() } else { d.connect() } }
                             }}) : 
                             [{text: "No devices found", icon: "󰂲", action: function() {}}]
-                        onClicked: console.log("Bluetooth menu opened")
                     }
                 }
             }
 
             //Dnd and light mode toggles
             Item {
-                width: parent.width
-                height: 32
+                Layout.fillWidth: true
+                implicitHeight: 32
                 
                 Row {
                     anchors.fill: parent
-                    spacing: 8
+                    spacing: GlobalStates.gapsOut
 
                     DetailedToggle {
                         id: dndToggle
-                        active: Notifications.dnd
+                        active: Notifications.silent
                         useArrow: false
-                        icon: Notifications.dnd ? "󰂛" : ""
+                        icon: Notifications.silent ? "󰂛" : ""
                         text: "Do Not Disturb"
                         width: parent.width / 2 - GlobalStates.gapsOut / 2
-                        onClicked: console.log("DND menu opened")
+                        onClicked: Notifications.silent = !Notifications.silent
                     }
 
                     DetailedToggle {
                         id: airplaneModeToggle
-                        active: false
+                        active: root.airplaneMode
                         useArrow: false
                         icon: "󰀝"
                         text: "Airplane Mode"
                         width: parent.width / 2 - GlobalStates.gapsOut / 2
-                        onClicked: console.log("Airplane mode clicked")
+                        onClicked: root.airplaneMode = !root.airplaneMode
                     }
                 }
             }
 
             // Screenshot and ?
             Item {
-                width: parent.width
-                height: 32
+                Layout.fillWidth: true
+                implicitHeight: 32
                 
                 Row {
                     anchors.fill: parent
-                    spacing: 8
+                    spacing: GlobalStates.gapsOut
 
                     DetailedToggle {
                         id: lightModeToggle
-                        active: GlobalStates.lightMode
+                        active: false //TODO: bind to actual light/dark mode
                         useArrow: false
-                        icon: GlobalStates.lightMode ? "󰖙" : "󰖚"
+                        icon: false ? "󰖙" : "󰖚" //TODO: bind to actual light/dark mode
                         text: "Light Mode"
                         width: parent.width / 2 - GlobalStates.gapsOut / 2
                         onClicked: console.log("Light mode toggled")
@@ -441,9 +527,207 @@ Item {
                             {text: "Region", icon: "󰹑", command: ["hyprshot", "-m", "region"]},
                             {text: "Window", icon: "󰖯", command: ["hyprshot", "-m", "window"]},
                             {text: "Monitor", icon: "󰍹", command: ["hyprshot", "-m", "output"]},
-                            {text: "Active Window", icon: "󰖲", command: ["hyprshot", "-m", "active"]}
+                            //{text: "Active Window", icon: "󰖲", command: ["hyprshot", "-m", "active"]}
                         ]
-                        onClicked: console.log("Screenshot menu opened")
+                        onClicked: {
+                            screenshotProcess.command = ["hyprshot", "-m", "region"]
+                            screenshotProcess.running = false
+                            screenshotProcess.running = true
+                        }
+                    }
+                }
+            }
+        }
+
+        //Sliders section
+        ColumnLayout { 
+            Layout.fillWidth: true
+            spacing: GlobalStates.gapsOut * 1
+
+            // Volume slider
+            SliderWithIcon {
+                id: volumeSlider
+                icon: {
+                    if (Audio.sink?.audio.muted || value === 0) return "󰝟";
+                    if (value > 0.6) return "󰕾";
+                    if (value > 0.3) return "󰖀";
+                    return "󰕿"; 
+                }
+                onMoved: {
+                    if (Audio.sink && Audio.sink.audio) {
+                        Audio.sink.audio.volume = value
+                    }
+                }
+                Connections {
+                    target: Audio
+                    function onValueChanged() {
+                        if (!volumeSlider.pressed) {
+                            volumeSlider.value = Audio.value
+                        }
+                    }
+                    function onSinkChanged() {
+                        if (Audio.sink && Audio.sink.audio) {
+                            volumeSlider.value = Audio.sink.audio.volume
+                        }
+                    }
+                }
+                Component.onCompleted: {
+                    if (Audio.value !== undefined) {
+                        volumeSlider.value = Audio.value;
+                    }
+                }
+                Layout.fillWidth: true
+            }
+
+            /*Binding {
+                target: Audio.sink?.audio
+                property: "volume"
+                value: volumeSlider.value
+            }*/
+
+            // Brightness slider
+            SliderWithIcon {
+                id: brightnessSlider 
+                icon: "󰃟"
+                onMoved: {
+                    const percent = Math.round(value * 100);
+                    brightnessSetProcess.command = ["brightnessctl", "set", percent + "%"];
+                    brightnessSetProcess.running = false;
+                    brightnessSetProcess.running = true;
+                }
+                Layout.fillWidth: true
+            }
+        }
+
+        //Notifications section
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: GlobalStates.gapsOut
+
+                // Header with count and clear button
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 32
+
+                    Text {
+                        text: Notifications.list.length + " notifications"
+                        font.pixelSize: 14
+                        color: "white"
+                        font.family: "SF Pro Display"
+                        Layout.fillWidth: true
+                    }
+
+                    Rectangle {
+                        width: 60
+                        height: 24
+                        color: "#2e2e2e"
+                        radius: GlobalStates.cornerRadius
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Clear all"
+                            font.pixelSize: 12
+                            color: "white"
+                            font.family: "SF Pro Display"
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: Notifications.discardAllNotifications()
+                        }
+                    }
+                }
+
+                // Notifications list
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
+
+                    ListView {
+                        anchors.fill: parent
+                        model: Notifications.list
+                        spacing: GlobalStates.gapsOut
+
+                        delegate: Rectangle {
+                            width: parent.width
+                            height: 60
+                            color: "#2e2e2e"
+                            radius: GlobalStates.cornerRadius
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: GlobalStates.gapsOut
+                                spacing: GlobalStates.gapsOut
+
+                                // App icon
+                                Text {
+                                    text: modelData.appIcon || "󰵅"
+                                    font.pixelSize: 20
+                                    color: "white"
+                                    font.family: "Symbols Nerd Font"
+                                    Layout.preferredWidth: 30
+                                    horizontalAlignment: Text.AlignHCenter
+                                }
+
+                                // Notification content
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 2
+
+                                    Text {
+                                        text: modelData.summary
+                                        font.pixelSize: 13
+                                        color: "white"
+                                        font.family: "SF Pro Display"
+                                        font.bold: true
+                                        elide: Text.ElideRight
+                                        Layout.fillWidth: true
+                                    }
+
+                                    Text {
+                                        text: modelData.body
+                                        font.pixelSize: 12
+                                        color: "lightgray"
+                                        font.family: "SF Pro Display"
+                                        elide: Text.ElideRight
+                                        Layout.fillWidth: true
+                                        maximumLineCount: 2
+                                        wrapMode: Text.Wrap
+                                    }
+                                }
+
+                                // Dismiss button
+                                Rectangle {
+                                    width: 20
+                                    height: 20
+                                    color: "transparent"
+                                    radius: 10
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "×"
+                                        font.pixelSize: 14
+                                        color: "white"
+                                    }
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        onClicked: Notifications.discardNotification(modelData.notificationId)
+                                    }
+                                }
+                            }
+                        }
+
+                        // No notifications message
+                        Text {
+                            anchors.centerIn: parent
+                            text: "No notifications"
+                            font.pixelSize: 16
+                            color: "lightgray"
+                            font.family: "SF Pro Display"
+                            visible: Notifications.list.length === 0
+                        }
                     }
                 }
             }

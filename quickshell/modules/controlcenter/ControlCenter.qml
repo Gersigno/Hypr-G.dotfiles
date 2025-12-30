@@ -19,7 +19,7 @@ Item {
     
     // target sizes
     readonly property int finalWidth: 340
-    property real finalHeight: Hyprland.focusedMonitor.height
+    property real finalHeight: Hyprland.focusedMonitor?.height ?? 1080
 
     property real quickSettingsHeight: root.defaultQsHeight
     property real quickSettingsWidth: root.defaultQsWidth

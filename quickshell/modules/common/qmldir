@@ -2,3 +2,5 @@ module qs.modules.common
 QuickToggle 1.0 QuickToggle.qml
 SliderItem 1.0 SliderItem.qml
 DetailedToggle 1.0 DetailedToggle.qml
+SliderWithIcon 1.0 SliderWithIcon.qml
+NotificationPopup 1.0 NotificationPopup.qml
