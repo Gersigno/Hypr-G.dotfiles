@@ -12,19 +12,42 @@ Item {
     property bool barVisible: true
     property bool clockExpanded: false
 
-    // Auto-hide bar when any window goes fullscreen
+    // Auto-hide bar on true fullscreen only (not maximize/Win+D)
     property bool wasVisibleBeforeFullscreen: true
+    property string activeWindowBuffer: ""
+
+    Process {
+        id: activeWindowProc
+        command: ["hyprctl", "activewindow", "-j"]
+        stdout: SplitParser {
+            onRead: (data) => {
+                root.activeWindowBuffer += data + "\n";
+            }
+        }
+        onExited: (code, status) => {
+            try {
+                const win = JSON.parse(root.activeWindowBuffer);
+                // fullscreen: 1 = real fullscreen, 2 = maximized
+                if (win.fullscreen === 2) {
+                    root.wasVisibleBeforeFullscreen = root.barVisible;
+                    root.barVisible = false;
+                }
+            } catch(e) {}
+            root.activeWindowBuffer = "";
+        }
+    }
 
     Connections {
         target: Hyprland
         function onRawEvent(event) {
             if (event.name === "fullscreen") {
-                const isFs = parseInt(event.data) !== 0;
-                console.log("[TopBar] fullscreen event:", event.data, "->", isFs);
-                if (isFs) {
-                    root.wasVisibleBeforeFullscreen = root.barVisible;
-                    root.barVisible = false;
+                const entering = parseInt(event.data) !== 0;
+                if (entering) {
+                    // Query hyprctl to distinguish real fullscreen (mode 1) vs maximize (mode 2)
+                    activeWindowProc.running = false;
+                    activeWindowProc.running = true;
                 } else {
+                    // Exiting fullscreen: restore only if we hid the bar
                     root.barVisible = root.wasVisibleBeforeFullscreen;
                 }
             }

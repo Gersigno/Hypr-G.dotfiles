@@ -27,7 +27,6 @@
 !/hypr/hypr-g/
 !/hypr/hypr-g/hyprlock/
 /hypr/hypr-g/hyprlock/wallpaper.png
-
 Kvantum/*
 !Kvantum/Matugen/
 
@@ -38,3 +37,5 @@ Kvantum/*
 **/*.log
 **/*.swp
 **/*~
+
+fish/fish_variables
