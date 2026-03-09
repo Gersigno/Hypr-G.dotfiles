@@ -34,6 +34,10 @@ output_path = '~/.config/rofi/colors.rasi'
 input_path = '~/.config/matugen/quickshell.qml.tpl'
 output_path = '~/.config/quickshell/utils/Colors.qml'
 
+[templates.dolphin]
+input_path = '~/.config/matugen/dolphin.kvconfig.tpl'
+output_path = "~/.config/Kvantum/Matugen/Matugen.kvconfig"
+
 # [templates.swaync]
 # input_path = '~/.config/matugen/swaync.css.tpl'
 # output_path = '~/.config/swaync/colors.css'

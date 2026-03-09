@@ -15,10 +15,29 @@ Item {
     anchors.fill: parent
     width: parent.width
 
+    signal requestClose()
+
     property real animProgress: 0.0
     property real animDuration: 250
+    
+    onAnimProgressChanged: {
+        // Ferme tous les menus quand le control center se ferme
+        if (animProgress < 10) {
+            powerMenu.expanded = false
+            if (wifiToggle.menuPopup && wifiToggle.menuPopup.opened) {
+                wifiToggle.menuPopup.close()
+            }
+            if (bluetoothToggle.menuPopup && bluetoothToggle.menuPopup.opened) {
+                bluetoothToggle.menuPopup.close()
+            }
+            if (screenshotToggle.menuPopup && screenshotToggle.menuPopup.opened) {
+                screenshotToggle.menuPopup.close()
+            }
+        }
+    }
     property bool isDarkMode: true
     property bool airplaneMode: false
+    property string themeMode: "dark"
 
     onAirplaneModeChanged: {
         rfkillProcess.command = airplaneMode ? ["rfkill", "block", "all"] : ["rfkill", "unblock", "all"]
@@ -34,6 +53,17 @@ Item {
             onRead: (data) => {
                 const isBlocked = data.trim() === "true"
                 root.airplaneMode = isBlocked
+            }
+        }
+    }
+
+    Process {
+        id: getThemeModeProcess
+        command: ["bash", "-c", "grep 'THEME_MODE' /home/gersigno/.config/hypr/hypr-g/hyprland/env.conf | awk -F',' '{print $NF}' | tr -d ' '"]
+        running: true
+        stdout: SplitParser {
+            onRead: (data) => {
+                root.themeMode = data.trim()
             }
         }
     }
@@ -90,6 +120,73 @@ Item {
         }
     }
 
+    Process {
+        id: shutdownConfirmProcess
+        command: ["zenity", "--question", "--title=Shutdown", "--text=Are you sure you want to shut down the computer?", "--no-wrap"]
+        running: false
+        onExited: (code) => {
+            if (code === 0) { // 0 = Yes button clicked
+                shutdownProcess.running = true
+            }
+        }
+    }
+
+    Process {
+        id: shutdownProcess
+        command: ["systemctl", "poweroff"]
+        running: false
+    }
+
+    Process {
+        id: rebootConfirmProcess
+        command: ["zenity", "--question", "--title=Reboot", "--text=Are you sure you want to reboot the computer?", "--no-wrap"]
+        running: false
+        onExited: (code) => {
+            if (code === 0) {
+                rebootProcess.running = true
+            }
+        }
+    }
+
+    Process {
+        id: rebootProcess
+        command: ["systemctl", "reboot"]
+        running: false
+    }
+
+    Process {
+        id: lockProcess
+        command: ["hyprlock"]
+        running: false
+    }
+
+    Process {
+        id: logoutConfirmProcess
+        command: ["zenity", "--question", "--title=Logout", "--text=Are you sure you want to log out?", "--no-wrap"]
+        running: false
+        onExited: (code) => {
+            if (code === 0) {
+                logoutProcess.running = true
+            }
+        }
+    }
+
+    Process {
+        id: logoutProcess
+        command: ["hyprctl", "dispatch", "exit"]
+        running: false
+    }
+
+    Process {
+        id: toggleThemeProcess
+        command: ["/home/gersigno/.config/hypr/hypr-g/scripts/toggle-theme.sh"]
+        running: false
+        onExited: {
+            // Relis la variable THEME_MODE après que le script se soit exécuté
+            getThemeModeProcess.running = false
+            getThemeModeProcess.running = true
+        }
+    }
 
     enabled: animProgress > 20
 
@@ -228,10 +325,15 @@ Item {
                         anchors.centerIn: parent
                         text: ""
                         font.pixelSize: 14
+                        color: "black"
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: console.log("Lock clicked")
+                        onClicked: {
+                            console.log("[DEBUG] Lock button clicked")
+                            lockProcess.running = true
+                            root.requestClose()
+                        }
                     }
                     Behavior on width { 
                         NumberAnimation { 
@@ -262,7 +364,11 @@ Item {
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: console.log("Logout clicked")
+                        onClicked: {
+                            console.log("[DEBUG] Logout button clicked")
+                            logoutConfirmProcess.running = true
+                            root.requestClose()
+                        }
                     }
                     Behavior on width { 
                         NumberAnimation { 
@@ -293,7 +399,11 @@ Item {
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: console.log("Restart clicked")
+                        onClicked: {
+                            console.log("[DEBUG] Reboot button clicked")
+                            rebootConfirmProcess.running = true
+                            root.requestClose()
+                        }
                     }
                     Behavior on width { 
                         NumberAnimation { 
@@ -324,7 +434,13 @@ Item {
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: console.log("Shutdown clicked")
+                        onClicked: {
+                            console.log("[DEBUG] Shutdown button clicked")
+                            shutdownConfirmProcess.running = true
+                            console.log("[DEBUG] Emitting requestClose signal")
+                            root.requestClose()
+                            console.log("[DEBUG] requestClose signal emitted")
+                        }
                     }
                     Behavior on width { 
                         NumberAnimation { 
@@ -349,7 +465,7 @@ Item {
                     Text {
                         id: toggleIcon
                         anchors.centerIn: parent
-                        text: powerMenu.expanded ? "×" : "⏻"
+                        text: powerMenu.expanded ? "" : "󰍜"
                         font.pixelSize: 14
                         color: "black"
                         transform: 
@@ -392,9 +508,9 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
+                            console.log("[DEBUG] Power menu toggle clicked")
                             powerMenu.expanded = !powerMenu.expanded
-                            toggleIcon.transform[1].xScale = 0
-                            toggleIcon.transform[1].yScale = 0
+                            // Removed invalid transform access - Scale already has Behavior animations
                         }
                     }
                 }
@@ -421,8 +537,9 @@ Item {
                         active: Network.wifi                    
                         useArrow: true                    
                         icon: Network.wifi ? "󰤨" : "󰤭"
-                        text: Network.wifi ? (Network.networkName || "Connected") : (Network.wifiEnabled ? "Connecting..." : "WiFi Off")
+                        text: Network.wifi ? (Network.networkName || "Connected") : (Network.wifiEnabled ? "Not connected" : "WiFi Off")
                         onClicked: {
+                            Network.scan()
                             wifiProcess.command = Network.wifiEnabled ? ["rfkill", "block", "wifi"] : ["rfkill", "unblock", "wifi"]
                             wifiProcess.running = false
                             wifiProcess.running = true
@@ -440,6 +557,7 @@ Item {
                     }
 
                     DetailedToggle {
+                        id: bluetoothToggle
                         active: Bluetooth.enabled                    
                         useArrow: true                    
                         icon: {
@@ -450,6 +568,7 @@ Item {
                         }
                         text: Bluetooth.connected ? "Connected" : (Bluetooth.enabled ? "On" : "Bluetooth Off")
                         onClicked: {
+                            Bluetooth.scan()
                             bluetoothProcess.command = Bluetooth.enabled ? ["rfkill", "block", "bluetooth"] : ["rfkill", "unblock", "bluetooth"]
                             bluetoothProcess.running = false
                             bluetoothProcess.running = true
@@ -508,12 +627,15 @@ Item {
 
                     DetailedToggle {
                         id: lightModeToggle
-                        active: false //TODO: bind to actual light/dark mode
+                        active: root.themeMode === "light"
                         useArrow: false
-                        icon: false ? "󰖙" : "󰖚" //TODO: bind to actual light/dark mode
+                        icon: root.themeMode === "light" ? "󰖙" : "󰖚"
                         text: "Light Mode"
                         width: parent.width / 2 - GlobalStates.gapsOut / 2
-                        onClicked: console.log("Light mode toggled")
+                        onClicked: {
+                            toggleThemeProcess.running = false
+                            toggleThemeProcess.running = true
+                        }
                     }
 
                     DetailedToggle {

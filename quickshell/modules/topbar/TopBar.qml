@@ -12,6 +12,25 @@ Item {
     property bool barVisible: true
     property bool clockExpanded: false
 
+    // Auto-hide bar when any window goes fullscreen
+    property bool wasVisibleBeforeFullscreen: true
+
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "fullscreen") {
+                const isFs = parseInt(event.data) !== 0;
+                console.log("[TopBar] fullscreen event:", event.data, "->", isFs);
+                if (isFs) {
+                    root.wasVisibleBeforeFullscreen = root.barVisible;
+                    root.barVisible = false;
+                } else {
+                    root.barVisible = root.wasVisibleBeforeFullscreen;
+                }
+            }
+        }
+    }
+
     // Property expose references
     property var quickSettingsRef: null
     
@@ -32,23 +51,52 @@ Item {
         PanelWindow {
             property var modelData
             property int panelHeight: root.barHeight
+            property real animatedExclusiveZone: root.barVisible ? panelHeight : 0
+            //property real slideY: root.barVisible ? 0 : -panelHeight
             screen: modelData
             
-            visible: root.barVisible
+            visible: true
             color: "transparent"
             
             WlrLayershell.namespace: "quickshell:topBar"
             WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.exclusiveZone: root.barVisible ? panelHeight : 0
+            WlrLayershell.exclusiveZone: Math.round(animatedExclusiveZone)
             
             implicitHeight: panelHeight
+            
+            Behavior on animatedExclusiveZone {
+                NumberAnimation {
+                    duration: 0
+                    easing.type: Easing.Bezier
+                    easing.bezierCurve: [0.18, 0.95, 0.2, 1.08]
+                }
+            }
+            
+            /*Behavior on slideY {
+                NumberAnimation {
+                    duration: 400
+                    easing.type: Easing.Bezier
+                    easing.bezierCurve: [0.18, 0.95, 0.2, 1.08]
+                }
+            }*/
             
             anchors {
                 top: true
                 left: true
-                right: true
+                right: true 
             }
             
+            //clip: true
+            
+            Item {
+                id: contentContainer
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.topMargin: animatedExclusiveZone - panelHeight
+                height: panelHeight
+                opacity: 1.0
+                
             Workspaces {
                 id: workspaces
                 screen: modelData
@@ -57,6 +105,16 @@ Item {
                     top: parent.top
                 }
                 height: panelHeight
+            }
+
+            Rectangle {
+                color: "transparent"
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    bottom: parent.bottom
+                }
             }
             
             Clock {
@@ -139,6 +197,7 @@ Item {
                     }
                 }
             }
+            }  // Fin de contentContainer
         }
     }
 

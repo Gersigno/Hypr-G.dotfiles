@@ -49,7 +49,7 @@ toggle_theme() {
     fi
     
     # Regenerate the Matugen color palette with the new mode
-    matugen image "$WALLPAPER_PATH" --mode "$NEW_MODE"
+    matugen image "$WALLPAPER_PATH" --mode "$NEW_MODE" --source-color-index 0
 
     if [ "$NEW_MODE" = "dark" ]; then
         # Switch to dark themes

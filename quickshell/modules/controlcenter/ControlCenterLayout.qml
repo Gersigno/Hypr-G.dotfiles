@@ -17,6 +17,7 @@ Item {
     
     anchors.fill: parent 
     signal animValueChanged(real animProgress)
+    signal requestClose()
 
     onAnimProgressChanged: {
         bottomLeftInvert.requestPaint()
@@ -134,6 +135,11 @@ Item {
                 ControlCenterContent {
                     anchors.fill: parent
                     animProgress: root.animProgress
+                    onRequestClose: {
+                        console.log("[DEBUG] ControlCenterLayout received requestClose signal")
+                        root.requestClose()
+                        console.log("[DEBUG] ControlCenterLayout emitted requestClose signal")
+                    }
                 }
             }
         }

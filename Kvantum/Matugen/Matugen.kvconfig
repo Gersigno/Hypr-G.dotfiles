@@ -1,0 +1,30 @@
+{% raw %}[%General]
+author=Gersigno (Matugen Generated)
+respect_DE=true
+x11drag=all
+composite=true
+transparent_dolphin_view=true
+
+[GeneralColors]
+window.color=#1a1111
+base.color=#271d1d
+alt.base.color=#322827
+button.color=#5d3f3e
+light.color=#733333
+mid.light.color=#524342
+dark.color=#000000
+mid.color=#a08c8b
+highlight.color=#ffb3b0
+inactive.highlight.color=#524342
+tooltip.base.color=#f0dedd
+text.color=#f0dedd
+window.text.color=#f0dedd
+button.text.color=#ffdad8
+disabled.text.color=#a08c8b
+# Correction ici : inverse_on_surface au lieu de on_inverse_surface
+tooltip.text.color=#382e2d
+highlight.text.color=#571d1e
+link.color=#ffb3b0
+link.visited.color=#e3c28c
+
+{% endraw %}

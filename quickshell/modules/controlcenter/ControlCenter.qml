@@ -25,6 +25,14 @@ Item {
     property real quickSettingsWidth: root.defaultQsWidth
 
     property var animationProgress: 0.0
+    
+    onControlCenterOpenChanged: {
+        console.log("[DEBUG CC] controlCenterOpen changed to:", controlCenterOpen, "isAnimating:", isAnimating)
+    }
+    
+    onIsAnimatingChanged: {
+        console.log("[DEBUG CC] isAnimating changed to:", isAnimating, "controlCenterOpen:", controlCenterOpen)
+    }
 
 
     Binding {
@@ -90,6 +98,13 @@ Item {
                 
                 function onAnimProgressChanged() {
                     root.animationProgress = controlCenterLayoutLoader.item.animProgress;
+                }
+                
+                function onRequestClose() {
+                    console.log("[DEBUG] ControlCenter received requestClose signal")
+                    console.log("[DEBUG] Current controlCenterOpen value:", root.controlCenterOpen)
+                    root.controlCenterOpen = false;
+                    console.log("[DEBUG] Set controlCenterOpen to false")
                 }
             }
 

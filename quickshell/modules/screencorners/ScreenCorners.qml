@@ -9,8 +9,8 @@ Scope {
     property int cornerRadius: GlobalStates.cornerRadius
     property int gapsOut: GlobalStates.gapsOut
     property color cornerColor: GlobalStates.backgroundColor
-        // Effective corner radius that should visually match Hyprland window rounding plus outer gap
-        property int effectiveRadius: cornerRadius + gapsOut
+    // Effective corner radius that should visually match Hyprland window rounding plus outer gap
+    property int effectiveRadius: cornerRadius + gapsOut
     
     Component.onCompleted: {
         console.log("[ScreenCorners] Component loaded")

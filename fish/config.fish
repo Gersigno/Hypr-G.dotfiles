@@ -18,7 +18,8 @@ function wallpaper --description "Sets the wallpaper using the provided path"
     ~/.config/hypr/hypr-g/scripts/set_wallpaper.sh "$full_path"
 end
 
-set fish_greeting ""
+set --universal fish_greeting "Welcome back $(whoami)!"
+#set --erase fish_greeting
 
 # Tide prompt configuration
 set --universal tide_left_prompt_separator_diff_color ''
@@ -29,7 +30,7 @@ set --universal tide_right_prompt_separator_same_color ''
 set --universal tide_context_always_display true
 
 set --universal tide_context_bg_color blue
-set --universal tide_time_style bold
+#set --universal tide_time_style bold
 
 set --universal tide_pwd_bg_color brblue
 set --universal tide_pwd_color_dirs brblack

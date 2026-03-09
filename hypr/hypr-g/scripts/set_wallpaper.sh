@@ -20,7 +20,7 @@ if [ -f "$WALLPAPER_PATH" ]; then
     cursor=$(hyprctl cursorpos | tr -d ' ') # Get current cursor position
     swww img "$WALLPAPER_PATH" -t grow --transition-duration 2.5
     # Generate and apply a color palette using Matugen with the stored mode
-    matugen image "$WALLPAPER_PATH" --mode "$THEME_MODE"
+    matugen image "$WALLPAPER_PATH" --mode "$THEME_MODE" --source-color-index 0
     
     echo "Done."
 else
