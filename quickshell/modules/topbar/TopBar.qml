@@ -10,7 +10,7 @@ Item {
     
     property int barHeight: 24
     property bool barVisible: true
-    property bool clockExpanded: false
+    //property bool clockExpanded: false
 
     // Auto-hide bar on true fullscreen only (not maximize/Win+D)
     property bool wasVisibleBeforeFullscreen: true
@@ -57,9 +57,9 @@ Item {
     // Property expose references
     property var quickSettingsRef: null
     
-    onClockExpandedChanged: {
+    /*onClockExpandedChanged: {
         //console.log("[TopBar] root.clockExpanded changed to:", clockExpanded)
-    }
+    }*/
     
     Component.onCompleted: {
         console.log("[TopBar] Component loaded")
@@ -78,7 +78,7 @@ Item {
             //property real slideY: root.barVisible ? 0 : -panelHeight
             screen: modelData
             
-            visible: true
+            visible: root.barVisible
             color: "transparent"
             
             WlrLayershell.namespace: "quickshell:topBar"
@@ -153,20 +153,26 @@ Item {
                 Component.onCompleted: {
                     //console.log("[TopBar Clock] Width after layout:", width, "Height:", height)
                 }
-                
-                onExpandedChanged: {
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("Clock clicked");
+                    }
+                }
+                /*onExpandedChanged: {
                     //console.log("[Clock] expanded changed to:", expanded)
                     root.clockExpanded = expanded
-                }
+                }*/
             }
             
-            Connections {
+            /*Connections {
                 target: clockExpanded
                 function onExpandedChanged() {
                     //console.log("[TopBar] ClockExpanded.onExpandedChanged signal received, clockExpanded.expanded:", clockExpanded.expanded)
                     clock.expanded = clockExpanded.expanded
                 }
-            }
+            }*/
             
             ActiveWindowTitle {
                 anchors {
@@ -225,7 +231,7 @@ Item {
     }
 
     // Clock panel (floating)
-    ClockExpanded {
+    /*ClockExpanded {
         id: clockExpanded
         expanded: root.clockExpanded
         topBarHeight: root.barHeight
@@ -238,7 +244,7 @@ Item {
             //console.log("[ClockExpanded from TopBar] onExpandedChanged fired, expanded is now:", expanded)
             root.clockExpanded = expanded
         }
-    }
+    }*/
     
     GlobalShortcut {
         name: "topBarToggle"

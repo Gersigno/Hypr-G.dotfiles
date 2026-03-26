@@ -38,12 +38,7 @@ output_path = '~/.config/quickshell/utils/Colors.qml'
 input_path = '~/.config/matugen/dolphin.kvconfig.tpl'
 output_path = "~/.config/Kvantum/Matugen/Matugen.kvconfig"
 
-# [templates.swaync]
-# input_path = '~/.config/matugen/swaync.css.tpl'
-# output_path = '~/.config/swaync/colors.css'
-# post_hook = 'swaync-client -rs' # Reloads both config and CSS
-
-# [templates.webcord]
-# input_path = '~/.config/matugen/webcord.css.tpl'
-# output_path = '~/.config/WebCord/colors.css'
-# post_hook = 'echo "@import url(\"file://$HOME/.config/WebCord/colors.css\");" > ~/.config/WebCord/Themes/theme.css'
+[templates.vscode]
+input_path = "~/.config/matugen/vscode.json.tpl"
+output_path = "~/.vscode/extensions/hyprluna.hyprluna-theme-1.0.2/themes/hyprluna.json"
+# Credits to Lunaris-Project (HyprLuna dot file)

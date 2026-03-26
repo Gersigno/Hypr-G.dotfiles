@@ -18,7 +18,8 @@ function wallpaper --description "Sets the wallpaper using the provided path"
     ~/.config/hypr/hypr-g/scripts/set_wallpaper.sh "$full_path"
 end
 
-set --universal fish_greeting "Welcome back $(whoami)!"
+#set --universal fish_greeting "Welcome back $(whoami)!"
+set --universal fish_greeting ""
 #set --erase fish_greeting
 
 # Tide prompt configuration
@@ -45,3 +46,4 @@ set tide_right_prompt_items status cmd_duration jobs node rustc java php pulumi 
 set --universal tide_prompt_add_newline_before true
 
 alias clear "printf '\033[2J\033[3J\033[1;1H'"
+alias neofetch "fastfetch"

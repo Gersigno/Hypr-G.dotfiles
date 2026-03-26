@@ -7,4 +7,5 @@ singleton Bluetooth 1.0 services/Bluetooth.qml
 singleton Media 1.0 services/Media.qml
 singleton InputsUsage 1.0 services/InputsUsage.qml
 singleton Notifications 1.0 services/Notifications.qml
+singleton Wallpaper 1.0 services/Wallpaper.qml
 #singleton Brightness 1.0 services/Brightness.qml

@@ -17,7 +17,6 @@ Item {
     Component.onCompleted: {
         console.log("[Clock] Component completed.")
     }
-
     // Container for centered background
     Item {
         id: bgContainer

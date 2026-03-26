@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Query the swww daemon for the current wallpaper path on all outputs
-SWWW_OUTPUT=$(swww query)
+SWWW_OUTPUT=$(awww query)
 
 # Use grep to find the line for the main monitor and then awk to extract the path.
 WALLPAPER_PATH=$(echo "$SWWW_OUTPUT" | grep 'eDP-1' | awk '{print $NF}')
