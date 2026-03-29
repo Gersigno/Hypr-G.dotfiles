@@ -30,13 +30,13 @@ post_hook = 'pkill -SIGUSR1 kitty'
 input_path = '~/.config/matugen/rofi.rasi.tpl'
 output_path = '~/.config/rofi/colors.rasi'
 
-[templates.quickshell]
-input_path = '~/.config/matugen/quickshell.qml.tpl'
-output_path = '~/.config/quickshell/utils/Colors.qml'
-
 [templates.dolphin]
 input_path = '~/.config/matugen/dolphin.kvconfig.tpl'
 output_path = "~/.config/Kvantum/Matugen/Matugen.kvconfig"
+
+[templates.quickshell]
+input_path = '~/.config/matugen/quickshell.qml.tpl'
+output_path = '~/.config/quickshell/utils/Colors.qml'
 
 [templates.vscode]
 input_path = "~/.config/matugen/vscode.json.tpl"

@@ -1,24 +1,39 @@
-import QtQuick
+//@ pragma Env QS_NO_RELOAD_POPUP=1
+//@ pragma Env QSG_RENDER_LOOP=threaded
+//@ pragma Env QT_QUICK_FLICKABLE_WHEEL_DECELERATION=10000
+
 import Quickshell
-import Quickshell.Wayland
-import "./modules/controlcenter/"
-import "./modules/screencorners/"
-import "./modules/topbar/"
-import "./modules/common/"
+import QtQuick
+
+import "modules"
 
 ShellRoot {
     id: rootShell
 
-    ControlCenter {
-        id: controlCenterComponent
-    }
+    property var topBarComponent: topBar
+
     ScreenCorners {
-        id: screenCornersComponent
+        id: screenCorners
     }
+
     TopBar {
-        id: topBarComponent
+        id: topBar
+        //controlCenterComponent: controlCenter
     }
-    NotificationPopup {
-        id: notificationPopup
+
+    NotificationsCenter {
+        id: notificationsCenter
+        topBarComponent: rootShell.topBarComponent
+    }
+
+    ControlCenter {
+        id: controlCenter
+        topBarComponent: rootShell.topBarComponent
+    }
+
+    Binding {
+        target: topBar
+        property: "clockOpacity"
+        value: controlCenter.opened ? 0 : 1
     }
 }

@@ -1,9 +1,11 @@
 pragma Singleton
-import QtQuick
 
-QtObject {
+import QtQuick
+import Quickshell
+
+Singleton {
     id: colors
     <* for name, value in colors *>
-    property color {{name}}: "{{value.default.hex}}"
+    readonly property color {{name}}: "{{value.default.hex}}"
     <* endfor *>
 }
