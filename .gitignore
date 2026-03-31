@@ -3,22 +3,16 @@
 # Top level files
 !.gitignore
 !README.md
-!fish/
 
 # Top level directories
 !fastfetch/
-!gtk-3.0/
-!gtk-4.0/
+!fish/
 !hypr/
 !kitty/
 !xdg-desktop-portal/
-!fuzzel/
-!waybar/
 !matugen/
 !rofi/
 !quickshell/
-!dunst/
-!Kvantum/
 
 !yazi/theme.toml
 
@@ -27,8 +21,10 @@
 !/hypr/hypr-g/
 !/hypr/hypr-g/hyprlock/
 /hypr/hypr-g/hyprlock/wallpaper.png
-Kvantum/*
-!Kvantum/Matugen/
+
+# Ignore fish_variables and all its variants
+fish/fish_variables
+fish/fish_variables.*
 
 
 # Exclude cache and generated files
@@ -37,5 +33,3 @@ Kvantum/*
 **/*.log
 **/*.swp
 **/*~
-
-fish/fish_variables
