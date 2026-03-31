@@ -1,21 +1,31 @@
 # Hypr-G dotfiles
 
-⚠️ Work in progress ⚠️
+⚠️ ***Work in progress*** ⚠️
 
-## 🐟 Fish custom commands : 
-- `wallpaper <IMAGE_PATH>` set the system/lock-screen wallpaper
+## 📷 Preview
+Comming soon !
+
+## 🧩 Features
+- 🎚️ A **unique control center** (Calendar, Wallpaper selector, Media center...)
+- 🔔 Notifications center
+- 🎨 Color scheme auto-generated based on your wallpaper
+- 🌗 Light/dark mode support
+- ⌨️ User-friendly keyboard navigation
 
 ## ⌨️ Keybinds
-💡*Note: the* `⌘` *key is your 'Windows' key on most keyboards*
+💡*Note: the* `⌘` *'super' key is your 'Windows' key on most keyboards*
 
 To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.conf`
 #### Shortcuts
-- `Alt` + `Space` Open **Fuzzel** *(Spotlight alternative)*
-- `⌘` + `T` Open new **Terminal**
-- `⌘` + `C` Open new **IDE** *(VSCode only for now)*
-- `⌘` + `W` Open new **web-browser** *(Zen for now)*
+- `⌘` + `F1` Open the **Control Center**
+- `Alt` + `Space` Open **Yazi** *(Spotlight alternative)*
+- `⌘` + `T` Open the **Notifications center**
+- `⌘` + `T` Open a new **Terminal**
+- `⌘` + `C` Open your **IDE** *(VSCode for now)*
+- `⌘` + `W` Open your **web-browser** *(**Zen-browser** only for now)*
 - `⌘` + `L` **Lock** current session
 - `⌘` + `B` Toggle **Topbar**
+- `⌘` + `.` *(dot)* **Emoji** menu
 
 <small>You can define the default application to launch via keybinds **(Terminal, IDE, Web-browser...)** in `~/.config/hypr/custom/programs.conf`.</small>
 #### Focused Window
@@ -41,10 +51,20 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `Ctrl` + `Alt`+ `→` **Switch** to right workspace
 - `⌘` + `Ctrl` + `Alt`+ `←` **Switch** to left workspace
 
+## 📦 Packages
+- hyprland
+- hyprlock
+- hyprpm
+- matugen
+- quickshell-git
+- rofi
+- kitty
+- fish
+    - fisher *(with a customised version of **tide** theme)*
+
 ## 📝 TODO/Roadmap
 - Setting GUI app
 - Install, Update & Uninstall scripts
-- Packages list
 
 ##   Fonts list
 - `JetBrains Mono Nerd.ttf`
@@ -54,6 +74,6 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 
 ## Credits
 - [end-4](https://github.com/end-4) - Hyprland config inspiration, Quickshell services etc..
-- [Anik200 *(Myhem)*](https://github.com/Anik200) - Waybar config inspiration
-- [Tinghan Zhu *(KZDKM)*](https://github.com/KZDKM) - Waybar config inspiration
-- [Kevin L. O. *(Kvn0l)*](https://github.com/Kvn0l) - Swaync config inspiration
+- [caelestia-dots](https://github.com/caelestia-dots/shell) - An amazing Quickshell config I took inspiration from !
+
+Probably a lot more people, contact me if i forget you !
