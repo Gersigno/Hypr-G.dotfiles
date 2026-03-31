@@ -25,6 +25,7 @@ Item {
     readonly property int radius: HyprlandConfig.radius
     readonly property int fullRadius: HyprlandConfig.radiusFull
     readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
+    readonly property string familyFont: Config.fontFamily
 
     readonly property real defaultWidth: clockWidth + (radius * 2)
     readonly property real defaultHeight: clockHeight
@@ -126,7 +127,7 @@ Item {
                 color: root.backgroundColor
                 bottomLeftRadius: isOpened ? root.fullRadius : root.radius
                 bottomRightRadius: isOpened ? root.fullRadius : root.radius
-                //clip: true
+                clip: true
 
                 Behavior on width { 
                     NumberAnimation { 
@@ -169,6 +170,11 @@ Item {
                     anchors.bottom: tabBar.top
                     visible: isOpened
                     clip: true
+                    currentIndex: 1 //! Clock (alphabetical: Calendar=0, Clock=1, Media=2, Wallpaper=3)
+
+                    Component.onCompleted: {
+                        contentItem.highlightMoveDuration = 0
+                    }
 
                     Repeater {
                         model: ccFilesModel
@@ -181,18 +187,8 @@ Item {
                     }
                 }
 
-                // Separator
-                Rectangle {
-                    anchors.bottom: tabBar.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: visible ? 1 : 0
-                    visible: isOpened
-                    color: Qt.rgba(1, 1, 1, 0.08)
-                }
-
-                // Tab navigation bar
-                Row {
+                // Tab navigation bar - carousel style (prev2 | prev1 | current | next1 | next2)
+                Item {
                     id: tabBar
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
@@ -204,35 +200,126 @@ Item {
                         model: ccFilesModel
 
                         delegate: Item {
-                            width: tabBar.width / Math.max(ccFilesModel.count, 1)
+                            id: tabDelegate
+
+                            readonly property int n: ccFilesModel.count
+                            readonly property int cur: carousel.currentIndex
+                            readonly property bool isCurrent: cur === index
+                            readonly property bool isPrev1: n > 1 && (cur - 1 + n) % n === index
+                            readonly property bool isPrev2: n > 2 && (cur - 2 + n) % n === index
+                            readonly property bool isNext1: n > 1 && (cur + 1) % n === index
+                            readonly property bool isNext2: n > 2 && (cur + 2) % n === index
+                            // slots: 0=far-left, 1=left, 2=center, 3=right, 4=far-right
+                            // hidden items park at center (slot 2), invisible
+                            readonly property int slot: isCurrent ? 2
+                                : (isPrev1 ? 1 : (isPrev2 ? 0 : (isNext1 ? 3 : (isNext2 ? 4 : 2))))
+
+                            width: tabBar.width / 5
                             height: tabBar.height
+                            // x follows displaySlot (no Behavior) so width changes never trigger animations
+                            x: displaySlot * (tabBar.width / 5)
+                            opacity: (isCurrent || isPrev1 || isPrev2 || isNext1 || isNext2) ? 1.0 : 0.0
+                            z: isCurrent ? 1 : 0
+
+                            // displaySlot is the animated proxy — only moves when slot changes
+                            property real displaySlot: slot
+                            property int previousSlot: slot
+
+                            Component.onCompleted: {
+                                previousSlot = slot
+                                displaySlot = slot
+                            }
+
+                            onSlotChanged: {
+                                if (Math.abs(slot - previousSlot) > 2) {
+                                    // Wrap-around: teleport instantly
+                                    slotAnim.stop()
+                                    tabDelegate.displaySlot = slot
+                                } else {
+                                    slotAnim.from = tabDelegate.displaySlot
+                                    slotAnim.to = slot
+                                    slotAnim.restart()
+                                }
+                                previousSlot = slot
+                            }
+
+                            NumberAnimation {
+                                id: slotAnim
+                                target: tabDelegate
+                                property: "displaySlot"
+                                duration: root.animationDuration
+                                easing.type: Easing.InOutQuad
+                            }
+
+                            Behavior on opacity {
+                                NumberAnimation {
+                                    duration: root.animationDuration
+                                    easing.type: Easing.InOutQuad
+                                }
+                            }
 
                             Rectangle {
                                 anchors.fill: parent
                                 anchors.margins: 4
                                 radius: root.fullRadius - 4
-                                color: carousel.currentIndex === index ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
-                                Behavior on color {
+                                color: "transparent"//isCurrent ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+                                /*Behavior on color {
                                     ColorAnimation { duration: 150 }
-                                }
+                                }*/
                             }
 
                             Text {
                                 anchors.centerIn: parent
-                                text: model.fileName.replace(".qml", "")
-                                color: "white"
-                                opacity: carousel.currentIndex === index ? 1.0 : 0.45
-                                font.pixelSize: 12
+                                text: {
+                                    const fileName = model.fileName.replace(".qml", "")
+                                    if (fileName === "_Debug") return "  Debug"
+                                    return fileName
+                                }
+                                color: {
+                                    const fileName = model.fileName.replace(".qml", "")
+                                    if (fileName === "_Debug") return Colors.primary
+                                    return "white"
+                                }
+                                opacity: isCurrent ? 1.0 : 0.4
+                                font.pixelSize: 14
+                                //font.bold: isCurrent ? true : false
+                                font.weight: Font.DemiBold
+                                font.family: root.familyFont
                                 Behavior on opacity {
-                                    NumberAnimation { duration: 150 }
+                                    NumberAnimation { 
+                                        duration: root.animationDuration
+                                        easing.type: Easing.InOutQuad
+                                    }
                                 }
                             }
 
                             MouseArea {
                                 anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: carousel.currentIndex = index
+                                cursorShape: !isCurrent ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: if (!isCurrent) carousel.currentIndex = index
                             }
+                        }
+                    }
+
+                    Rectangle {
+                        height: parent.height
+                        width: parent.width / 4
+                        bottomLeftRadius: root.fullRadius
+                        gradient: Gradient {
+                            orientation: Gradient.Horizontal
+                            GradientStop { position: 0.0; color: root.backgroundColor }
+                            GradientStop { position: 1.0; color: "transparent" }
+                        }
+                    }
+                    Rectangle {
+                        anchors.right: parent.right
+                        height: parent.height
+                        width: parent.width / 4
+                        bottomRightRadius: root.fullRadius
+                        gradient: Gradient {
+                            orientation: Gradient.Horizontal
+                            GradientStop { position: 0.0; color: "transparent" }
+                            GradientStop { position: 1.0; color: root.backgroundColor }
                         }
                     }
                 }

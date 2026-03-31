@@ -18,7 +18,8 @@ fi
 if [ -f "$WALLPAPER_PATH" ]; then
     # Update swww for the desktop wallpaper
     cursor=$(hyprctl cursorpos | tr -d ' ') # Get current cursor position
-    awww img "$WALLPAPER_PATH" -t grow --transition-duration 2.5 --transition-step 90 --transition-fps 60
+    echo "Setting wallpaper with swww at cursor position: $cursor"
+    awww img "$WALLPAPER_PATH" -t grow --transition-duration 2.5 --transition-step 90 --transition-fps 60 --transition-pos top 
     # Generate and apply a color palette using Matugen with the stored mode
     matugen image "$WALLPAPER_PATH" --mode "$THEME_MODE" --source-color-index 0
     
