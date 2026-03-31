@@ -33,7 +33,7 @@ ShellRoot {
 
     Binding {
         target: topBar
-        property: "clockOpacity"
-        value: controlCenter.opened ? 0 : 1
+        property: "controlCenterOpenedScreenName"
+        value: controlCenter.openedScreenName
     }
 }

@@ -9,13 +9,14 @@ import Quickshell.Io
 import "../services"
 import "../components"
 import "../config"
-import "../components/control_center" as ControlCenterComponents
+import "../utils"
+//import "../components/control_center" as ControlCenterComponents
 
 Item {
     id: root
 
-    property bool opened: false
-    property bool fullyClosed: false
+    property string openedScreenName: ""
+    readonly property bool opened: openedScreenName !== ""
     readonly property int animationDuration: 450
 
     property var topBarComponent: null
@@ -32,13 +33,6 @@ Item {
         console.info("Loaded component: [ControlCenter]")
     }
 
-    Binding {
-        target: root
-        property: "fullyClosed"
-        value: !(container.height === root.defaultHeight)
-        restoreMode: Binding.RestoreBindingOrValue
-    }
-
     //Set the Clock component from the  top bar opacity to zero when the control center is opened to avoid having two clocks visible during the animation
     /*Binding {
         target: topBarComponent
@@ -47,28 +41,32 @@ Item {
         restoreMode: Binding.RestoreBindingOrValue
     }*/
     
+    Variants {
+        model: Quickshell.screens
+
     PanelWindow {
         id: controlCenterRoot
 
         property var modelData
         screen: modelData
 
+        readonly property bool isOpened: root.openedScreenName === modelData.name
+        readonly property bool localFullyClosed: !(container.height === root.defaultHeight)
+
         WlrLayershell.namespace: "quickshell:controlCenter"
-        WlrLayershell.layer: root.fullyClosed ? WlrLayer.Top : WlrLayer.Bottom
+        WlrLayershell.layer: localFullyClosed ? WlrLayer.Top : WlrLayer.Bottom
         WlrLayershell.exclusiveZone: 0
-        //WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+        WlrLayershell.keyboardFocus: isOpened ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
         margins { 
             top: (clockHeight * -1) 
         }
 
         Component.onCompleted: {
-            const activeScreen = Hyprland.focusedMonitor;
-            console.log(activeScreen)
+            const activeScreen = modelData;
             if (activeScreen) {
                 controlCenterRoot.implicitWidth = activeScreen.width
                 controlCenterRoot.implicitHeight = activeScreen.height
-                console.log("Active screen dimensions:", activeScreen.width, "x", activeScreen.height);
             } else {
                 console.warn("No active screen found. Control Center may not display correctly.");
             }
@@ -76,6 +74,17 @@ Item {
 
         anchors {
             top: true
+        }
+
+        HyprlandFocusGrab {
+            windows: [ controlCenterRoot ]
+            active: isOpened
+            onCleared: if (!active) root.close()
+        }
+
+        Item {
+            focus: isOpened
+            Keys.onEscapePressed: root.close()
         }
 
         mask: Region {
@@ -95,7 +104,7 @@ Item {
             InvertedCorner {
                 id: topLeftCorner
                 corner: InvertedCorner.Corner.TopRight
-                cornerRadius: root.opened ? root.fullRadius : root.radius
+                cornerRadius: isOpened ? root.fullRadius : root.radius
                 cornerColor: root.backgroundColor
 
                 Behavior on cornerRadius {
@@ -108,15 +117,15 @@ Item {
 
             Rectangle {
                 id: contentContainer
-                width: root.opened
+                width: isOpened
                     ? Math.max(carousel.currentItem && carousel.currentItem.item ? carousel.currentItem.item.implicitWidth : root.defaultWidth, root.defaultWidth)
                     : root.defaultWidth
-                height: root.opened
+                height: isOpened
                     ? (carousel.currentItem && carousel.currentItem.item ? carousel.currentItem.item.implicitHeight : 0) + tabBar.height
                     : root.defaultHeight
                 color: root.backgroundColor
-                bottomLeftRadius: root.opened ? root.fullRadius : root.radius
-                bottomRightRadius: root.opened ? root.fullRadius : root.radius
+                bottomLeftRadius: isOpened ? root.fullRadius : root.radius
+                bottomRightRadius: isOpened ? root.fullRadius : root.radius
                 //clip: true
 
                 Behavior on width { 
@@ -158,7 +167,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: tabBar.top
-                    visible: root.opened
+                    visible: isOpened
                     clip: true
 
                     Repeater {
@@ -178,7 +187,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     height: visible ? 1 : 0
-                    visible: root.opened
+                    visible: isOpened
                     color: Qt.rgba(1, 1, 1, 0.08)
                 }
 
@@ -189,7 +198,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     height: 40
-                    visible: root.opened
+                    visible: isOpened
 
                     Repeater {
                         model: ccFilesModel
@@ -232,7 +241,7 @@ Item {
             InvertedCorner {
                 id: topRightCorner
                 corner: InvertedCorner.Corner.TopLeft
-                cornerRadius: root.opened ? root.fullRadius : root.radius
+                cornerRadius: isOpened ? root.fullRadius : root.radius
                 cornerColor: root.backgroundColor
                 x: contentContainer.width + topLeftCorner.width
                 Behavior on cornerRadius {
@@ -255,7 +264,8 @@ Item {
             onClicked: root.toggle()
         }
     }
-    
+
+    } // Variants
 
     IpcHandler {
         target: "controlCenter"
@@ -271,15 +281,16 @@ Item {
     }
 
     function toggle() {
-        !root.opened ? root.open() : root.close()
+        const name = Hyprland.focusedMonitor ? Hyprland.focusedMonitor.name : ""
+        root.openedScreenName === name ? root.close() : root.open()
     }
     function close() {
         console.log("Closing Control Center")
-        root.opened = false
+        root.openedScreenName = ""
     }
     function open() {
         console.log("Opening Control Center")
-        root.opened = true
+        root.openedScreenName = Hyprland.focusedMonitor ? Hyprland.focusedMonitor.name : ""
     }
 
     GlobalShortcut {

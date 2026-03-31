@@ -2,12 +2,18 @@ import QtQuick
 import Quickshell
 
 import "../../config"
+import "../../utils"
 
 Item {
     id: root
 
     implicitWidth: 420
     implicitHeight: 160
+
+    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
+    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
+    readonly property color foregroundSecondaryColor: Config.isOled ? "#fff" : Colors.on_surface_variant
+    readonly property color accentColor: Colors.primary
 
     // Content
     Column {
@@ -19,7 +25,7 @@ Item {
             id: expandedHour
             anchors.horizontalCenter: parent.horizontalCenter
             text: new Date().toLocaleTimeString(Qt.locale(), "HH")
-            color: "white"
+            color: root.foregroundColor
             font.pixelSize: 80
             font.family: "StretchPro"
             font.preferTypoLineMetrics: true
@@ -31,7 +37,7 @@ Item {
             id: expandedMinutes
             anchors.horizontalCenter: parent.horizontalCenter
             text: new Date().toLocaleTimeString(Qt.locale(), "mm")
-            color: "white"
+            color: root.foregroundSecondaryColor
             font.pixelSize: 60
             font.family: "StretchPro"
             font.bold: true
@@ -44,7 +50,7 @@ Item {
             id: dateText
             anchors.horizontalCenter: parent.horizontalCenter
             text: new Date().toLocaleDateString(Qt.locale(), "dddd d MMMM")
-            color: "white"
+            color: root.accentColor
             font.family: Config.fontFamily
             font.bold: true
             font.pixelSize: 18

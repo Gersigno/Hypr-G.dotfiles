@@ -6,25 +6,25 @@ composite=true
 transparent_dolphin_view=true
 
 [GeneralColors]
-window.color=#111318
-base.color=#1d2024
-alt.base.color=#282a2f
-button.color=#3d4758
-light.color=#224876
-mid.light.color=#43474e
+window.color=#191113
+base.color=#261d1f
+alt.base.color=#31282a
+button.color=#5b3f46
+light.color=#703346
+mid.light.color=#514346
 dark.color=#000000
-mid.color=#8d9199
-highlight.color=#a6c8ff
-inactive.highlight.color=#43474e
-tooltip.base.color=#e1e2e9
-text.color=#e1e2e9
-window.text.color=#e1e2e9
-button.text.color=#d8e3f8
-disabled.text.color=#8d9199
+mid.color=#9e8c90
+highlight.color=#ffb1c5
+inactive.highlight.color=#514346
+tooltip.base.color=#efdfe1
+text.color=#efdfe1
+window.text.color=#efdfe1
+button.text.color=#ffd9e1
+disabled.text.color=#9e8c90
 # Correction ici : inverse_on_surface au lieu de on_inverse_surface
-tooltip.text.color=#2e3035
-highlight.text.color=#01315e
-link.color=#a6c8ff
-link.visited.color=#dabde2
+tooltip.text.color=#382e30
+highlight.text.color=#551d30
+link.color=#ffb1c5
+link.visited.color=#eebd93
 
 {% endraw %}

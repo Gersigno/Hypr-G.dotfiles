@@ -16,7 +16,8 @@ Item {
 
     readonly property int animationDuration: 450
 
-    property bool opened: false
+    property string openedScreenName: ""
+    readonly property bool opened: openedScreenName !== ""
     property bool fullyClosed: false
 
     property var topBarComponent: null
@@ -30,28 +31,30 @@ Item {
     readonly property real defaultWidth: statusWidth
     readonly property real defaultHeight: statusHeight
     readonly property real finalWidth: 340
-    readonly property real finalHeight: notificationsCenterRoot.height
 
     Component.onCompleted: {
         console.info("Loaded component: [NotificationsCenter]")
         //console.log("-------------------------------------------------  -->", Screen.height) // Debugging line to check if notificationsCenterRoot is defined
     }
 
-    Binding {
-        target: root
-        property: "fullyClosed"
-        value: !(layer.width === root.defaultWidth && layer.height === root.defaultHeight)
-        restoreMode: Binding.RestoreBindingOrValue
-    }
+    //Set the Clock component from the  top bar opacity to zero when the control center is opened to avoid having two clocks visible during the animation
+
+    Variants {
+        model: Quickshell.screens
 
     PanelWindow {
         id: notificationsCenterRoot
 
+        property var modelData
+        screen: modelData
+
+        readonly property bool isOpened: root.openedScreenName === modelData.name
+        readonly property bool localFullyClosed: !(layer.width === root.defaultWidth && layer.height === root.defaultHeight)
+
         WlrLayershell.namespace: "quickshell:notificationsCenter"
-        WlrLayershell.layer: root.fullyClosed ? WlrLayer.Top : WlrLayer.Bottom
+        WlrLayershell.layer: localFullyClosed ? WlrLayer.Top : WlrLayer.Bottom
         WlrLayershell.exclusiveZone: 0
-        //WlrLayershell.screen: Quickshell.screens.find(s => s.focused)
-        //WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+        WlrLayershell.keyboardFocus: isOpened ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
         margins { 
             top: (statusHeight * -1) 
@@ -70,8 +73,8 @@ Item {
 
         HyprlandFocusGrab {
             id: grab
-            windows: [ layer ]
-            active: root.opened
+            windows: [ notificationsCenterRoot ]
+            active: isOpened
             onCleared: {
                 console.log("Focus grab cleared, closing Notifications Center")
                 root.close()
@@ -79,10 +82,15 @@ Item {
         }
 
         Item {
+            focus: isOpened
+            Keys.onEscapePressed: root.close()
+        }
+
+        Item {
             id: layer
 
-            width: root.opened ? root.finalWidth : root.defaultWidth
-            height: root.opened ? root.finalHeight : root.defaultHeight
+            width: isOpened ? root.finalWidth : root.defaultWidth
+            height: isOpened ? modelData.height : root.defaultHeight
 
             Behavior on width { 
                 NumberAnimation { 
@@ -111,7 +119,7 @@ Item {
                 InvertedCorner {
                     id: invertedCorner
                     corner: InvertedCorner.Corner.TopRight
-                    cornerRadius: root.opened ? root.fullRadius : root.radius
+                    cornerRadius: isOpened ? root.fullRadius : root.radius
                     cornerColor: root.backgroundColor
                     Behavior on cornerRadius { 
                         NumberAnimation { 
@@ -127,7 +135,7 @@ Item {
                     height: parent.height
                     //from 0% to 50% of animation, increase radios from root.radius to (root.radius * 10), then, from 50 to 100%, decrease to zero
                     bottomLeftRadius: 
-                        root.opened ?
+                        isOpened ?
                             (layer.width < root.finalWidth / 2) ?
                                 350 : 0
                             :
@@ -198,7 +206,9 @@ Item {
                 controlCenterRoot.hide();
             }
         }*/
-    }
+    } // end PanelWindow
+
+    } // Variants
 
     function toggle() {
         //console.log("Toggling Notifications Center state")
@@ -206,13 +216,11 @@ Item {
     }
     function close() {
         console.log("Closing Notifications Center")
-        root.opened = false
-        //invertedCornerBottomLeft.requestPaint() // Force repaint to update corner radius immediately
+        root.openedScreenName = ""
     }
     function open() {
         console.log("Opening Notifications Center")
-        root.opened = true
-        //invertedCornerBottomLeft.requestPaint() // Force repaint to update corner radius immediately
+        root.openedScreenName = Hyprland.focusedMonitor ? Hyprland.focusedMonitor.name : ""
     }
 
     IpcHandler { 

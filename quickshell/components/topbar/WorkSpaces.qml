@@ -11,7 +11,8 @@ Item {
     id: root
 
     readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background 
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
+    readonly property color foregroundColor: Config.isOled ? "lightgrey" : Colors.on_background
+    readonly property color primary: Config.isOled ? "#fff" : Colors.primary
     property var screen
     property var workspaceIds: HyprlandConfig.workspacesByMonitor[screen?.name ?? ""] ?? []
 
@@ -89,7 +90,7 @@ Item {
                             if (parent.hasWindowsValue) return "◉";
                             return "○";
                         }
-                        color: root.foregroundColor
+                        color: parent.isActive ? root.primary : root.foregroundColor
                         font.pixelSize: 12
                     }
 

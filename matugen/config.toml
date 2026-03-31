@@ -36,7 +36,7 @@ output_path = "~/.config/Kvantum/Matugen/Matugen.kvconfig"
 
 [templates.quickshell]
 input_path = '~/.config/matugen/quickshell.qml.tpl'
-output_path = '~/.config/quickshell/utils/Colors.qml'
+output_path = '~/.config/quickshell/colors.json'
 
 [templates.vscode]
 input_path = "~/.config/matugen/vscode.json.tpl"

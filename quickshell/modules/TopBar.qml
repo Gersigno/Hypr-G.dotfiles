@@ -13,7 +13,7 @@ Item {
     property int barHeight: 24
     property real statusWidth: 0
     property real clockWidth: 0
-    property real clockOpacity: 1
+    property string controlCenterOpenedScreenName: ""
 
     Component.onCompleted: {
         console.info("Loaded component: [TopBar]")
@@ -61,7 +61,7 @@ Item {
             Clock {
                 id: clockComponent
 
-                opacity: root.clockOpacity
+                opacity: root.controlCenterOpenedScreenName === modelData.name ? 0 : 1
                 Behavior on opacity {
                     NumberAnimation { duration: 250; easing.type: Easing.InOutQuad }
                 }

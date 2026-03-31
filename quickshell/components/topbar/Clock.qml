@@ -4,6 +4,7 @@ import Quickshell
 import "../"
 import "../../config"
 import "../../services"
+import "../../utils"
 
 Item {
     id: root
@@ -74,6 +75,16 @@ Item {
                         font.family: root.font
 
                         anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Timer {
+                        interval: 100
+                        running: true
+                        repeat: true
+                        onTriggered: {
+                            dateText.text = new Date().toLocaleTimeString(Qt.locale(), "HH:mm");
+                            timeText.text = new Date().toLocaleDateString(Qt.locale(), "dddd, d MMM");
+                        }
                     }
                 }
             }

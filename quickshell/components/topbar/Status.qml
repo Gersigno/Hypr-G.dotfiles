@@ -7,6 +7,7 @@ import Quickshell.Wayland
 import "../"
 import "../../services"
 import "../../config"
+import "../../utils"
 
 Item {
     id: root 
