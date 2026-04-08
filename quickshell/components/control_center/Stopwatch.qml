@@ -3,6 +3,7 @@ import Quickshell
 
 import "../../config"
 import "../../utils"
+import "../common"
 
 Item {
     id: root
@@ -56,48 +57,19 @@ Item {
             spacing: 14
 
             // Reset
-            Rectangle {
-                width: 80; height: 32; radius: 16
-                color: resetHov.containsMouse
-                    ? Qt.rgba(1, 1, 1, 0.10)
-                    : Qt.rgba(1, 1, 1, 0.05)
-                Behavior on color { ColorAnimation { duration: 120 } }
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "Reset"
-                    color: root.fgSub
-                    font.family: Config.fontFamily
-                    font.pixelSize: 13
-                    font.weight: Font.Medium
-                }
-                MouseArea {
-                    id: resetHov
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: { root.running = false; root.elapsed = 0 }
-                }
+            Button {
+                text: "Reset"
+                severity: Button.Severity.Secondary
+                fullRounded: true
+                onClicked: { root.running = false; root.elapsed = 0 }
             }
 
             // Start / Stop
-            Rectangle {
-                width: 100; height: 32; radius: 16
-                color: root.accent
-
-                Text {
-                    anchors.centerIn: parent
-                    text: root.running ? " Pause" : (root.elapsed > 0 ? "  Resume" : "  Start")
-                    color: Colors.on_primary
-                    font.family: Config.fontFamily
-                    font.pixelSize: 13
-                    font.bold: true
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.running = !root.running
-                }
+            Button {
+                text: root.running ? " Pause" : (root.elapsed > 0 ? "  Resume" : "  Start")
+                severity: Button.Severity.Primary
+                fullRounded: true
+                onClicked: root.running = !root.running
             }
         }
     }

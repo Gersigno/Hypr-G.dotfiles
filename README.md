@@ -1,11 +1,13 @@
 # Hypr-G dotfiles
 
-⚠️ ***Work in progress*** ⚠️
+⚠️ **_Work in progress_** ⚠️
 
 ## 📷 Preview
+
 Comming soon !
 
 ## 🧩 Features
+
 - 🎚️ A **unique control center** (Calendar, Wallpaper selector, Media center...)
 - 🔔 Notifications center
 - 🎨 Color scheme auto-generated based on your wallpaper
@@ -13,28 +15,33 @@ Comming soon !
 - ⌨️ User-friendly keyboard navigation
 
 ## ⌨️ Keybinds
-💡*Note: the* `⌘` *'super' key is your 'Windows' key on most keyboards*
+
+💡*Note: the* `⌘` _'super' key is your 'Windows' key on most keyboards_
 
 To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.conf`
+
 #### Shortcuts
+
 - `⌘` + `F1` Open the **Control Center**
-- `Alt` + `Space` Open **Yazi** *(Spotlight alternative)*
+- `Alt` + `Space` Open **Yazi** _(Spotlight alternative)_
 - `⌘` + `T` Open the **Notifications center**
 - `⌘` + `T` Open a new **Terminal**
-- `⌘` + `C` Open your **IDE** *(VSCode for now)*
-- `⌘` + `W` Open your **web-browser** *(**Zen-browser** only for now)*
+- `⌘` + `C` Open your **IDE** _(VSCode for now)_
+- `⌘` + `W` Open your **web-browser** _(**Zen-browser** only for now)_
 - `⌘` + `L` **Lock** current session
 - `⌘` + `B` Toggle **Topbar**
-- `⌘` + `.` *(dot)* **Emoji** menu
+- `⌘` + `.` _(dot)_ **Emoji** menu
 
 <small>You can define the default application to launch via keybinds **(Terminal, IDE, Web-browser...)** in `~/.config/hypr/custom/programs.conf`.</small>
+
 #### Focused Window
+
 - `⌘` + `Q` **Close**
 - `⌘` + `D` **Maximize**
 - `⌘` + `F` **Fullscreen**
-- `⌘` + `🖱️ Left` **Move** 
-- `⌘` + `🖱️ Right` **Resize** 
-- `⌘` + `J` Dwindle **Toggle split** 
+- `⌘` + `🖱️ Left` **Move**
+- `⌘` + `🖱️ Right` **Resize**
+- `⌘` + `J` Dwindle **Toggle split**
 - `⌘` + `Shift` + `↑` **Move** up
 - `⌘` + `Shift` + `→` **Move** right
 - `⌘` + `Shift` + `↓` **Move** down
@@ -43,7 +50,9 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `Alt` + `PgDn` **Move** to **down workspace**
 - `⌘` + `Shift` + `PgUp` **Move** to **right workspace**
 - `⌘` + `Shift` + `PgDn` **Move** to **left workspace**
+
 #### Navigation
+
 - `⌘` + `↑` **Move focus** up
 - `⌘` + `→` **Move focus** to the right
 - `⌘` + `↓` **Move focus** down
@@ -52,27 +61,32 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `Ctrl` + `Alt`+ `←` **Switch** to left workspace
 
 ## 📦 Packages
-- hyprland
-- hyprlock
-- hyprpm
-- matugen
+
+- hyprland _(Dynamic tiling Wayland compositor)_
+- hyprlock _(Simple and secure screen locker)_
+- hyprpm 
+- matugen _(Automatically generates color palettes from wallpapers)_
 - quickshell-git
-- rofi
+- rofi _(App launcher)_
 - kitty
-- fish
-    - fisher *(with a customised version of **tide** theme)*
+- fish _(A smart and user-friendly interactive shell)_
+  - fisher _(Plugin manager for Fish shell, with a customised version of **tide** theme)_
+- fastfetch _(Fast system info fetcher with logo support, alternative to neofetch)_
 
 ## 📝 TODO/Roadmap
+
 - Setting GUI app
 - Install, Update & Uninstall scripts
 
-##   Fonts list
+## Fonts list
+
 - `JetBrains Mono Nerd.ttf`
 - `StretchPro.otf`
 - `SF Pro Display Bold.otf` & `SF Pro Display Regular.otf`
 - `StretchPro.otf`
 
 ## Credits
+
 - [end-4](https://github.com/end-4) - Hyprland config inspiration, Quickshell services etc..
 - [caelestia-dots](https://github.com/caelestia-dots/shell) - An amazing Quickshell config I took inspiration from !
 

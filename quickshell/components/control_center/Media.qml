@@ -7,7 +7,7 @@ import QtQuick.Effects
 
 import "../../config"
 import "../../utils"
-import "../../services"
+import qs.services
 
 Item {
     id: root

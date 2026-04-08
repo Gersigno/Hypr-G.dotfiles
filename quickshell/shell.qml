@@ -31,6 +31,10 @@ ShellRoot {
         topBarComponent: rootShell.topBarComponent
     }
 
+    ToastOverlay {
+        id: toastOverlay
+    }
+
     Binding {
         target: topBar
         property: "controlCenterOpenedScreenName"
