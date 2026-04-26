@@ -1,8 +1,10 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import QtCore
 
-import "../components/common"
+
+import "../components/common/interface"
 import "../services"
 import "../config"
 import "../utils"
@@ -10,6 +12,10 @@ import "../utils"
 
 Scope {
     id: root
+
+    readonly property string home: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
+    readonly property string userName: home.split('/').pop().charAt(0).toUpperCase() + home.split('/').pop().slice(1)
+
 
     Component.onCompleted: {
         console.info("Loaded component: [ToastOverlay]")
@@ -33,7 +39,7 @@ Scope {
             mask: Region { item: null }
 
             implicitWidth: modelData.width
-            implicitHeight: toastItem.implicitHeight + 32
+            implicitHeight: toastItem.implicitHeight + 64
 
             anchors {
                 bottom: true
@@ -55,12 +61,12 @@ Scope {
                 target: ToastService
                 function onToastRequested(message, icon, duration) {
                     toastItem.show(message, duration, icon)
+                    //console.log("Toast requested: " + message + ", duration: " + duration + ", icon: " + icon)
                 }
             }
 
             Component.onCompleted: {
-                console.info("ToastOverlay initialized for screen: " + modelData.name)
-                toastItem.show("Welcome !", 6000)
+                ToastService.show("Welcome back, " + userName + " !", 6000)
             }
         }
     }

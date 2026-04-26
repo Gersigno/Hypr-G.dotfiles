@@ -1,11 +1,12 @@
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import QtQuick.Layouts
 
 import "../../config"
 import "../../utils"
 import qs.services
-import "../common"
+import "../common/interactive"
 
 Item {
     id: root
@@ -248,47 +249,99 @@ Item {
                 }
             }
 
-            //?Appearance
+            //?Testing
             Rectangle { 
                 color: "transparent"
 
                 ColumnLayout {
-                    anchors.centerIn: parent
+                    //anchors.centerIn: parent
                     spacing: 12
+                    anchors.margins: 16
 
-                    Button {
-                        text: "Show toast"
-                        severity: Button.Severity.Primary
-                        onClicked: {
-                            console.log("Requesting toast normal from debug page...")
-                            ToastService.show("Hello world!", 3000)
+                    Text {
+                        text: "Toast Service Testing"
+                        color: "white"
+                        font.pixelSize: 18
+                        font.family: Config.fontFamily
+                        font.bold: true
+                    }
+
+                    RowLayout {
+                        spacing: 12
+
+                        Button {
+                            text: "Show toast"
+                            severity: Button.Severity.Primary
+                            onClicked: {
+                                ToastService.show("Hello world!", 3000)
+                            }
+                        }
+
+                        Button {
+                            text: "Show toast multi-lines"
+                            severity: Button.Severity.Primary
+                            onClicked: {
+                                ToastService.show("Toast notification\nwith two lines", 3000)
+                            }
+                        }
+
+                        Button {
+                            text: "Show toast (icon)"
+                            severity: Button.Severity.Primary
+                            onClicked: {
+                                ToastService.show("Toast with icon", 4000, "../../../assets/default_face.png")
+                            }
                         }
                     }
 
-                    Button {
-                        text: "Show toast (short)"
-                        severity: Button.Severity.Secondary
-                        onClicked: {
-                            console.log("Requesting short toast from debug page...")
-                            ToastService.show("Short toast", 1000)
+                    Text {
+                        text: "System notifications testing"
+                        color: "white"
+                        font.pixelSize: 18
+                        font.family: Config.fontFamily
+                        font.bold: true
+                    }
+
+                    RowLayout {
+                        spacing: 12
+
+                        Button {
+                            text: "Simple"
+                            severity: Button.Severity.Primary
+                            onClicked: notifProcess.sendNotif(["Simple notification", "This is a basic notification body."])
+                        }
+
+                        Button {
+                            text: "Low urgency"
+                            severity: Button.Severity.Secondary
+                            onClicked: notifProcess.sendNotif(["Low urgency", "This notification has low urgency.", "-u", "low"])
+                        }
+
+                        Button {
+                            text: "Critical"
+                            severity: Button.Severity.Danger
+                            onClicked: notifProcess.sendNotif(["Critical!", "Something went critically wrong.", "-u", "critical"])
+                        }
+
+                        Button {
+                            text: "With icon"
+                            severity: Button.Severity.Secondary
+                            onClicked: notifProcess.sendNotif(["Icon notification", "This one has an app icon.", "-i", "dialog-information"])
+                        }
+
+                        Button {
+                            text: "Long body"
+                            severity: Button.Severity.Secondary
+                            onClicked: notifProcess.sendNotif(["Long notification", "This is a much longer notification body to test how the popup handles wrapping and overflow with multiple lines of text."])
                         }
                     }
 
-                    Button {
-                        text: "Show toast multi-lines"
-                        severity: Button.Severity.Secondary
-                        onClicked: {
-                            console.log("Requesting short toast from debug page...")
-                            ToastService.show("Short toast\nallo", 1000)
-                        }
-                    }
+                    Process {
+                        id: notifProcess
 
-                    Button {
-                        text: "Show toast (icon)"
-                        severity: Button.Severity.Warning
-                        onClicked: {
-                            console.log("Requesting warning toast from debug page...")
-                            ToastService.show("Something went wrong", 4000, "../../assets/default_face.png")
+                        function sendNotif(args) {
+                            notifProcess.command = ["notify-send"].concat(args)
+                            notifProcess.running = true
                         }
                     }
                 }

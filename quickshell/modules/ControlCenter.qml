@@ -7,7 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Io
 
 import "../services"
-import "../components"
+import "../components/common/interface"
 import "../config"
 import "../utils"
 //import "../components/control_center" as ControlCenterComponents
@@ -34,6 +34,13 @@ Item {
         console.info("Loaded component: [ControlCenter]")
     }
 
+    FolderListModel {
+        id: ccFilesModel
+        folder: Qt.resolvedUrl("../components/control_center")
+        nameFilters: ["*.qml"]
+        showDirs: false
+    }
+
     //Set the Clock component from the  top bar opacity to zero when the control center is opened to avoid having two clocks visible during the animation
     /*Binding {
         target: topBarComponent
@@ -53,6 +60,7 @@ Item {
 
         readonly property bool isOpened: root.openedScreenName === modelData.name
         readonly property bool localFullyClosed: !(container.height === root.defaultHeight)
+        property bool modelInitialized: false
 
         WlrLayershell.namespace: "quickshell:controlCenter"
         WlrLayershell.layer: localFullyClosed ? WlrLayer.Top : WlrLayer.Bottom
@@ -108,6 +116,8 @@ Item {
                 cornerRadius: isOpened ? root.fullRadius : root.radius
                 cornerColor: root.backgroundColor
 
+                opacity: isOpened ? 1.0 : 0.0 //todo: fix
+
                 Behavior on cornerRadius {
                     NumberAnimation { 
                         duration: root.animationDuration; 
@@ -155,12 +165,12 @@ Item {
                 }
 
                 //Content
-                FolderListModel {
+                /*FolderListModel {
                     id: ccFilesModel
                     folder: Qt.resolvedUrl("../components/control_center")
                     nameFilters: ["*.qml"]
                     showDirs: false
-                }
+                }*/
 
                 SwipeView {
                     id: carousel
@@ -174,6 +184,7 @@ Item {
 
                     Component.onCompleted: {
                         contentItem.highlightMoveDuration = 0
+                        contentItem.cacheBuffer = 0
                     }
 
                     Repeater {
@@ -272,7 +283,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: {
                                     const fileName = model.fileName.replace(".qml", "")
-                                    if (fileName === "_Debug") return "  Debug"
+                                    if (fileName === "_Debug") return "   Debug"
                                     return fileName
                                 }
                                 color: {
@@ -330,6 +341,7 @@ Item {
                 corner: InvertedCorner.Corner.TopLeft
                 cornerRadius: isOpened ? root.fullRadius : root.radius
                 cornerColor: root.backgroundColor
+                opacity: isOpened ? 1.0 : 0.0 //todo: fix
                 x: contentContainer.width + topLeftCorner.width
                 Behavior on cornerRadius {
                     NumberAnimation { 
@@ -349,6 +361,16 @@ Item {
             cursorShape: Qt.PointingHandCursor
 
             onClicked: root.toggle()
+        }
+
+        Connections {
+            target: ccFilesModel
+            function onCountChanged() {
+                if (!controlCenterRoot.modelInitialized && ccFilesModel.count > 1) {
+                    carousel.currentIndex = 1
+                    controlCenterRoot.modelInitialized = true
+                }
+            }
         }
     }
 

@@ -2,14 +2,16 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import Quickshell.Widgets
 import Quickshell.Io
 
 import "./"
 
 import "../services"
-import "../components"
+import "../components/common/interface"
 import "../config"
 import "../utils"
+import "../components/notifications_center"
 
 Item {
     id: root
@@ -57,13 +59,15 @@ Item {
         WlrLayershell.keyboardFocus: isOpened ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
         margins { 
-            top: (statusHeight * -1) 
+            top: (statusHeight * -1)
         }
 
         implicitWidth: 340
 
         visible: true
         color: "transparent"
+        
+        
 
         anchors {
             top: true
@@ -92,6 +96,8 @@ Item {
             width: isOpened ? root.finalWidth : root.defaultWidth
             height: isOpened ? modelData.height : root.defaultHeight
 
+            
+
             Behavior on width { 
                 NumberAnimation { 
                     duration: root.animationDuration; 
@@ -115,12 +121,14 @@ Item {
 
                 width: parent.width
                 height: parent.height
+                //x: -(root.fullRadius)
 
                 InvertedCorner {
                     id: invertedCorner
                     corner: InvertedCorner.Corner.TopRight
                     cornerRadius: isOpened ? root.fullRadius : root.radius
                     cornerColor: root.backgroundColor
+                    opacity: isOpened ? 1.0 : 0.0
                     Behavior on cornerRadius { 
                         NumberAnimation { 
                             duration: root.animationDuration; 
@@ -129,10 +137,11 @@ Item {
                     }
                 }
 
-                Rectangle {
+                ClippingRectangle {
                     id: container
                     width: parent.width
                     height: parent.height
+                    clip: true
                     //from 0% to 50% of animation, increase radios from root.radius to (root.radius * 10), then, from 50 to 100%, decrease to zero
                     bottomLeftRadius: 
                         isOpened ?
@@ -154,6 +163,14 @@ Item {
                             duration: root.animationDuration; 
                             easing.type: Easing.InOutQuint 
                         } 
+                    }
+
+                    Content {
+                        anchors.fill: parent
+                        anchors.topMargin: root.statusHeight
+                        anchors.rightMargin: (root.fullRadius) + root.radius
+                        anchors.leftMargin: root.radius
+                        topBarHeight: root.statusHeight
                     }
                 }
             }

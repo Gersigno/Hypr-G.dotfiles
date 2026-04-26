@@ -8,6 +8,7 @@ import Quickshell.Io
 
 import "../../config"
 import "../../utils"
+import qs.services
 
 Item {
     id: root
@@ -180,6 +181,7 @@ Item {
                             //console.log("Running command: " + command.join(" "))
                             wallpaperProcess.command = command
                             wallpaperProcess.running = true
+                            ToastService.show("Wallpaper applied", 4000, "../../../assets/icons/success.png")
                         }
                     }
                 }

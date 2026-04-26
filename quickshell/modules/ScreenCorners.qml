@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 
-import "../components"
+import "../components/common/interface"
 import "../config"
 import "../services"
 import "../utils"

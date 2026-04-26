@@ -6,3 +6,4 @@ singleton Bluetooth 1.0 Bluetooth.qml
 singleton Network 1.0 Network.qml
 singleton Media 1.0 Media.qml
 singleton ToastService 1.0 ToastService.qml
+singleton Notifications 1.0 Notifications.qml

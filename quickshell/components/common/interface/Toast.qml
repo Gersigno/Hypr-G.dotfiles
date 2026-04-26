@@ -1,9 +1,10 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
 
-import "../../config"
-import "../../utils"
-import "../../services"
+import "../../../config"
+import "../../../utils"
+import "../../../services"
 
 Item {
     id: root
@@ -20,12 +21,18 @@ Item {
 
     y: 0
 
+    transform: Translate {
+        id: slideTranslate
+        y: 16
+    }
+
     function show(msg, dur, ico) {
         root.message = msg
         root.duration = dur ?? 3000
         root.icon = ico ?? ""
-        root.opacity = 1
+        root.opacity = HyprlandConfig.inactiveOpacity
         hideTimer.restart()
+        showAnimation.restart()
     }
 
     Timer {
@@ -43,10 +50,26 @@ Item {
         }
     }
 
-    Behavior on y {
+    ParallelAnimation {
+        id: showAnimation
+
         NumberAnimation {
-            duration: 300
+            target: slideTranslate
+            property: "y"
+            from: 16
+            to: 0
+            duration: 350
             easing.type: Easing.OutCubic
+        }
+
+        NumberAnimation {
+            target: container
+            property: "scale"
+            from: 0.88
+            to: 1.0
+            duration: 350
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.2
         }
     }
 
@@ -58,20 +81,47 @@ Item {
         color: Colors.surface_container_high
 
         layer.enabled: true
-        layer.effect: null
-
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowColor: Colors.shadows //"red"//HyprlandConfig.shadowColor
+            shadowBlur: 2
+            shadowHorizontalOffset: 0
+            shadowVerticalOffset: 8
+            //radius: container.radius
+            //paddingEnabled: true
+        }
+ 
         RowLayout {
             id: row
             anchors.centerIn: parent
             spacing: 8
 
-            Image {
+            Rectangle {
+                width: 32
+                height: 32
+                radius: 2
+                color: "transparent" //Colors.primary
+
+                visible: root.icon !== ""
+
+                Image {
+                    anchors.fill: parent
+                    source: root.icon
+                    fillMode: Image.PreserveAspectFit
+
+                    visible: root.icon !== ""
+                }
+            }
+
+            /*Image {
                 source: root.icon || ""
                 width: 16
                 height: 16
+                fillMode: Image.PreserveAspectFit
+
                 visible: root.icon !== ""
                 Layout.alignment: Qt.AlignVCenter
-            }
+            }*/
 
             Text {
                 text: root.message

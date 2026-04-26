@@ -5,7 +5,7 @@ import Quickshell.Hyprland
 import "../../services"
 import "../../config"
 import "../../utils"
-import "../"
+import "../common/interface"
 
 Item {
     id: root

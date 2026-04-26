@@ -4,7 +4,7 @@ import Qt5Compat.GraphicalEffects
 import Quickshell.Widgets
 import Quickshell.Wayland
 
-import "../"
+import "../common/interface"
 import "../../services"
 import "../../config"
 import "../../utils"

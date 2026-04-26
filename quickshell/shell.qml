@@ -35,6 +35,10 @@ ShellRoot {
         id: toastOverlay
     }
 
+    NotificationPopups {
+        id: notificationPopups
+    }
+
     Binding {
         target: topBar
         property: "controlCenterOpenedScreenName"

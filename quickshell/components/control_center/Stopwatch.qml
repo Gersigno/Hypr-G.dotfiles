@@ -3,7 +3,7 @@ import Quickshell
 
 import "../../config"
 import "../../utils"
-import "../common"
+import "../common/interactive"
 
 Item {
     id: root

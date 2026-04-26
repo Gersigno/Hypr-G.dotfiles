@@ -9,8 +9,9 @@ import "../components/topbar"
 Item {
     id: root
 
+    property bool opened: true
     property int targetOpacity: 1
-    property int barHeight: 24
+    property int barHeight: opened ? 24 : 0
     property real statusWidth: 0
     property real clockWidth: 0
     property string controlCenterOpenedScreenName: ""
@@ -62,6 +63,7 @@ Item {
                 id: clockComponent
 
                 opacity: root.controlCenterOpenedScreenName === modelData.name ? 0 : 1
+                visible: opened
                 Behavior on opacity {
                     NumberAnimation { duration: 250; easing.type: Easing.InOutQuad }
                 }
@@ -77,6 +79,7 @@ Item {
 
             Status {
                 id: statusComponent
+                visible: opened
                 
                 Component.onCompleted: root.statusWidth = width
                 onWidthChanged: root.statusWidth = width
@@ -86,6 +89,15 @@ Item {
                     top: parent.top
                 }
             }
+        }
+    }
+
+    GlobalShortcut {
+        name: "topBarToggle"
+        description: "Toggles top bar on press"
+        
+        onPressed: {
+            root.opened = !root.opened;
         }
     }
 }
