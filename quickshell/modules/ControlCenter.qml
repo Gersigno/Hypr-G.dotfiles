@@ -16,6 +16,7 @@ Item {
     id: root
 
     property string openedScreenName: ""
+    //property bool topBarVisible: true
     readonly property bool opened: openedScreenName !== ""
     readonly property int animationDuration: 450
 
@@ -45,7 +46,7 @@ Item {
     /*Binding {
         target: topBarComponent
         property: "clockComponent.visible"
-        value: root.opened ? false : true
+        value: root.opened ? false : true 
         restoreMode: Binding.RestoreBindingOrValue
     }*/
     
@@ -113,10 +114,8 @@ Item {
             InvertedCorner {
                 id: topLeftCorner
                 corner: InvertedCorner.Corner.TopRight
-                cornerRadius: isOpened ? root.fullRadius : root.radius
+                cornerRadius: isOpened ? root.fullRadius : (!topBarComponent.opened ? 0 : root.radius)
                 cornerColor: root.backgroundColor
-
-                opacity: isOpened ? 1.0 : 0.0 //todo: fix
 
                 Behavior on cornerRadius {
                     NumberAnimation { 
@@ -339,9 +338,8 @@ Item {
             InvertedCorner {
                 id: topRightCorner
                 corner: InvertedCorner.Corner.TopLeft
-                cornerRadius: isOpened ? root.fullRadius : root.radius
+                cornerRadius: isOpened ? root.fullRadius : (!topBarComponent.opened ? 0 : root.radius)
                 cornerColor: root.backgroundColor
-                opacity: isOpened ? 1.0 : 0.0 //todo: fix
                 x: contentContainer.width + topLeftCorner.width
                 Behavior on cornerRadius {
                     NumberAnimation { 

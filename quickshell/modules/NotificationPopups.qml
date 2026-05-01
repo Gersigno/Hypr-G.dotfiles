@@ -6,9 +6,18 @@ import Quickshell.Wayland
 import "../services"
 import "../utils"
 import "../config"
+import "../utils"
+import "../components/common/interface"
 
 Scope {
     id: root
+
+    readonly property int globalRadius: HyprlandConfig.radiusFull
+    readonly property int innerRadius: HyprlandConfig.radius > 0 ? HyprlandConfig.radius : 12
+
+    readonly property color backgroundColor: Config.isOled ? "#000000" : Colors.background
+    readonly property color foregroundColor: Colors.on_surface
+    readonly property color foregroundVariantColor: Colors.on_surface_variant
 
     Variants {
         model: Quickshell.screens
@@ -39,137 +48,182 @@ Scope {
             ListView {
                 id: notifList
                 anchors.top: parent.top
-                anchors.topMargin: 12
+                anchors.topMargin: root.globalRadius * 2
                 anchors.right: parent.right
-                anchors.rightMargin: 12
+                //anchors.rightMargin: 12
                 width: 340
 
                 model: Notifications.popupList
-                spacing: 6
+                spacing: root.innerRadius * 2
                 implicitHeight: contentHeight
+                verticalLayoutDirection: ListView.BottomToTop
 
-                add: Transition {
+                /*add: Transition {
+                    NumberAnimation { property: "scale"; from: 0; to: 1; duration: 250; easing.type: Easing.OutCubic }
                     NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 250; easing.type: Easing.OutCubic }
-                    NumberAnimation { property: "x"; from: 60; to: 0; duration: 250; easing.type: Easing.OutCubic }
-                }
-
-                remove: Transition {
-                    NumberAnimation { property: "opacity"; from: 1; to: 0; duration: 200; easing.type: Easing.InCubic }
-                    NumberAnimation { property: "x"; from: 0; to: 60; duration: 200; easing.type: Easing.InCubic }
                 }
 
                 displaced: Transition {
-                    NumberAnimation { properties: "y"; duration: 250; easing.type: Easing.OutCubic }
-                }
+                    NumberAnimation { 
+                        properties: "y"; 
+                        duration: 250; 
+                        easing.type: Easing.OutCubic 
+                    }
+                }*/
 
-                delegate: Rectangle {
-                    id: bubble
+                delegate: Item {
+                    id: delegateItem
+
+                    transformOrigin: Item.CenterRight
+
+                    ListView.delayRemove: false
+                    ListView.onRemove: removeAnimation.start()
+
+                    /*SequentialAnimation {
+                        id: removeAnimation
+                        PropertyAction { target: delegateItem; property: "ListView.delayRemove"; value: true }
+                        ParallelAnimation {
+                            //NumberAnimation { target: delegateItem; property: "scale"; to: 0; duration: 2000; easing.type: Easing.InCubic }
+                            //NumberAnimation { target: delegateItem; property: "opacity"; to: 0; duration: 2000; easing.type: Easing.InCubic }
+                        }
+                        PropertyAction { target: delegateItem; property: "ListView.delayRemove"; value: false }
+                    }*/
+
                     width: notifList.width
-                    height: innerRow.implicitHeight + 20
-                    radius: HyprlandConfig.radius > 0 ? HyprlandConfig.radius : 12
-                    color: Colors.surface_container
-                    anchors.right: parent ? parent.right : undefined
+                    height: bubble.height + bottomRightCorner.height // Account for corner radius
 
-                    RowLayout {
-                        id: innerRow
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                            verticalCenter: parent.verticalCenter
-                            margins: 12
-                        }
-                        spacing: 10
+                    //Bottom
+                    InvertedCorner {
+                        id: bottomRightCorner
+                        corner: InvertedCorner.Corner.TopRight
+                        cornerRadius: index > 0 ? root.innerRadius : root.globalRadius
+                        cornerColor: root.backgroundColor
+                        anchors.top: bubble.bottom
+                        anchors.right: parent.right
+                    }
 
-                        // App icon
-                        Item {
-                            Layout.preferredWidth: 36
-                            Layout.preferredHeight: 36
-                            Layout.alignment: Qt.AlignVCenter
+                    //Top
+                    InvertedCorner {
+                        id: topRightCorner
+                        corner: InvertedCorner.Corner.BottomRight
+                        cornerRadius: index < notifList.count - 1 ? root.innerRadius : root.globalRadius
+                        cornerColor: root.backgroundColor
+                        anchors.bottom: bubble.top
+                        anchors.right: parent.right
+                    }
 
-                            Image {
-                                id: notifIcon
-                                anchors.fill: parent
-                                fillMode: Image.PreserveAspectFit
-                                source: {
-                                    const icon = modelData.appIcon || modelData.image
-                                    if (!icon) return ""
-                                    if (icon.startsWith("/")) return "file://" + icon
-                                    const res = Quickshell.iconPath(icon, 32)
-                                    return res ? (res.startsWith("image://") ? res : "file://" + res) : ""
+                    Rectangle {
+                        id: bubble
+                        width: notifList.width
+                        height: innerRow.implicitHeight + 20
+                        //radius: HyprlandConfig.radius > 0 ? HyprlandConfig.radius : 12
+                        topLeftRadius: root.globalRadius
+                        bottomLeftRadius: root.globalRadius
+                        color: root.backgroundColor
+                        anchors.right: parent ? parent.right : undefined
+
+                        RowLayout {
+                            id: innerRow
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                                verticalCenter: parent.verticalCenter
+                                margins: 12
+                            }
+                            spacing: 10
+
+                            // App icon
+                            Item {
+                                Layout.preferredWidth: 36
+                                Layout.preferredHeight: 36
+                                Layout.alignment: Qt.AlignVCenter
+
+                                Image {
+                                    id: notifIcon
+                                    anchors.fill: parent
+                                    fillMode: Image.PreserveAspectFit
+                                    source: {
+                                        const icon = modelData.appIcon || modelData.image
+                                        if (!icon) return ""
+                                        if (icon.startsWith("/")) return "file://" + icon
+                                        const res = Quickshell.iconPath(icon, 32)
+                                        return res ? (res.startsWith("image://") ? res : "file://" + res) : ""
+                                    }
+                                    visible: status === Image.Ready
                                 }
-                                visible: status === Image.Ready
-                            }
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "󰵅"
-                                visible: notifIcon.status !== Image.Ready
-                                font.family: "Symbols Nerd Font"
-                                font.pixelSize: 22
-                                color: Colors.on_surface_variant
-                            }
-                        }
-
-                        // Text content
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 3
-
-                            Text {
-                                text: modelData.appName || modelData.summary || ""
-                                color: Colors.on_surface_variant
-                                font.family: Config.fontFamily
-                                font.pixelSize: 11
-                                elide: Text.ElideRight
-                                Layout.fillWidth: true
-                                visible: text !== ""
-                            }
-
-                            Text {
-                                text: modelData.summary || ""
-                                color: Colors.on_surface
-                                font.family: Config.fontFamily
-                                font.pixelSize: 13
-                                font.bold: true
-                                elide: Text.ElideRight
-                                Layout.fillWidth: true
-                                visible: text !== ""
-                            }
-
-                            Text {
-                                text: modelData.body || ""
-                                color: Colors.on_surface_variant
-                                font.family: Config.fontFamily
-                                font.pixelSize: 12
-                                elide: Text.ElideRight
-                                wrapMode: Text.Wrap
-                                maximumLineCount: 3
-                                Layout.fillWidth: true
-                                visible: text !== ""
-                            }
-                        }
-
-                        // Close button
-                        Item {
-                            Layout.preferredWidth: 24
-                            Layout.preferredHeight: 24
-                            Layout.alignment: Qt.AlignTop
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: Notifications.timeoutNotification(modelData.notificationId)
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: "×"
-                                    color: Colors.on_surface_variant
-                                    font.pixelSize: 18
+                                    text: "󰵅"
+                                    visible: notifIcon.status !== Image.Ready
+                                    font.family: "Symbols Nerd Font"
+                                    font.pixelSize: 22
+                                    color: root.foregroundVariantColor
+                                }
+                            }
+
+                            // Text content
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 3
+
+                                Text {
+                                    text: modelData.appName || modelData.summary || ""
+                                    color: root.foregroundVariantColor
+                                    font.family: Config.fontFamily
+                                    font.pixelSize: 11
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                    visible: text !== ""
+                                }
+
+                                Text {
+                                    text: modelData.summary || ""
+                                    color: root.foregroundColor
+                                    font.family: Config.fontFamily
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                    visible: text !== ""
+                                }
+
+                                Text {
+                                    text: modelData.body || ""
+                                    color: root.foregroundVariantColor
+                                    font.family: Config.fontFamily
+                                    font.pixelSize: 12
+                                    elide: Text.ElideRight
+                                    wrapMode: Text.Wrap
+                                    maximumLineCount: 3
+                                    Layout.fillWidth: true
+                                    visible: text !== ""
+                                }
+                            }
+
+                            // Close button
+                            Item {
+                                Layout.preferredWidth: 24
+                                Layout.preferredHeight: 24
+                                Layout.alignment: Qt.AlignTop
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: Notifications.timeoutNotification(modelData.notificationId)
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "×"
+                                        color: foregroundVariantColor
+                                        font.pixelSize: 18
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                
             }
         }
     }

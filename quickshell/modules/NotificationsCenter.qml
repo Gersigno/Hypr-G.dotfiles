@@ -96,8 +96,6 @@ Item {
             width: isOpened ? root.finalWidth : root.defaultWidth
             height: isOpened ? modelData.height : root.defaultHeight
 
-            
-
             Behavior on width { 
                 NumberAnimation { 
                     duration: root.animationDuration; 
@@ -126,9 +124,8 @@ Item {
                 InvertedCorner {
                     id: invertedCorner
                     corner: InvertedCorner.Corner.TopRight
-                    cornerRadius: isOpened ? root.fullRadius : root.radius
+                    cornerRadius: isOpened ? root.fullRadius : (!topBarComponent.opened ? 0 : root.radius)
                     cornerColor: root.backgroundColor
-                    opacity: isOpened ? 1.0 : 0.0
                     Behavior on cornerRadius { 
                         NumberAnimation { 
                             duration: root.animationDuration; 

@@ -63,7 +63,7 @@ Item {
                 id: clockComponent
 
                 opacity: root.controlCenterOpenedScreenName === modelData.name ? 0 : 1
-                visible: opened
+                //visible: opened
                 Behavior on opacity {
                     NumberAnimation { duration: 250; easing.type: Easing.InOutQuad }
                 }
@@ -79,7 +79,7 @@ Item {
 
             Status {
                 id: statusComponent
-                visible: opened
+                //visible: opened
                 
                 Component.onCompleted: root.statusWidth = width
                 onWidthChanged: root.statusWidth = width
