@@ -1,0 +1,5 @@
+-- Custom environment variables
+-- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
+-- Example:
+-- hl.env("GBM_BACKEND", "nvidia-drm")
+-- hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")

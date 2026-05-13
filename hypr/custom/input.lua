@@ -1,0 +1,8 @@
+-- Custom input overrides
+-- See https://wiki.hypr.land/Configuring/Basics/Variables/#input
+-- Example:
+-- hl.config({
+--     input = {
+--         kb_layout = "us",
+--     },
+-- })

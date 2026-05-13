@@ -1,0 +1,6 @@
+-- Custom program overrides
+-- Override programs defined in hypr-g/hyprland/programs.lua
+-- Example:
+-- programs.terminal    = "foot"
+-- programs.web_browser = "firefox"
+-- programs.launcher    = "fuzzel"

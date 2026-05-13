@@ -1,0 +1,4 @@
+-- Custom keybinds
+-- See https://wiki.hypr.land/Configuring/Basics/Binds/
+-- Example:
+-- hl.bind("SUPER + Return", hl.dsp.exec_cmd(programs.terminal))

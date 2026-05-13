@@ -1,0 +1,9 @@
+-- Custom interface / look and feel overrides
+-- See https://wiki.hypr.land/Configuring/Basics/Variables/
+-- Example:
+-- hl.config({
+--     general = {
+--         gaps_in  = 6,
+--         gaps_out = 12,
+--     },
+-- })
