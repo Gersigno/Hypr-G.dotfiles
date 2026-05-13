@@ -55,7 +55,13 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 const data = JSON.parse(text);
-                const raw = data.custom !== undefined ? data.custom : String(data.int);
+                let raw;
+                if (data.css !== undefined)
+                    raw = data.css;
+                else if (data.custom !== undefined)
+                    raw = data.custom;
+                else
+                    raw = String(data.int);
                 root.gapsOut = parseInt(raw.trim().split(/\s+/)[0]);
             }
         }

@@ -96,7 +96,9 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: Hyprland.dispatch(`workspace ${workspaceId}`)
+                        onClicked: {
+                            Hyprland.dispatch('hl.dsp.focus({ workspace = "' + workspaceId + '" })')
+                        }
                     }
                 }
             }
