@@ -13,6 +13,10 @@ Item {
     property string icon: ""
     property int duration: 3000
 
+    readonly property color surface_container_high: Colors.surface_container_high
+    readonly property color shadow: Colors.shadow
+    readonly property color on_surface: Colors.on_surface
+
     implicitWidth: container.implicitWidth
     implicitHeight: container.implicitHeight
 
@@ -78,12 +82,12 @@ Item {
         implicitWidth: row.implicitWidth + 24
         implicitHeight: row.implicitHeight + 16
         radius: HyprlandConfig.radius
-        color: Colors.surface_container_high
+        color: root.surface_container_high
 
         layer.enabled: true
         layer.effect: MultiEffect {
             shadowEnabled: true
-            shadowColor: Colors.shadows //"red"//HyprlandConfig.shadowColor
+            shadowColor: root.shadow //"red"//HyprlandConfig.shadowColor
             shadowBlur: 2
             shadowHorizontalOffset: 0
             shadowVerticalOffset: 8
@@ -127,7 +131,7 @@ Item {
                 text: root.message
                 font.pixelSize: 13
                 font.family: Config.fontFamily
-                color: Colors.on_surface
+                color: root.on_surface
                 Layout.alignment: Qt.AlignVCenter
             }
         }

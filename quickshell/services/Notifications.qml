@@ -79,7 +79,7 @@ Singleton {
     property string filePath: StandardPaths.writableLocation(StandardPaths.GenericCacheLocation) + "/notifications/notifications.json"
     property list<Notif> list: []
     property var popupList: list.filter((notif) => notif.popup);
-    property bool popupInhibited: (GlobalStates?.sidebarRightOpen ?? false) || silent
+    property bool popupInhibited: silent
     property var latestTimeForApp: ({})
 
     Component {

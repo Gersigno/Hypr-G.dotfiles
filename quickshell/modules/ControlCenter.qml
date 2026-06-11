@@ -60,6 +60,7 @@ Item {
         screen: modelData
 
         readonly property bool isOpened: root.openedScreenName === modelData.name
+        readonly property bool isClosing: !isOpened && localFullyClosed
         readonly property bool localFullyClosed: !(container.height === root.defaultHeight)
         property bool modelInitialized: false
 
@@ -140,36 +141,36 @@ Item {
 
                 Behavior on width { 
                     NumberAnimation { 
-                        duration: root.animationDuration; 
-                        easing.type: Easing.InOutQuint 
+                        duration: root.animationDuration * (!isClosing ? 2 : 0.5); 
+                        easing.type: !isClosing ? Easing.OutElastic : Easing.InOutQuad
+                        easing.period: !isClosing ? 0.6 : 1
+                        easing.amplitude: !isClosing ? 0.2 : 1
                     } 
                 }
                 Behavior on height { 
                     NumberAnimation { 
-                        duration: root.animationDuration; 
-                        easing.type: Easing.InOutQuint 
+                        duration: root.animationDuration * (!isClosing ? 2 : 0.5); 
+                        easing.type: !isClosing ? Easing.OutElastic : Easing.InOutQuad
+                        easing.period: !isClosing ? 0.6 : 1
+                        easing.amplitude: !isClosing ? 0.2 : 1
                     } 
                 }
                 Behavior on bottomLeftRadius {
                     NumberAnimation { 
                         duration: root.animationDuration; 
-                        easing.type: Easing.InOutQuint 
+                        easing.type: Easing.OutElastic
+                        easing.period: 0.6
+                        easing.amplitude: 0.2
                     }
                 }
                 Behavior on bottomRightRadius {
                     NumberAnimation { 
                         duration: root.animationDuration; 
-                        easing.type: Easing.InOutQuint 
+                        easing.type: Easing.OutElastic
+                        easing.period: 0.6
+                        easing.amplitude: 0.2
                     }
                 }
-
-                //Content
-                /*FolderListModel {
-                    id: ccFilesModel
-                    folder: Qt.resolvedUrl("../components/control_center")
-                    nameFilters: ["*.qml"]
-                    showDirs: false
-                }*/
 
                 SwipeView {
                     id: carousel
@@ -179,7 +180,8 @@ Item {
                     anchors.bottom: tabBar.top
                     visible: isOpened
                     clip: true
-                    currentIndex: 1 //! Clock (alphabetical: Calendar=0, Clock=1, Media=2, Wallpaper=3)
+                    interactive: false
+                    //currentIndex: 1 //! Clock (alphabetical: Calendar=0, Clock=1, Media=2, Wallpaper=3)
 
                     Component.onCompleted: {
                         contentItem.highlightMoveDuration = 0
@@ -268,20 +270,24 @@ Item {
                                 }
                             }
 
-                            Rectangle {
+                            /*Rectangle {
                                 anchors.fill: parent
                                 anchors.margins: 4
                                 radius: root.fullRadius - 4
-                                color: "transparent"//isCurrent ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
-                                /*Behavior on color {
-                                    ColorAnimation { duration: 150 }
-                                }*/
-                            }
+                                //width: label.width + 20
+                                color: "red"//isCurrent ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+                            }*/
 
                             Text {
+                                id: label
                                 anchors.centerIn: parent
                                 text: {
                                     const fileName = model.fileName.replace(".qml", "")
+                                    if (fileName === "Dashboard") return "   Dashboard"
+                                    if (fileName === "Metrics") return "󰓅   Metrics"
+                                    if (fileName === "Wallpaper") return "   Wallpaper"
+                                    if (fileName === "Clock") return "    Clock"
+                                    if (fileName === "Eureka") return "    Eureka AI"
                                     if (fileName === "_Debug") return "   Debug"
                                     return fileName
                                 }

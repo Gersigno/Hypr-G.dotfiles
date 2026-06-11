@@ -29,7 +29,7 @@ Item {
         Row {
             id: contentColumn
             width: parent.width
-            height: childrenRect.height
+            //height: childrenRect.height
             spacing: 8
 
             ClippingRectangle {

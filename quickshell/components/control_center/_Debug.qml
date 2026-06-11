@@ -165,6 +165,36 @@ Item {
                                 fullRounded: true;
                             }
                         }
+
+                        Column {
+                            spacing: 8
+                            Text {
+                                text: "Top icon";
+                                color: Colors.on_surface_variant;
+                                font.family: Config.fontFamily;
+                                font.pixelSize: 12;
+                            }
+                            Button { 
+                                text: "Top icon primary";
+                                topIcon: "󰀻";
+                                severity: Button.Severity.Primary;
+                            }
+                            Button { 
+                                text: "Top icon secondary";
+                                topIcon: "󰀻";
+                                severity: Button.Severity.Secondary;
+                            }
+                            Button { 
+                                text: "Top icon warning";
+                                topIcon: "󰀻";
+                                severity: Button.Severity.Warning;
+                            }
+                            Button { 
+                                text: "Top icon danger";
+                                topIcon: "󰀻";
+                                severity: Button.Severity.Danger;
+                            }
+                        }
                     }
                 }
             }

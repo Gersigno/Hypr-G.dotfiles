@@ -9,7 +9,7 @@ import "../../utils"
 Item {
     id: root
     //readonly property var controlCenterComponent: null
-    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
+    readonly property color backgroundColor: "transparent"//Config.isOled ? "#000" : Colors.background
     readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
     readonly property int radius: HyprlandConfig.radius
     readonly property string font: Config.fontFamily

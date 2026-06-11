@@ -1,33 +1,29 @@
 import QtQuick
 import Quickshell
 
-import "../../config"
-import "../../utils"
+import "../../../config"
+import "../../../utils"
+import "../../../services"
+import "../../common/interface"
 
 Item {
     id: root
 
-    implicitWidth: 420
-    implicitHeight: column.height + 44
-
-    // ── Color aliases ────────────────────────────────────────────────────
     readonly property color fg:       Colors.on_background
     readonly property color fgSub:    Colors.on_surface_variant
     readonly property color fgMuted:  Colors.outline
     readonly property color accent:   Colors.primary
     readonly property color accentFg: Colors.on_primary
     readonly property string fontName: Config.fontFamily
+    readonly property string font: Config.fontFamily
 
-    // ── Display state ────────────────────────────────────────────────────
     property int viewYear:  new Date().getFullYear()
-    property int viewMonth: new Date().getMonth()   // 0-based
+    property int viewMonth: new Date().getMonth()
 
-    // Today reference (static — refreshed when component loads)
     readonly property int todayDay:   new Date().getDate()
     readonly property int todayMonth: new Date().getMonth()
     readonly property int todayYear:  new Date().getFullYear()
 
-    // ── Helpers ──────────────────────────────────────────────────────────
     function daysInMonth(y, m)  { return new Date(y, m + 1, 0).getDate() }
     function firstWeekDay(y, m) { return new Date(y, m, 1).getDay() }   // 0 = Sun
 
@@ -44,16 +40,18 @@ Item {
         viewMonth = todayMonth
     }
 
-    // ── Content ──────────────────────────────────────────────────────────
+    BackgroundLayer {
+        id: background
+        anchors.fill: parent
+    }
+
     Column {
         id: column
         anchors.top:   parent.top
         anchors.left:  parent.left
         anchors.right: parent.right
-        anchors.topMargin:   22
-        anchors.leftMargin:  20
-        anchors.rightMargin: 20
-        spacing: 10
+        anchors.margins: 8
+        spacing: 4
 
         // ── Header ───────────────────────────────────────────────────────
         Item {

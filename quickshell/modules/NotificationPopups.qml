@@ -74,7 +74,7 @@ Scope {
                 delegate: Item {
                     id: delegateItem
 
-                    transformOrigin: Item.CenterRight
+                    //transformOrigin: Item.CenterRight
 
                     ListView.delayRemove: false
                     ListView.onRemove: removeAnimation.start()

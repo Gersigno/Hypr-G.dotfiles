@@ -94,7 +94,12 @@ hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1.
 hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}     } })
 hl.curve("wind",           { type = "bezier", points = { {0.12, 0.92}, {0.08, 1.0}  } })
 hl.curve("overshot",       { type = "bezier", points = { {0.18, 0.95}, {0.2, 1.08}  } })
-
+hl.curve("OutElastic", { 
+    type = "spring",
+    mass = 1.0,
+    stiffness = 25,
+    dampening = 6.5
+})
 -- Animations
 hl.animation({ leaf = "global",        enabled = true, speed = 10,   bezier = "default" })
 hl.animation({ leaf = "border",        enabled = true, speed = 5.39, bezier = "easeOutQuint" })
@@ -115,6 +120,6 @@ hl.animation({ leaf = "layersOut",     enabled = true, speed = 4,    bezier = "o
 hl.animation({ leaf = "fadeLayersIn",  enabled = true, speed = 1.79, bezier = "almostLinear" })
 hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.39, bezier = "almostLinear" })
 
-hl.animation({ leaf = "workspaces",    enabled = true, speed = 4,    bezier = "overshot",     style = "slide" })
+hl.animation({ leaf = "workspaces",    enabled = true, speed = 1,    spring = "OutElastic",     style = "slide" })
 -- hl.animation({ leaf = "workspacesIn",  enabled = true, speed = 1.21, bezier = "almostLinear", style = "slide" })
 -- hl.animation({ leaf = "workspacesOut", enabled = true, speed = 1.94, bezier = "almostLinear", style = "slide" })

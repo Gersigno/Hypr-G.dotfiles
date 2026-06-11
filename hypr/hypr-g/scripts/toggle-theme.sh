@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # --- Configuration ---
-# Path to the Hyprland environment file
-THEME_FILE="$HOME/.config/hypr/hypr-g/hyprland/env.conf"
+# Path to the Hyprland environment file (MODIFIÉ EN .LUA)
+THEME_FILE="$HOME/.config/hypr/hypr-g/hyprland/env.lua"
 
 # GTK theme names
 LIGHT_GTK_THEME="Adwaita"
@@ -19,10 +19,10 @@ GET_WALLPAPER_SCRIPT="$HOME/.config/hypr/hypr-g/scripts/get_wallpaper.sh"
 
 # Function to toggle the theme
 toggle_theme() {
-    # Check the current theme by reading the env.conf file
+    # Check the current theme by reading the env.lua file
     if [ -f "$THEME_FILE" ]; then
-        # Parse the THEME_MODE from the Hyprland env.conf file
-        CURRENT_MODE=$(grep "^env = THEME_MODE" "$THEME_FILE" | cut -d',' -f2)
+        # Parse THEME_MODE depuis la syntaxe Lua hl.env("THEME_MODE", "valeur")
+        CURRENT_MODE=$(grep "hl.env(\"THEME_MODE\"" "$THEME_FILE" | sed -E 's/.*"([^"]+)".*/\1/')
     else
         # Default to dark mode if the file doesn't exist
         CURRENT_MODE="dark"
@@ -37,8 +37,8 @@ toggle_theme() {
         NEW_MODE="light"
     fi
 
-    # Use sed to update the theme_mode line in the Hyprland env.conf file
-    sed -i "s|^env = THEME_MODE.*$|env = THEME_MODE,$NEW_MODE|" "$THEME_FILE"
+    # Utilisation de sed pour mettre à jour proprement la ligne au format Lua
+    sed -i "s|hl.env(\"THEME_MODE\",.*)|hl.env(\"THEME_MODE\",                \"$NEW_MODE\")|" "$THEME_FILE"
 
     # Get the current wallpaper path by executing the get_wallpaper script
     WALLPAPER_PATH=$("$GET_WALLPAPER_SCRIPT")

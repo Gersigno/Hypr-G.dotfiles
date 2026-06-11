@@ -5,17 +5,14 @@ import Quickshell.Widgets
 import QtQuick.Shapes
 import QtQuick.Effects
 
-import "../../config"
-import "../../utils"
+import "../../../config"
+import "../../../utils"
+import "../../common/interface"
 import qs.services
 
 Item {
     id: root
 
-    implicitWidth: 460
-    implicitHeight: 180
-
-    // ── Color aliases ───────────────────────────────────────────────────────
     readonly property color background:     Colors.background
     readonly property color fg:             Colors.on_background
     readonly property color fgSub:          Colors.on_surface_variant
@@ -23,19 +20,13 @@ Item {
     readonly property color surfaceHigh:    Colors.surface_container_high
     readonly property color surfaceHighest: Colors.surface_container_highest
     readonly property color onAccent:       Colors.on_primary
+    readonly property string font:          Config.fontFamily
 
-    // ── MPRIS player ────────────────────────────────────────────────────────
     readonly property MprisPlayer player: Media.activePlayer
     readonly property bool hasPlayer: player !== null
 
-    // Local position for smooth progress (MPRIS position may not update reactively)
     property real localPosition: 0
 
-    onPlayerChanged: {
-        localPosition = player?.position ?? 0
-    }
-
-    // Advance local position tick-by-tick while playing
     Timer {
         interval: 500
         running: root.player?.isPlaying ?? false
@@ -80,15 +71,23 @@ Item {
         return p.identity ?? ""
     }
 
-    // ── Empty state ──────────────────────────────────────────────────────────
-    Text {
+    onPlayerChanged: {
+        localPosition = player?.position ?? 0
+    }
+
+    BackgroundLayer {
+        id: background
+        anchors.fill: parent
+    }
+
+    /*Text {
         visible: !root.hasPlayer
         anchors.centerIn: parent
         text: "No active media player"
         color: root.fgSub
-        font.family: Config.fontFamily
+        font.family: root.font
         font.pixelSize: 15
-    }
+    }*/
 
     Item {
         id: backgroundArtLayer
@@ -114,7 +113,7 @@ Item {
             Behavior on opacity { 
                 NumberAnimation { 
                     duration: 300 
-                    } 
+                } 
             }
         }
 
@@ -149,14 +148,14 @@ Item {
 
     // ── Player view ──────────────────────────────────────────────────────────
     Item {
-        visible: root.hasPlayer
+        //visible: root.hasPlayer
         anchors.fill: parent
-        anchors.margins: 20
+        anchors.margins: 8
 
         // Cover art ────────────────────────────────────────────────────────
         ClippingRectangle {
             id: coverRect
-            width: 140; height: 140
+            width: 120; height: 120
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
             radius: 14
@@ -175,8 +174,10 @@ Item {
             Text {
                 anchors.centerIn: parent
                 visible: artImage.status !== Image.Ready
-                text: "🎵"
+                color: root.fgSub
+                text: ""
                 font.pixelSize: 52
+                transform: Translate { x: -2 }
             }
 
             // Subtle inner border
@@ -223,7 +224,7 @@ Item {
             // Track title
             Text {
                 width: parent.width - sourceBadge.width - 8
-                text: root.player?.trackTitle ?? "—"
+                text: root.player?.trackTitle ?? "Not playing"
                 color: root.fg
                 font.family: Config.fontFamily
                 font.pixelSize: 16
@@ -250,13 +251,13 @@ Item {
                 spacing: 10
 
                 Rectangle {
-                    width: 38; height: 38;
+                    width: 30; height: 30;
                     color: "transparent"//prevHov.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent"
                     Behavior on color { ColorAnimation { duration: 120 } }
 
                     Text {
                         anchors.centerIn: parent
-                        text: ""
+                        text: ""
                         color: root.fg
                         font.pixelSize: 16
                         opacity: root.player?.canGoPrevious ? 1 : 0.4
@@ -279,20 +280,21 @@ Item {
                 }
 
                 Rectangle {
-                    width: 38; height: 38; radius: 19
-                    color: root.accent
+                    width: 30; height: 30; radius: 15
+                    color: root.hasPlayer ? root.accent : "transparent"
 
                     Text {
                         anchors.centerIn: parent
                         // Slight optical nudge for the play triangle
                         x: (root.player?.isPlaying ?? false) ? 0 : 1
                         text: (root.player?.isPlaying ?? false) ? "" : ""
-                        color: root.onAccent
+                        color: root.hasPlayer ? root.onAccent : root.fgSub
                         font.pixelSize: 18
+                        opacity: root.hasPlayer ? 1 : 0.6
                     }
                     MouseArea {
                         anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
+                        cursorShape: root.hasPlayer ? Qt.PointingHandCursor : Qt.ArrowCursor
                         onClicked: {
                             if (!root.player) return
                             root.player.isPlaying ? root.player.pause() : root.player.play()
@@ -301,13 +303,13 @@ Item {
                 }
 
                 Rectangle {
-                    width: 38; height: 38;
+                    width: 30; height: 30;
                     color: "transparent"//nextHov.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent"
                     Behavior on color { ColorAnimation { duration: 120 } }
 
                     Text {
                         anchors.centerIn: parent
-                        text: ""
+                        text: ""
                         color: root.fg
                         font.pixelSize: 16
                         opacity: root.player?.canGoNext ? 1 : 0.4
@@ -341,7 +343,8 @@ Item {
                 Rectangle {
                     anchors.fill: parent
                     radius: 3
-                    color: root.surfaceHighest
+                    color: root.fgSub
+                    opacity: 0.4
                 }
                 // Fill
                 Rectangle {
@@ -372,7 +375,7 @@ Item {
                     id: elapsedText
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    text: root.formatTime(root.localPosition)
+                    text: root.hasPlayer ? root.formatTime(root.localPosition) : "-:--"
                     color: root.fgSub
                     font.family: Config.fontFamily
                     font.pixelSize: 11
@@ -380,7 +383,7 @@ Item {
                 Text {
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "−" + root.formatTime(Math.max(0, (root.player?.length ?? 0) - root.localPosition))
+                    text: root.hasPlayer ? "−" + root.formatTime(Math.max(0, (root.player?.length ?? 0) - root.localPosition)) : "-:--"
                     color: root.fgSub
                     font.family: Config.fontFamily
                     font.pixelSize: 11
