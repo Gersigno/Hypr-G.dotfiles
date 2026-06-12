@@ -13,6 +13,7 @@ import "../../../utils"
 import "../../common/interface"
 import "../../common/interactive"
 import qs.services
+import "quicksettings"
 
 Item {
     id: root
@@ -112,53 +113,59 @@ Item {
                 columns: 3
                 rowSpacing: 2
 
-                Button {
+                QSButton {
                     id: wifiButton
                     topIcon: ""
                     text: "Wifi"
-                    severity: Button.Severity.Secondary
+                    description: "Home_5G"
+                    severity: QSButton.Severity.Secondary
+                    options: ["Home_5G", "Neighbor_WiFi", "Coffee_Shop", "iPhone"]
+                    onOptionSelected: (opt) => print("Connect to", opt)
                     Layout.fillWidth: true
                     Layout.preferredWidth: 0
                 }
-                Button {
+                QSButton {
                     id: bluetoothButton
                     topIcon: "󰂯"
                     text: "Bluetooth"
-                    severity: Button.Severity.Secondary
+                    description: "Connected"
+                    severity: QSButton.Severity.Secondary
+                    options: ["Headphones", "Speaker", "Keyboard"]
+                    onOptionSelected: (opt) => print("Pair with", opt)
                     Layout.fillWidth: true
                     Layout.preferredWidth: 0
                 }
-                Button {
+                QSButton {
                     id: airplaneModeButton
                     topIcon: "󰀝"
                     text: "Airplane"
-                    severity: Button.Severity.Secondary
+                    severity: QSButton.Severity.Secondary
                     Layout.fillWidth: true
                     Layout.preferredWidth: 0
+                    Layout.fillHeight: true
                 }
-
-                Button {
+                QSButton {
                     id: darkModeButton
                     topIcon: Theme.isDarkMode ? "󰖙" : "󰖚"
-                    text: Theme.isDarkMode ? "Dark theme" : "Light theme"
-                    severity: Theme.isDarkMode ? Button.Severity.Primary : Button.Severity.Secondary
+                    text: "Dark theme" //Theme.isDarkMode ? "Dark theme" : "Light theme"
+                    severity: Theme.isDarkMode ? QSButton.Severity.Primary : QSButton.Severity.Secondary
                     Layout.fillWidth: true
                     Layout.preferredWidth: 0
                     onClicked: Theme.toggle()
                 }
-                Button {
+                QSButton {
                     id: nightModeButton
                     topIcon: "󱩌"
                     text: "Night mode"
-                    severity: Button.Severity.Secondary
+                    severity: QSButton.Severity.Secondary
                     Layout.fillWidth: true
                     Layout.preferredWidth: 0
                 }
-                Button {
+                QSButton {
                     id: doNotDisturbButton
                     topIcon: ""
                     text: "Caffeine"
-                    severity: Button.Severity.Secondary
+                    severity: QSButton.Severity.Secondary
                     Layout.fillWidth: true
                     Layout.preferredWidth: 0
                 }

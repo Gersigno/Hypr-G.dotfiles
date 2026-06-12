@@ -7,6 +7,7 @@ import "../../config"
 import "../../utils"
 import qs.services
 import "../common/interactive"
+import "dashboard/quicksettings"
 
 Item {
     id: root
@@ -68,131 +69,186 @@ Item {
             currentIndex: 0 
 
             //?Components
-            Rectangle { 
+            Rectangle {
                 color: "transparent";
-                Column {
-                    spacing: 23
-                    anchors.margins: 16
-                    Text { 
-                        text: "Buttons :"; 
-                        color: "white"; 
-                        font.pixelSize: 18; 
-                        font.family: Config.fontFamily
-                        font.bold: true;
-                    }
-                    Row {
-                        spacing: 12
-                        Column {
-                            spacing: 8
-                            Text {
-                                text: "Default buttons";
-                                color: Colors.on_surface_variant;
-                                font.family: Config.fontFamily;
-                                font.pixelSize: 12;
-                            }
-                            Button { 
-                                text: "Primary button";
-                                severity: Button.Severity.Primary;
-                            }
-                            Button { 
-                                text: "Secondary button";
-                                severity: Button.Severity.Secondary;
-                            }
-                            Button { 
-                                text: "Warning button";
-                                severity: Button.Severity.Warning;
-                            }
-                            Button { 
-                                text: "Danger button";
-                                severity: Button.Severity.Danger;
-                            }
-                        }
-                        Column {
-                            spacing: 8
-                            Text {
-                                text: "Disabled buttons";
-                                color: Colors.on_surface_variant;
-                                font.family: Config.fontFamily;
-                                font.pixelSize: 12;
-                            }
-                            Button { 
-                                text: "Primary button";
-                                severity: Button.Severity.Primary;
-                                disabled: true;
-                            }
-                            Button { 
-                                text: "Secondary button";
-                                severity: Button.Severity.Secondary;
-                                disabled: true;
-                            }
-                            Button { 
-                                text: "Warning button";
-                                severity: Button.Severity.Warning;
-                                disabled: true;
-                            }
-                            Button { 
-                                text: "Danger button";
-                                severity: Button.Severity.Danger;
-                                disabled: true;
-                            }
-                        }
-                        Column {
-                            spacing: 8
-                            Text {
-                                text: "Full rounded buttons";
-                                color: Colors.on_surface_variant;
-                                font.family: Config.fontFamily;
-                                font.pixelSize: 12;
-                            }
-                            Button { 
-                                text: "Primary button";
-                                severity: Button.Severity.Primary;
-                                fullRounded: true;
-                            }
-                            Button { 
-                                text: "Secondary button";
-                                severity: Button.Severity.Secondary;
-                                fullRounded: true;
-                            }
-                            Button { 
-                                text: "Warning button";
-                                severity: Button.Severity.Warning;
-                                fullRounded: true;
-                            }
-                            Button { 
-                                text: "Danger button";
-                                severity: Button.Severity.Danger;
-                                fullRounded: true;
-                            }
-                        }
+                clip: true
 
-                        Column {
-                            spacing: 8
-                            Text {
-                                text: "Top icon";
-                                color: Colors.on_surface_variant;
-                                font.family: Config.fontFamily;
-                                font.pixelSize: 12;
+                Flickable {
+                    anchors.fill: parent
+                    anchors.margins: 16
+                    contentHeight: componentsColumn.implicitHeight
+                    clip: true
+
+                    Column {
+                        id: componentsColumn
+                        width: parent.width
+                        spacing: 23
+
+                        Text {
+                            text: "Buttons :";
+                            color: "white";
+                            font.pixelSize: 18;
+                            font.family: Config.fontFamily
+                            font.bold: true;
+                        }
+                        Row {
+                            spacing: 12
+                            Column {
+                                spacing: 8
+                                Text {
+                                    text: "Default buttons";
+                                    color: Colors.on_surface_variant;
+                                    font.family: Config.fontFamily;
+                                    font.pixelSize: 12;
+                                }
+                                Button {
+                                    text: "Primary button";
+                                    severity: Button.Severity.Primary;
+                                }
+                                Button {
+                                    text: "Secondary button";
+                                    severity: Button.Severity.Secondary;
+                                }
+                                Button {
+                                    text: "Warning button";
+                                    severity: Button.Severity.Warning;
+                                }
+                                Button {
+                                    text: "Danger button";
+                                    severity: Button.Severity.Danger;
+                                }
                             }
-                            Button { 
-                                text: "Top icon primary";
-                                topIcon: "󰀻";
-                                severity: Button.Severity.Primary;
+                            Column {
+                                spacing: 8
+                                Text {
+                                    text: "Disabled buttons";
+                                    color: Colors.on_surface_variant;
+                                    font.family: Config.fontFamily;
+                                    font.pixelSize: 12;
+                                }
+                                Button {
+                                    text: "Primary button";
+                                    severity: Button.Severity.Primary;
+                                    disabled: true;
+                                }
+                                Button {
+                                    text: "Secondary button";
+                                    severity: Button.Severity.Secondary;
+                                    disabled: true;
+                                }
+                                Button {
+                                    text: "Warning button";
+                                    severity: Button.Severity.Warning;
+                                    disabled: true;
+                                }
+                                Button {
+                                    text: "Danger button";
+                                    severity: Button.Severity.Danger;
+                                    disabled: true;
+                                }
                             }
-                            Button { 
-                                text: "Top icon secondary";
-                                topIcon: "󰀻";
-                                severity: Button.Severity.Secondary;
+                            Column {
+                                spacing: 8
+                                Text {
+                                    text: "Full rounded buttons";
+                                    color: Colors.on_surface_variant;
+                                    font.family: Config.fontFamily;
+                                    font.pixelSize: 12;
+                                }
+                                Button {
+                                    text: "Primary button";
+                                    severity: Button.Severity.Primary;
+                                    fullRounded: true;
+                                }
+                                Button {
+                                    text: "Secondary button";
+                                    severity: Button.Severity.Secondary;
+                                    fullRounded: true;
+                                }
+                                Button {
+                                    text: "Warning button";
+                                    severity: Button.Severity.Warning;
+                                    fullRounded: true;
+                                }
+                                Button {
+                                    text: "Danger button";
+                                    severity: Button.Severity.Danger;
+                                    fullRounded: true;
+                                }
                             }
-                            Button { 
-                                text: "Top icon warning";
-                                topIcon: "󰀻";
-                                severity: Button.Severity.Warning;
+                        }
+                        Text {
+                            text: "QSButtons (QuickSettings):";
+                            color: "white";
+                            font.pixelSize: 18;
+                            font.family: Config.fontFamily
+                            font.bold: true;
+                        }
+                        Row {
+                            spacing: 12
+
+                            Column {
+                                spacing: 8
+                                Text {
+                                    text: "Default QSButtons";
+                                    color: Colors.on_surface_variant;
+                                    font.family: Config.fontFamily;
+                                    font.pixelSize: 12;
+                                }
+                                QSButton {
+                                    text: "Primary";
+                                    topIcon: "󰀻";
+                                    severity: QSButton.Severity.Primary;
+                                    options: ["Option A", "Option B", "Option C"]
+                                }
+                                QSButton {
+                                    text: "Secondary";
+                                    topIcon: "󰀻";
+                                    severity: QSButton.Severity.Secondary;
+                                }
+                                QSButton {
+                                    text: "Warning";
+                                    topIcon: "󰀻";
+                                    severity: QSButton.Severity.Warning;
+                                }
+                                QSButton {
+                                    text: "Danger";
+                                    topIcon: "󰀻";
+                                    severity: QSButton.Severity.Danger;
+                                }
                             }
-                            Button { 
-                                text: "Top icon danger";
-                                topIcon: "󰀻";
-                                severity: Button.Severity.Danger;
+                            Column {
+                                spacing: 8
+                                Text {
+                                    text: "Description";
+                                    color: Colors.on_surface_variant;
+                                    font.family: Config.fontFamily;
+                                    font.pixelSize: 12;
+                                }
+                                QSButton {
+                                    text: "Primary";
+                                    description: "This is a primary button";
+                                    topIcon: "󰀻";
+                                    severity: QSButton.Severity.Primary;
+                                }
+                                QSButton {
+                                    text: "Secondary";
+                                    description: "This is a secondary button";
+                                    topIcon: "󰀻";
+                                    severity: QSButton.Severity.Secondary;
+                                }
+                                QSButton {
+                                    text: "Warning";
+                                    description: "This is a warning button";
+                                    topIcon: "󰀻";
+                                    severity: QSButton.Severity.Warning;
+                                }
+                                QSButton {
+                                    text: "Danger";
+                                    description: "This is a danger button";
+                                    topIcon: "󰀻";
+                                    severity: QSButton.Severity.Danger;
+                                }
                             }
                         }
                     }

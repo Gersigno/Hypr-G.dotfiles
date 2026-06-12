@@ -10,27 +10,23 @@ Item {
 
     // --- ENUMS & PROPERTIES ---
     enum Severity { Primary, Secondary, Warning, Danger }
-    property int severity: 0 
+    property int severity: 0
     property bool disabled: false
     property bool fullRounded: false
 
-    property alias topIcon: topIcon.text
     property alias text: label.text
 
     signal clicked
 
-    // Property interne pour simplifier les conditions
-    readonly property bool hasIcon: topIcon.text !== ""
-
     // --- COLORS MANAGEMENT ---
-    property color backgroundColor: 
+    property color backgroundColor:
         severity === 0 ? Colors.primary :
         severity === 1 ? Colors.surface_container_high :
         severity === 2 ? Colors.error :
         severity === 3 ? Colors.error_container :
         Colors.primary
-    
-    property color textColor: 
+
+    property color textColor:
         severity === 0 ? Colors.on_primary :
         severity === 1 ? Colors.on_surface :
         severity === 2 ? Colors.on_error :
@@ -39,25 +35,24 @@ Item {
 
     // Couleurs dynamiques des bordures et états
     readonly property color borderTopColor: Qt.hsla(
-        backgroundColor.hslHue, 
-        backgroundColor.hslSaturation, 
-        Math.min(backgroundColor.hslLightness + 0.1, 1.0), 
+        backgroundColor.hslHue,
+        backgroundColor.hslSaturation,
+        Math.min(backgroundColor.hslLightness + 0.1, 1.0),
         backgroundColor.a
     )
 
     readonly property color borderBottomColor: Qt.tint(backgroundColor, "#40000000")
 
     readonly property color hoverBackgroundColor: Qt.hsla(
-        backgroundColor.hslHue, 
-        backgroundColor.hslSaturation, 
-        Math.min(backgroundColor.hslLightness + 0.05, 1.0), 
+        backgroundColor.hslHue,
+        backgroundColor.hslSaturation,
+        Math.min(backgroundColor.hslLightness + 0.05, 1.0),
         backgroundColor.a
     )
 
     // --- DIMENSIONS ---
-    // Si icône : largeur/hauteur s'adaptent au contenu + marges de 8px (16px au total gauche/droite)
-    implicitWidth: hasIcon ? content.implicitWidth + 16 : content.implicitWidth + 32
-    implicitHeight: hasIcon ? content.implicitHeight + 16 : 32
+    implicitWidth: label.implicitWidth + 32
+    implicitHeight: 32
 
     // --- GRAPHICAL STRUCTURE ---
     // 1. TOUT AU FOND : Bordure du bas
@@ -67,7 +62,7 @@ Item {
         color: root.borderBottomColor
         radius: root.fullRounded ? height / 2 : HyprlandConfig.radius
         opacity: root.disabled ? 0.5 : 1.0
-        
+
         // 2. AU MILIEU : Reflet du haut
         Rectangle {
             id: topBorderLayer
@@ -93,34 +88,15 @@ Item {
                     ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
                 }
 
-                // 4. LE CONTENU (TEXTES / ICONES)
-                Column {
-                    id: content
-                    spacing: 4 // Réduit à 4 pour un rendu plus compact et propre en haut à gauche
+                // 4. LE CONTENU (TEXTE)
+                Text {
+                    id: label
+                    anchors.centerIn: parent
 
-                    // Si icône : En haut à gauche à 8px du bord. Sinon : Centré.
-                    anchors.centerIn: root.hasIcon ? undefined : parent
-                    anchors.top: root.hasIcon ? parent.top : undefined
-                    anchors.left: root.hasIcon ? parent.left : undefined
-                    anchors.topMargin: root.hasIcon ? 8 : 0
-                    anchors.leftMargin: root.hasIcon ? 8 : 0
-
-                    Text {
-                        id: topIcon
-                        visible: root.hasIcon
-                        font.pixelSize: 13
-                        font.family: Config.fontFamily
-                        color: root.textColor
-                        font.bold: (root.severity === 0)
-                    }
-
-                    Text {
-                        id: label
-                        font.pixelSize: 13
-                        font.family: Config.fontFamily
-                        color: root.textColor
-                        font.bold: (root.severity === 0)
-                    }
+                    font.pixelSize: 13
+                    font.family: Config.fontFamily
+                    color: root.textColor
+                    font.bold: (root.severity === 0)
                 }
             }
         }
