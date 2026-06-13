@@ -184,70 +184,77 @@ Item {
                             font.family: Config.fontFamily
                             font.bold: true;
                         }
-                        Row {
-                            spacing: 12
+                        Item {
+                            property bool isOverlayHost: true
+                            width: parent.width
+                            implicitHeight: qsButtonsRow.implicitHeight
 
-                            Column {
-                                spacing: 8
-                                Text {
-                                    text: "Default QSButtons";
-                                    color: Colors.on_surface_variant;
-                                    font.family: Config.fontFamily;
-                                    font.pixelSize: 12;
+                            Row {
+                                id: qsButtonsRow
+                                spacing: 12
+
+                                Column {
+                                    spacing: 8
+                                    Text {
+                                        text: "Default QSButtons";
+                                        color: Colors.on_surface_variant;
+                                        font.family: Config.fontFamily;
+                                        font.pixelSize: 12;
+                                    }
+                                    QSButton {
+                                        text: "Primary";
+                                        topIcon: "󰀻";
+                                        severity: QSButton.Severity.Primary;
+                                        options: ["Option A", "Option B", "Option C"]
+                                    }
+                                    QSButton {
+                                        text: "Secondary";
+                                        topIcon: "󰀻";
+                                        severity: QSButton.Severity.Secondary;
+                                    }
+                                    QSButton {
+                                        text: "Warning";
+                                        topIcon: "󰀻";
+                                        severity: QSButton.Severity.Warning;
+                                    }
+                                    QSButton {
+                                        text: "Danger";
+                                        topIcon: "󰀻";
+                                        severity: QSButton.Severity.Danger;
+                                    }
                                 }
-                                QSButton {
-                                    text: "Primary";
-                                    topIcon: "󰀻";
-                                    severity: QSButton.Severity.Primary;
-                                    options: ["Option A", "Option B", "Option C"]
-                                }
-                                QSButton {
-                                    text: "Secondary";
-                                    topIcon: "󰀻";
-                                    severity: QSButton.Severity.Secondary;
-                                }
-                                QSButton {
-                                    text: "Warning";
-                                    topIcon: "󰀻";
-                                    severity: QSButton.Severity.Warning;
-                                }
-                                QSButton {
-                                    text: "Danger";
-                                    topIcon: "󰀻";
-                                    severity: QSButton.Severity.Danger;
-                                }
-                            }
-                            Column {
-                                spacing: 8
-                                Text {
-                                    text: "Description";
-                                    color: Colors.on_surface_variant;
-                                    font.family: Config.fontFamily;
-                                    font.pixelSize: 12;
-                                }
-                                QSButton {
-                                    text: "Primary";
-                                    description: "This is a primary button";
-                                    topIcon: "󰀻";
-                                    severity: QSButton.Severity.Primary;
-                                }
-                                QSButton {
-                                    text: "Secondary";
-                                    description: "This is a secondary button";
-                                    topIcon: "󰀻";
-                                    severity: QSButton.Severity.Secondary;
-                                }
-                                QSButton {
-                                    text: "Warning";
-                                    description: "This is a warning button";
-                                    topIcon: "󰀻";
-                                    severity: QSButton.Severity.Warning;
-                                }
-                                QSButton {
-                                    text: "Danger";
-                                    description: "This is a danger button";
-                                    topIcon: "󰀻";
-                                    severity: QSButton.Severity.Danger;
+                                Column {
+                                    spacing: 8
+                                    Text {
+                                        text: "Description";
+                                        color: Colors.on_surface_variant;
+                                        font.family: Config.fontFamily;
+                                        font.pixelSize: 12;
+                                    }
+                                    QSButton {
+                                        text: "Primary";
+                                        description: "This is a primary button";
+                                        topIcon: "󰀻";
+                                        severity: QSButton.Severity.Primary;
+                                    }
+                                    QSButton {
+                                        text: "Secondary";
+                                        description: "This is a secondary button";
+                                        topIcon: "󰀻";
+                                        severity: QSButton.Severity.Secondary;
+                                    }
+                                    QSButton {
+                                        text: "Warning";
+                                        description: "This is a warning button";
+                                        topIcon: "󰀻";
+                                        severity: QSButton.Severity.Warning;
+                                    }
+                                    QSButton {
+                                        text: "Danger";
+                                        description: "This is a danger button";
+                                        topIcon: "󰀻";
+                                        severity: QSButton.Severity.Danger;
+                                    }
                                 }
                             }
                         }

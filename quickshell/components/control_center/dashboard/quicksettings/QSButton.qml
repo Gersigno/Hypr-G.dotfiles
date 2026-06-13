@@ -137,7 +137,7 @@ Item {
         Text {
             id: expandArrow
             anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
+            //anchors.verticalCenter: parent.verticalCenter
             anchors.rightMargin: 6
             text: root.expanded ? "✕" : "⋯"
             font.pixelSize: 11
@@ -149,7 +149,7 @@ Item {
         MouseArea {
             id: expandArea
             anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
+            //anchors.verticalCenter: parent.verticalCenter
             width: 20
             height: 20
             anchors.rightMargin: 2
@@ -166,10 +166,29 @@ Item {
 
     Item {
         id: overlay
-        parent: root.parent
-        anchors.fill: parent
         z: 1000
         visible: root.expanded && root.hasOptions
+
+        property Item hostParent: null
+        property real hostX: 0
+        property real hostY: 0
+
+        Component.onCompleted: {
+            var p = root.parent
+            while (p) {
+                if (p.isOverlayHost) {
+                    hostParent = p
+                    overlay.parent = p
+                    var g = root.parent.mapToItem(p, 0, 0)
+                    hostX = g.x
+                    hostY = g.y
+                    break
+                }
+                p = p.parent
+            }
+        }
+
+        anchors.fill: parent
 
         MouseArea {
             anchors.fill: parent
@@ -178,10 +197,10 @@ Item {
 
         Rectangle {
             id: menuPanel
-            y: root.y - 10
+            x: root.x//absolute position of button x
+            y: (overlay.hostParent ? overlay.hostY + root.y : root.y) 
+            width: root.width + 2
             height: 0
-            anchors.left: parent.left
-            anchors.right: parent.right
             color: Colors.surface_container_high
             radius: HyprlandConfig.radius
 
@@ -189,15 +208,56 @@ Item {
                 State {
                     name: "expanded"
                     when: root.expanded && root.hasOptions
-                    PropertyChanges { target: menuPanel; y: root.y; height: menuContent.height + 16 }
+                    PropertyChanges { 
+                        target: menuPanel; 
+                        y: overlay.hostParent ? overlay.hostY + root.y : root.y; 
+                        x: overlay.hostParent ? overlay.hostX - 1 : 0;
+                        height: menuContent.height + 16 
+                        width: root.parent ? root.parent.width + 2 : 0
+                    }
                 }
             ]
+
+            /*Behavior on width {
+                NumberAnimation { 
+                    duration: 600; 
+                    easing.type: Easing.OutElastic; 
+                    easing.period: 0.6; 
+                    easing.amplitude: 0.2 
+                }
+            }*/
 
             transitions: [
                 Transition {
                     to: "expanded"
-                    NumberAnimation { property: "y"; duration: 600; easing.type: Easing.OutElastic; easing.period: 0.6; easing.amplitude: 0.2 }
-                    NumberAnimation { property: "height"; duration: 600; easing.type: Easing.OutElastic; easing.period: 0.6; easing.amplitude: 0.2 }
+                    /*NumberAnimation { 
+                        property: "y"; 
+                        duration: 600; 
+                        easing.type: Easing.OutElastic; 
+                        easing.period: 0.6; 
+                        easing.amplitude: 0.2 
+                    }*/
+                    NumberAnimation { 
+                        property: "x"; 
+                        duration: 600; 
+                        easing.type: Easing.OutElastic; 
+                        easing.period: 0.6; 
+                        easing.amplitude: 0.2 
+                    }
+                    NumberAnimation { 
+                        property: "height"; 
+                        duration: 600; 
+                        easing.type: Easing.OutElastic; 
+                        easing.period: 0.6; 
+                        easing.amplitude: 0.2 
+                    }
+                    NumberAnimation { 
+                        property: "width"; 
+                        duration: 600; 
+                        easing.type: Easing.OutElastic; 
+                        easing.period: 0.6; 
+                        easing.amplitude: 0.2 
+                    }
                 }
             ]
 

@@ -108,66 +108,75 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
-            GridLayout {
+            Item {
+                property bool isOverlayHost: true
                 width: parent.width
-                columns: 3
-                rowSpacing: 2
+                implicitHeight: quickSettingsGrid.implicitHeight
 
-                QSButton {
-                    id: wifiButton
-                    topIcon: ""
-                    text: "Wifi"
-                    description: "Home_5G"
-                    severity: QSButton.Severity.Secondary
-                    options: ["Home_5G", "Neighbor_WiFi", "Coffee_Shop", "iPhone"]
-                    onOptionSelected: (opt) => print("Connect to", opt)
-                    Layout.fillWidth: true
-                    Layout.preferredWidth: 0
-                }
-                QSButton {
-                    id: bluetoothButton
-                    topIcon: "󰂯"
-                    text: "Bluetooth"
-                    description: "Connected"
-                    severity: QSButton.Severity.Secondary
-                    options: ["Headphones", "Speaker", "Keyboard"]
-                    onOptionSelected: (opt) => print("Pair with", opt)
-                    Layout.fillWidth: true
-                    Layout.preferredWidth: 0
-                }
-                QSButton {
-                    id: airplaneModeButton
-                    topIcon: "󰀝"
-                    text: "Airplane"
-                    severity: QSButton.Severity.Secondary
-                    Layout.fillWidth: true
-                    Layout.preferredWidth: 0
-                    Layout.fillHeight: true
-                }
-                QSButton {
-                    id: darkModeButton
-                    topIcon: Theme.isDarkMode ? "󰖙" : "󰖚"
-                    text: "Dark theme" //Theme.isDarkMode ? "Dark theme" : "Light theme"
-                    severity: Theme.isDarkMode ? QSButton.Severity.Primary : QSButton.Severity.Secondary
-                    Layout.fillWidth: true
-                    Layout.preferredWidth: 0
-                    onClicked: Theme.toggle()
-                }
-                QSButton {
-                    id: nightModeButton
-                    topIcon: "󱩌"
-                    text: "Night mode"
-                    severity: QSButton.Severity.Secondary
-                    Layout.fillWidth: true
-                    Layout.preferredWidth: 0
-                }
-                QSButton {
-                    id: doNotDisturbButton
-                    topIcon: ""
-                    text: "Caffeine"
-                    severity: QSButton.Severity.Secondary
-                    Layout.fillWidth: true
-                    Layout.preferredWidth: 0
+                GridLayout {
+                    id: quickSettingsGrid
+                    width: parent.width
+                    columns: 3
+                    rowSpacing: 4
+
+                    QSButton {
+                        id: wifiButton
+                        topIcon: ""
+                        text: "Wifi"
+                        description: "Home_5G"
+                        severity: QSButton.Severity.Secondary
+                        options: ["Home_5G", "Neighbor_WiFi", "Coffee_Shop", "iPhone"]
+                        onOptionSelected: (opt) => print("Connect to", opt)
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                        Layout.fillHeight: true
+                    }
+                    QSButton {
+                        id: bluetoothButton
+                        topIcon: "󰂯"
+                        text: "Bluetooth"
+                        //description: "Connected"
+                        severity: QSButton.Severity.Secondary
+                        options: ["Headphones", "Speaker", "Keyboard"]
+                        onOptionSelected: (opt) => print("Pair with", opt)
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                        Layout.fillHeight: true
+                    }
+                    QSButton {
+                        id: airplaneModeButton
+                        topIcon: "󰀝"
+                        text: "Airplane"
+                        severity: QSButton.Severity.Secondary
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                        Layout.fillHeight: true
+                    }
+                    QSButton {
+                        id: darkModeButton
+                        topIcon: Theme.isDarkMode ? "󰖙" : "󰖚"
+                        text: "Dark theme" //Theme.isDarkMode ? "Dark theme" : "Light theme"
+                        severity: Theme.isDarkMode ? QSButton.Severity.Primary : QSButton.Severity.Secondary
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                        onClicked: Theme.toggle()
+                    }
+                    QSButton {
+                        id: nightModeButton
+                        topIcon: "󱩌"
+                        text: "Night mode"
+                        severity: QSButton.Severity.Secondary
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                    }
+                    QSButton {
+                        id: doNotDisturbButton
+                        topIcon: ""
+                        text: "Caffeine"
+                        severity: QSButton.Severity.Secondary
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                    }
                 }
             }
         }
