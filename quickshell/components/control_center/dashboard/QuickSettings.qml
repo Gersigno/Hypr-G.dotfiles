@@ -121,24 +121,24 @@ Item {
 
                     QSButton {
                         id: wifiButton
-                        topIcon: ""
+                        topIcon: Network.wifiEnabled ? "" : "󰤮"
                         text: "Wifi"
-                        description: "Home_5G"
-                        severity: QSButton.Severity.Secondary
-                        options: ["Home_5G", "Neighbor_WiFi", "Coffee_Shop", "iPhone"]
-                        onOptionSelected: (opt) => print("Connect to", opt)
+                        severity: Network.wifiEnabled ? QSButton.Severity.Primary : QSButton.Severity.Secondary
+                        expandIcon: ""
+                        overrideAction: () => NavigationState.requestedSettingsPage = "network"
+                        onClicked: Network.toggleWifi()
                         Layout.fillWidth: true
                         Layout.preferredWidth: 0
                         Layout.fillHeight: true
                     }
                     QSButton {
                         id: bluetoothButton
-                        topIcon: "󰂯"
+                        topIcon: Bluetooth.connected ? "󰂱" : (Bluetooth.enabled ? "󰂯" : "󰂲")
                         text: "Bluetooth"
-                        //description: "Connected"
-                        severity: QSButton.Severity.Secondary
-                        options: ["Headphones", "Speaker", "Keyboard"]
-                        onOptionSelected: (opt) => print("Pair with", opt)
+                        severity: Bluetooth.enabled ? QSButton.Severity.Primary : QSButton.Severity.Secondary
+                        expandIcon: ""
+                        overrideAction: () => NavigationState.requestedSettingsPage = "bluetooth"
+                        onClicked: Bluetooth.toggleBluetooth()
                         Layout.fillWidth: true
                         Layout.preferredWidth: 0
                         Layout.fillHeight: true
@@ -168,6 +168,46 @@ Item {
                         severity: QSButton.Severity.Secondary
                         Layout.fillWidth: true
                         Layout.preferredWidth: 0
+                    }
+                    QSButton {
+                        id: oledButton
+                        topIcon: "󰌫"
+                        text: "Oled mode"
+                        severity: QSButton.Severity.Secondary
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                    }
+                    QSButton {
+                        id: batterySaverButton
+                        topIcon: "󰊗"
+                        text: "Performance"
+                        severity: QSButton.Severity.Secondary
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                    }
+                    QSButton {
+                        id: screenshotButton
+                        topIcon: "󱣴"
+                        text: "Screenshot"
+                        //description: "Connected"
+                        severity: QSButton.Severity.Secondary
+                        options: ["Section", "Window", "Screen"]
+                        //onOptionSelected: (opt) => print("Pair with", opt)
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                        Layout.fillHeight: true
+                    }
+                    QSButton {
+                        id: screenrecordButton
+                        topIcon: "󰑊"
+                        text: "Record"
+                        //description: "Connected"
+                        severity: QSButton.Severity.Secondary
+                        //options: ["Section", "Window", "Screen"]
+                        //onOptionSelected: (opt) => print("Pair with", opt)
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                        Layout.fillHeight: true
                     }
                     QSButton {
                         id: doNotDisturbButton

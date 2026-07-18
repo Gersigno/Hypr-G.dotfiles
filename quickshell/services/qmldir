@@ -9,3 +9,4 @@ singleton Media 1.0 Media.qml
 singleton ToastService 1.0 ToastService.qml
 singleton Notifications 1.0 Notifications.qml
 singleton Theme 1.0 Theme.qml
+singleton NavigationState 1.0 NavigationState.qml

@@ -35,6 +35,15 @@ Item {
         console.info("Loaded component: [ControlCenter]")
     }
 
+    function findPageIndex(pageName) {
+        for (var i = 0; i < ccFilesModel.count; i++) {
+            if (ccFilesModel.get(i, "fileName") === pageName + ".qml") {
+                return i
+            }
+        }
+        return -1
+    }
+
     FolderListModel {
         id: ccFilesModel
         folder: Qt.resolvedUrl("../components/control_center")
@@ -179,7 +188,7 @@ Item {
                     anchors.right: parent.right
                     anchors.bottom: tabBar.top
                     visible: isOpened
-                    clip: true
+                    clip: true 
                     interactive: false
                     //currentIndex: 1 //! Clock (alphabetical: Calendar=0, Clock=1, Media=2, Wallpaper=3)
 
@@ -279,16 +288,17 @@ Item {
                             }*/
 
                             Text {
-                                id: label
+                                id: label 
                                 anchors.centerIn: parent
                                 text: {
                                     const fileName = model.fileName.replace(".qml", "")
                                     if (fileName === "Dashboard") return "   Dashboard"
-                                    if (fileName === "Metrics") return "󰓅   Metrics"
+                                    if (fileName === "Metrics") return "   Metrics"
                                     if (fileName === "Wallpaper") return "   Wallpaper"
                                     if (fileName === "Clock") return "    Clock"
                                     if (fileName === "Eureka") return "    Eureka AI"
-                                    if (fileName === "_Debug") return "   Debug"
+                                    if (fileName === "_Debug") return "   Debug"
+                                    if (fileName === "Settings") return "   Settings"
                                     return fileName
                                 }
                                 color: {
@@ -371,8 +381,18 @@ Item {
             target: ccFilesModel
             function onCountChanged() {
                 if (!controlCenterRoot.modelInitialized && ccFilesModel.count > 1) {
-                    carousel.currentIndex = 1
+                    carousel.currentIndex = root.findPageIndex("Dashboard")
                     controlCenterRoot.modelInitialized = true
+                }
+            }
+        }
+
+        Connections {
+            target: NavigationState
+            function onRequestedSettingsPageChanged() {
+                var page = NavigationState.requestedSettingsPage
+                if (page !== "") {
+                    carousel.currentIndex = root.findPageIndex("Settings")
                 }
             }
         }

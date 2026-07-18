@@ -15,6 +15,44 @@ Singleton {
     readonly property int activeDeviceCount: Bluetooth.defaultAdapter?.devices.values.filter(device => device.connected).length ?? 0
     readonly property bool connected: Bluetooth.devices.values.some(d => d.connected)
 
+    readonly property bool discovering: Bluetooth.defaultAdapter?.discovering ?? false
+
+    function toggleBluetooth(): void {
+        if (Bluetooth.defaultAdapter)
+            Bluetooth.defaultAdapter.enabled = !Bluetooth.defaultAdapter.enabled
+    }
+
+    function trustDevice(address: string): void {
+        Quickshell.execDetached(["bluetoothctl", "trust", address])
+    }
+
+    function untrustDevice(address: string): void {
+        Quickshell.execDetached(["bluetoothctl", "untrust", address])
+    }
+
+    function startDiscovery(): void {
+        if (Bluetooth.defaultAdapter) {
+            Bluetooth.defaultAdapter.discovering = true
+            discoveryTimer.restart()
+        }
+    }
+
+    function stopDiscovery(): void {
+        if (Bluetooth.defaultAdapter) {
+            Bluetooth.defaultAdapter.discovering = false
+            discoveryTimer.stop()
+        }
+    }
+
+    Timer {
+        id: discoveryTimer
+        interval: 10000
+        onTriggered: {
+            if (Bluetooth.defaultAdapter)
+                Bluetooth.defaultAdapter.discovering = false
+        }
+    }
+
     function sortFunction(a, b) {
         // Ones with meaningful names before MAC addresses
         const macRegex = /^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$/;
@@ -26,10 +64,10 @@ Singleton {
         // Alphabetical by name
         return a.name.localeCompare(b.name);
     }
-    property list<var> connectedDevices: Bluetooth.devices.values.filter(d => d.connected).sort(sortFunction)
-    property list<var> pairedButNotConnectedDevices: Bluetooth.devices.values.filter(d => d.paired && !d.connected).sort(sortFunction)
-    property list<var> unpairedDevices: Bluetooth.devices.values.filter(d => !d.paired && !d.connected).sort(sortFunction)
-    property list<var> friendlyDeviceList: [
+    property var connectedDevices: Bluetooth.devices.values.filter(d => d.connected).sort(sortFunction)
+    property var pairedButNotConnectedDevices: Bluetooth.devices.values.filter(d => d.paired && !d.connected).sort(sortFunction)
+    property var unpairedDevices: Bluetooth.devices.values.filter(d => !d.paired && !d.connected).sort(sortFunction)
+    property var friendlyDeviceList: [
         ...connectedDevices,
         ...pairedButNotConnectedDevices,
         ...unpairedDevices

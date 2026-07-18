@@ -18,6 +18,8 @@ Item {
 
     property var options: []
     property bool expanded: false
+    property var overrideAction: undefined
+    property string expandIcon: "⋯"
 
     signal clicked
     signal optionSelected(string option)
@@ -53,6 +55,7 @@ Item {
     )
 
     readonly property bool hasOptions: options.length > 0
+    readonly property bool showExpandButton: hasOptions || overrideAction !== undefined
 
     implicitWidth: content.implicitWidth + 16
     implicitHeight: content.implicitHeight + 16
@@ -137,13 +140,14 @@ Item {
         Text {
             id: expandArrow
             anchors.right: parent.right
-            //anchors.verticalCenter: parent.verticalCenter
+            anchors.top: parent.top
             anchors.rightMargin: 6
-            text: root.expanded ? "✕" : "⋯"
-            font.pixelSize: 11
+            anchors.topMargin: root.expandIcon === "⋯" ? 0 : 6
+            text: root.expanded ? "✕" : root.expandIcon
+            font.pixelSize: expandArea.containsMouse ? 13 : 11
             font.family: Config.fontFamily
             color: root.textColor
-            visible: root.hasOptions
+            visible: root.showExpandButton
         }
 
         MouseArea {
@@ -153,11 +157,15 @@ Item {
             width: 20
             height: 20
             anchors.rightMargin: 2
-            visible: root.hasOptions
+            visible: root.showExpandButton
             cursorShape: Qt.PointingHandCursor
             onClicked: {
                 if (!root.disabled) {
-                    root.expanded = !root.expanded
+                    if (root.overrideAction !== undefined) {
+                        root.overrideAction()
+                    } else {
+                        root.expanded = !root.expanded
+                    }
                 }
             }
             z: 1

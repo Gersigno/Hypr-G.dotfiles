@@ -1,6 +1,0 @@
-$terminal = kitty
-$web-browser = zen-browser --new-instance
-$ide = codium
-$launcher = rofi -show drun
-$emoji = rofi -modi emoji -show emoji
-$file-explorer = dolphin

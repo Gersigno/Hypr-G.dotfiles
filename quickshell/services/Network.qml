@@ -76,12 +76,22 @@ Singleton {
 
     }
 
+    function connectToNetworkWithPassword(accessPoint: WifiAccessPoint, password: string): void {
+        accessPoint.askingPassword = false;
+        root.wifiConnectTarget = accessPoint;
+        connectProc.exec(["nmcli", "dev", "wifi", "connect", accessPoint.ssid, "password", password])
+    }
+
     function disconnectWifiNetwork(): void {
         if (active) disconnectProc.exec(["nmcli", "connection", "down", active.ssid]);
     }
 
     function openPublicWifiPortal() {
         Quickshell.execDetached(["xdg-open", "https://nmcheck.gnome.org/"]) // From some StackExchange thread, seems to work
+    }
+
+    function forgetNetwork(ssid: string): void {
+        forgetProc.exec(["nmcli", "connection", "delete", ssid])
     }
 
     function changePassword(network: WifiAccessPoint, password: string, username = ""): void {
@@ -148,6 +158,13 @@ Singleton {
                 wifiScanning = false;
                 getNetworks.running = true;
             }
+        }
+    }
+
+    Process {
+        id: forgetProc
+        stdout: SplitParser {
+            onRead: getNetworks.running = true
         }
     }
 

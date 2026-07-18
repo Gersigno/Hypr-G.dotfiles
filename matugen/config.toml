@@ -43,3 +43,8 @@ output_path = '~/.config/quickshell/colors.json'
 input_path = "~/.config/matugen/vscode.json.tpl"
 output_path = "~/.vscode/extensions/hyprluna.hyprluna-theme-1.0.2/themes/hyprluna.json"
 # Credits to Lunaris-Project (HyprLuna dot file)
+
+#[templates.webcord]
+#input_path = '~/.config/matugen/webcord.css.tpl'
+#output_path = "~/.config/WebCord/Themes/matugen.theme"
+#post_hook = 'cp ~/.config/WebCord/Themes/matugen.theme ~/.config/WebCord/Themes/matugen.theme.css'
