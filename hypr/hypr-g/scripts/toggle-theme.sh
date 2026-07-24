@@ -65,6 +65,10 @@ toggle_theme() {
 
     # Reload Hyprland to apply changes
     $HYPRLAND_RELOAD
+
+    # Forcer Qt/Dolphin à rafraîchir ses configurations à chaud
+    touch "$HOME/.config/qt6ct/qt6ct.conf"
+    touch "$HOME/.config/kdeglobals"
 }
 
 # Run the function

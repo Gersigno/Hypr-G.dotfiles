@@ -6,7 +6,7 @@ cwd = { fg = "{{colors.on_surface.default.hex}}" }
 # Tab
 tab_active = { fg = "{{colors.on_primary.default.hex}}", bg = "{{colors.primary.default.hex}}", bold = true }
 tab_inactive = { fg = "{{colors.primary_fixed.default.hex}}", bg = "{{colors.on_primary_fixed.default.hex}}" }
-tab_width = 1
+# tab_width = 1
 
 # Find
 find_keyword = { fg = "{{colors.error.default.hex}}", bold = true, italic = true, underline = true }
@@ -154,12 +154,12 @@ rules = [
     { mime = "application/{pdf,doc,rtf}", fg = "#a6e3a1" },
 
     # Special files
-    { name = "*", is = "orphan", bg = "{{colors.error_container.default.hex}}" },
-    { name = "*", is = "exec", fg = "{{colors.on_error_container.default.hex}}" },
+    # { name = "*", is = "orphan", bg = "{{colors.error_container.default.hex}}" },
+    # { name = "*", is = "exec", fg = "{{colors.on_error_container.default.hex}}" },
 
     # Fallback
-    { name = "*", fg = "{{colors.on_surface.default.hex}}" },
-    { name = "*/", fg = "{{colors.surface_tint.default.hex}}" },
+    # { name = "*", fg = "{{colors.on_surface.default.hex}}" },
+    # { name = "*/", fg = "{{colors.surface_tint.default.hex}}" },
 ]
 
 # : ]]]

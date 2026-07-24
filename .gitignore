@@ -26,6 +26,8 @@
 fish/fish_variables
 fish/fish_variables.*
 
+!kdeglobals
+
 
 # Exclude cache and generated files
 **/.cache/
