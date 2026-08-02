@@ -97,8 +97,8 @@ hl.curve("overshot",       { type = "bezier", points = { {0.18, 0.95}, {0.2, 1.0
 hl.curve("OutElastic", { 
     type = "spring",
     mass = 1.0,
-    stiffness = 25,
-    dampening = 6.5
+    stiffness = 205,
+    dampening = 15.5
 })
 -- Animations
 hl.animation({ leaf = "global",        enabled = true, speed = 10,   bezier = "default" })
