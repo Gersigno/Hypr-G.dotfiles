@@ -23,13 +23,6 @@ hl.window_rule({
     no_focus = true,
 })
 
--- Persistent workspaces per monitor
-for i = 1, 4 do
-    hl.workspace_rule({ workspace = tostring(i), persistent = true })
-end
-
--- hl.window_rule({ match = { fullscreen = true }, idle_inhibit = "focus" })
-
 -- Layer rules
 hl.layer_rule({ match = { namespace = "waybar" },               blur = true, ignore_alpha = 0 })
 hl.layer_rule({ match = { namespace = "rofi" },                 blur = true, ignore_alpha = 0 })

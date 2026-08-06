@@ -13,6 +13,7 @@ require("hypr-g.hyprland.interface")
 require("hypr-g.hyprland.input")
 require("hypr-g.hyprland.keybinds")
 require("hypr-g.hyprland.rules")
+require("hypr-g.hyprland.workspaces")
 
 -- Custom user overrides
 require("custom.monitors")
