@@ -12,7 +12,7 @@ Item {
     property string message: ""
     property string icon: ""
     property int duration: 3000
-    property int anim_duration: 8000
+    property int anim_duration: 500
 
     readonly property color surface_container_high: Colors.surface_container_high
     readonly property color shadow: Colors.shadow
@@ -47,11 +47,14 @@ Item {
         root.icon = ico ?? ""
         root.opacity = HyprlandConfig.inactiveOpacity
         bottomRectangle.width = 0
-        //bottomRectangle.height = row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2)
+        bottomRectangle.height = 0 
         container.implicitWidth = 0
         container.implicitHeight = 0
         bottomLeftCorner.cornerRadius = 0
         bottomRightCorner.cornerRadius = 0
+        hideTimer.stop()
+        hideTimer.interval = Math.max(1, root.duration)
+        hideTimer.start()
         showAnimation.restart()
     }
 
@@ -61,22 +64,25 @@ Item {
     Component.onCompleted: {
         console.log("----------------------------")
         console.log("Parent : " + parent)
-        /*bottomLeftCorner  .cornerRadius = 0
+        bottomLeftCorner  .cornerRadius = 0
         bottomRightCorner .cornerRadius = 0
         b_topRightCorner    .cornerRadius = 0
         b_bottomLeftCorner  .cornerRadius = 0
         b2_topRightCorner   .cornerRadius = 0
         b2_bottomLeftCorner .cornerRadius = 0
         bottomRectangle.height = 0
-        bottomRectangle.width = row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2)*/ 
+        bottomRectangle.width = row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2)
     }
 
     Timer {
         id: hideTimer
-        interval: root.duration 
+        interval: root.duration
         running: false
         repeat: false
-        onTriggered: root.opacity = 0
+        onTriggered: {
+            hideTimer.stop()
+            root.opacity = 0
+        }
     }
 
     /*Behavior on opacity {
@@ -118,7 +124,7 @@ Item {
                     property: "cornerRadius"
                     from: HyprlandConfig.radiusFull
                     to: 0
-                    duration: root.quarterDuration
+                    duration: root.quarterDuration / 2
                     easing.type: Easing.InCubic
                 }
                 NumberAnimation {
@@ -126,7 +132,7 @@ Item {
                     property: "cornerRadius"
                     from: HyprlandConfig.radiusFull
                     to: 0
-                    duration: root.quarterDuration
+                    duration: root.quarterDuration / 2
                     easing.type: Easing.InCubic
                 }
             }
@@ -187,6 +193,9 @@ Item {
                         to: 32
                         duration: root.halfDuration
                         easing.type: Easing.OutCubic
+                        //easing.type: Easing.OutElastic
+                        //easing.period: 1.5
+                        //easing.amplitude: 0.2 
                     }
                     NumberAnimation {
                         target: bottomRectangle
@@ -195,6 +204,78 @@ Item {
                         to: 0
                         duration: root.halfDuration
                         easing.type: Easing.OutCubic
+                    }
+                    SequentialAnimation {
+                        //First, grow the 4 bottom angles from 0 to radiusFull
+                        ParallelAnimation {
+                            NumberAnimation {
+                                target: b_topRightCorner
+                                property: "cornerRadius"
+                                from: 0
+                                to: HyprlandConfig.radiusFull
+                                duration: root.halfDuration / 2
+                                easing.type: Easing.OutCubic
+                            }
+                            NumberAnimation {
+                                target: b_bottomLeftCorner
+                                property: "cornerRadius"
+                                from: 0
+                                to: HyprlandConfig.radiusFull
+                                duration: root.halfDuration / 2
+                                easing.type: Easing.OutCubic
+                            }
+                            NumberAnimation {
+                                target: b2_topRightCorner
+                                property: "cornerRadius"
+                                from: 0
+                                to: HyprlandConfig.radiusFull
+                                duration: root.halfDuration / 2
+                                easing.type: Easing.OutCubic
+                            }
+                            NumberAnimation {
+                                target: b2_bottomLeftCorner
+                                property: "cornerRadius"
+                                from: 0
+                                to: HyprlandConfig.radiusFull
+                                duration: root.halfDuration / 2
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+                        //Then, shrink the 4 bottom angles back to 0
+                        ParallelAnimation {
+                            NumberAnimation {
+                                target: b_topRightCorner
+                                property: "cornerRadius"
+                                from: HyprlandConfig.radiusFull
+                                to: 0
+                                duration: root.halfDuration / 2
+                                easing.type: Easing.InCubic
+                            }
+                            NumberAnimation {
+                                target: b_bottomLeftCorner
+                                property: "cornerRadius"
+                                from: HyprlandConfig.radiusFull
+                                to: 0
+                                duration: root.halfDuration / 2
+                                easing.type: Easing.InCubic
+                            }
+                            NumberAnimation {
+                                target: b2_topRightCorner
+                                property: "cornerRadius"
+                                from: HyprlandConfig.radiusFull
+                                to: 0
+                                duration: root.halfDuration / 2
+                                easing.type: Easing.InCubic
+                            }
+                            NumberAnimation {
+                                target: b2_bottomLeftCorner
+                                property: "cornerRadius"
+                                from: HyprlandConfig.radiusFull
+                                to: 0
+                                duration: root.halfDuration / 2
+                                easing.type: Easing.InCubic
+                            }
+                        }
                     }
                 }
             }
@@ -209,11 +290,6 @@ Item {
         anchors.bottom: root.bottom
         anchors.horizontalCenter: root.horizontalCenter
 
-        Rectangle {
-            id: background
-            anchors.fill: parent
-            color: "blue"
-        }
 
         //Toast layer (bottom corners grow/shrink)
         RowLayout {
@@ -226,16 +302,16 @@ Item {
             InvertedCorner {
                 id: bottomLeftCorner
                 corner: InvertedCorner.Corner.BottomRight
-                cornerColor: "red"
+                cornerColor: root.backgroundColor
                 Layout.alignment: Qt.AlignBottom
             }
             Rectangle {
                 id: container
                 topLeftRadius: HyprlandConfig.radiusFull
                 topRightRadius: HyprlandConfig.radiusFull
-                color: "red"//root.backgroundColor
+                color: root.backgroundColor
 
-                /*layer.enabled: true
+                layer.enabled: true
                 layer.effect: MultiEffect {
                     shadowEnabled: true
                     shadowColor: root.shadow //"red"//HyprlandConfig.shadowColor
@@ -244,7 +320,7 @@ Item {
                     shadowVerticalOffset: 8
                     //radius: container.radius
                     //paddingEnabled: true
-                }*/
+                }
         
                 RowLayout {
                     id: row
@@ -279,7 +355,7 @@ Item {
                 id: bottomRightCorner
                 corner: InvertedCorner.Corner.BottomLeft
                 cornerRadius: HyprlandConfig.radiusFull
-                cornerColor: "red"
+                cornerColor: root.backgroundColor
                 Layout.alignment: Qt.AlignBottom
             }
         }
@@ -296,7 +372,7 @@ Item {
             Rectangle {
                 id: bottomRectangle
                 //center empty layout
-                color: "yellow"
+                color: root.backgroundColor
                 width: row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2)
                 //height: 32
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -307,31 +383,31 @@ Item {
             //left inverted corners, don't affect size 
             InvertedCorner {
                 id: b_topRightCorner
-                corner: InvertedCorner.Corner.TopRight
-                cornerColor: "blue"
+                corner: InvertedCorner.Corner.TopLeft
+                cornerColor: root.backgroundColor
                 anchors.top: bottomRectangle.top
-                anchors.left: bottomRectangle.left
+                anchors.left: bottomRectangle.right
             }
             InvertedCorner {
                 id: b_bottomLeftCorner
-                corner: InvertedCorner.Corner.BottomRight
-                cornerColor: "green"
-                anchors.top: bottomRectangle.top
-                anchors.left: bottomRectangle.left
+                corner: InvertedCorner.Corner.BottomLeft
+                cornerColor: root.backgroundColor
+                anchors.bottom: bottomRectangle.bottom
+                anchors.left: bottomRectangle.right
             }
             InvertedCorner {
                 id: b2_topRightCorner
-                corner: InvertedCorner.Corner.TopLeft
-                cornerColor: "blue"
+                corner: InvertedCorner.Corner.TopRight
+                cornerColor: root.backgroundColor
                 anchors.top: bottomRectangle.top
-                anchors.right: bottomRectangle.right
+                anchors.right: bottomRectangle.left
             }
             InvertedCorner {
                 id: b2_bottomLeftCorner
-                corner: InvertedCorner.Corner.BottomLeft
-                cornerColor: "green"
-                anchors.top: bottomRectangle.top
-                anchors.right: bottomRectangle.right
+                corner: InvertedCorner.Corner.BottomRight
+                cornerColor: root.backgroundColor
+                anchors.bottom: bottomRectangle.bottom
+                anchors.right: bottomRectangle.left
             }
         }
     }

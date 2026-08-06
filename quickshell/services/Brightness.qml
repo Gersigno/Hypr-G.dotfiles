@@ -39,7 +39,7 @@ Singleton {
 
     Timer {
         interval: 500 //! Ugly methode, have to find a better way to listen to brightness changes
-        running: true
+        running: false //todo change to true to autoupdate brightness value but this is ugly and it spam a warning message in the logs for user that dont use brightnessctl
         repeat: true
         triggeredOnStart: true
         onTriggered: {

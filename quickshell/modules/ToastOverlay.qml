@@ -39,21 +39,17 @@ Scope {
             mask: Region { item: null }
 
             implicitWidth: modelData.width
-            implicitHeight: toastItem.implicitHeight + 64
+            implicitHeight: toastItem.height + 64
+
 
             anchors {
-                bottom: true
+                bottom: true 
                 left: true
                 right: true
             }
 
             Toast {
                 id: toastItem
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 24
-
-                y: 200//toastItem.opacity > 0 ? 0 : 12
                 opacity: 0
             }
 
@@ -66,7 +62,15 @@ Scope {
             }
 
             Component.onCompleted: {
-                ToastService.show("Welcome back, " + userName + " !", 6000)
+                //console.log("Home .face.png file path: " + root.home + "/.face.png")
+                welcomeTimer.start()
+            }
+
+            Timer {
+                id: welcomeTimer
+                interval: 100
+                repeat: false
+                onTriggered: ToastService.show("Welcome back, " + userName + " !", 6000, root.home + "/.face.png")
             }
         }
     }

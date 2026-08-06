@@ -4,7 +4,7 @@
 hl.on("hyprland.start", function()
     hl.exec_cmd("awww-daemon")
     hl.exec_cmd("awww restore")
-    -- hl.exec_cmd("hypridle")
+    hl.exec_cmd("hypridle")
     -- hl.exec_cmd("waybar")
     -- hl.exec_cmd("dunst")
     hl.exec_cmd("hyprctl setenv qsConfig default")
