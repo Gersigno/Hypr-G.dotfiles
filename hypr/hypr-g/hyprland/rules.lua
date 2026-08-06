@@ -24,11 +24,9 @@ hl.window_rule({
 })
 
 -- Persistent workspaces per monitor
--- Monitor 1 (eDP-1) - workspaces 1-4
-hl.workspace_rule({ workspace = "1", monitor = "eDP-1", persistent = true })
-hl.workspace_rule({ workspace = "2", monitor = "eDP-1", persistent = true })
-hl.workspace_rule({ workspace = "3", monitor = "eDP-1", persistent = true })
-hl.workspace_rule({ workspace = "4", monitor = "eDP-1", persistent = true })
+for i = 1, 4 do
+    hl.workspace_rule({ workspace = tostring(i), persistent = true })
+end
 
 -- hl.window_rule({ match = { fullscreen = true }, idle_inhibit = "focus" })
 
@@ -36,15 +34,6 @@ hl.workspace_rule({ workspace = "4", monitor = "eDP-1", persistent = true })
 hl.layer_rule({ match = { namespace = "waybar" },               blur = true, ignore_alpha = 0 })
 hl.layer_rule({ match = { namespace = "rofi" },                 blur = true, ignore_alpha = 0 })
 hl.layer_rule({ match = { namespace = "fuzzel" },               blur = true })
-
--- Notification center blur
-hl.layer_rule({ match = { namespace = "swaync-control-center" },          blur = true })
-hl.layer_rule({ match = { namespace = "swaync-notification-window" },     blur = true })
-hl.layer_rule({ match = { namespace = "swaync-control-center" },          ignore_alpha = 0 })
-hl.layer_rule({ match = { namespace = "swaync-notification-window" },     ignore_alpha = 0 })
-hl.layer_rule({ match = { namespace = "swaync-control-center" },          ignore_alpha = 0.5 })
-hl.layer_rule({ match = { namespace = "swaync-notification-window" },     ignore_alpha = 0.5 })
-hl.layer_rule({ match = { namespace = "swaync-control-center" },          animation = "slide right" })
 
 -- Quickshell layer rules
 hl.layer_rule({ match = { namespace = "quickshell:notificationsCenter" }, blur = true, ignore_alpha = 0.79, no_anim = true })
