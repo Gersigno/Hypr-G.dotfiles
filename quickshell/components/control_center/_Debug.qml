@@ -385,6 +385,14 @@ Item {
                                 ToastService.show("Toast with icon", 4000, "../../../assets/default_face.png")
                             }
                         }
+
+                        Button {
+                            text: "Show very long toast (icon)"
+                            severity: Button.Severity.Primary
+                            onClicked: {
+                                ToastService.show("Toast with icon Toast with icon Toast with icon Toast with icon Toast with icon Toast with icon Toast with icon", 4000, "../../../assets/default_face.png")
+                            }
+                        }
                     }
 
                     Text {

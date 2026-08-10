@@ -2,10 +2,10 @@
 -- Override these in custom/programs.lua
 
 programs = {
-    terminal      = "kitty",
-    web_browser   = "zen-browser --new-instance",
-    ide           = "codium",
-    launcher      = "rofi -show drun",
-    emoji         = "rofi -modi emoji -show emoji",
-    file_explorer = "dolphin",
+	terminal = "kitty",
+	web_browser = "zen-browser --new-instance",
+	ide = "code",
+	launcher = "rofi -show drun",
+	emoji = "rofi -modi emoji -show emoji",
+	file_explorer = "dolphin",
 }

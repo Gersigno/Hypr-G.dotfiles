@@ -5,110 +5,110 @@
 colors = {}
 
 
-colors.background = "rgba(111318ff)"
+colors.background = "rgba(191113ff)"
 
 colors.error = "rgba(ffb4abff)"
 
 colors.error_container = "rgba(93000aff)"
 
-colors.inverse_on_surface = "rgba(2e3035ff)"
+colors.inverse_on_surface = "rgba(382e30ff)"
 
-colors.inverse_primary = "rgba(3c6090ff)"
+colors.inverse_primary = "rgba(8c4a5eff)"
 
-colors.inverse_surface = "rgba(e1e2e9ff)"
+colors.inverse_surface = "rgba(efdfe1ff)"
 
-colors.on_background = "rgba(e1e2e9ff)"
+colors.on_background = "rgba(efdfe1ff)"
 
 colors.on_error = "rgba(690005ff)"
 
 colors.on_error_container = "rgba(ffdad6ff)"
 
-colors.on_primary = "rgba(01315eff)"
+colors.on_primary = "rgba(551d30ff)"
 
-colors.on_primary_container = "rgba(d4e3ffff)"
+colors.on_primary_container = "rgba(ffd9e1ff)"
 
-colors.on_primary_fixed = "rgba(001c3aff)"
+colors.on_primary_fixed = "rgba(3a071bff)"
 
-colors.on_primary_fixed_variant = "rgba(224876ff)"
+colors.on_primary_fixed_variant = "rgba(703346ff)"
 
-colors.on_secondary = "rgba(273141ff)"
+colors.on_secondary = "rgba(422930ff)"
 
-colors.on_secondary_container = "rgba(d8e3f8ff)"
+colors.on_secondary_container = "rgba(ffd9e1ff)"
 
-colors.on_secondary_fixed = "rgba(111c2bff)"
+colors.on_secondary_fixed = "rgba(2b151bff)"
 
-colors.on_secondary_fixed_variant = "rgba(3d4758ff)"
+colors.on_secondary_fixed_variant = "rgba(5b3f46ff)"
 
-colors.on_surface = "rgba(e1e2e9ff)"
+colors.on_surface = "rgba(efdfe1ff)"
 
-colors.on_surface_variant = "rgba(c3c6cfff)"
+colors.on_surface_variant = "rgba(d6c2c5ff)"
 
-colors.on_tertiary = "rgba(3d2846ff)"
+colors.on_tertiary = "rgba(472a0aff)"
 
-colors.on_tertiary_container = "rgba(f7d8ffff)"
+colors.on_tertiary_container = "rgba(ffdcc0ff)"
 
-colors.on_tertiary_fixed = "rgba(271430ff)"
+colors.on_tertiary_fixed = "rgba(2d1600ff)"
 
-colors.on_tertiary_fixed_variant = "rgba(553f5dff)"
+colors.on_tertiary_fixed_variant = "rgba(613f1fff)"
 
-colors.outline = "rgba(8d9199ff)"
+colors.outline = "rgba(9e8c90ff)"
 
-colors.outline_variant = "rgba(43474eff)"
+colors.outline_variant = "rgba(514346ff)"
 
-colors.primary = "rgba(a6c8ffff)"
+colors.primary = "rgba(ffb1c5ff)"
 
-colors.primary_container = "rgba(224876ff)"
+colors.primary_container = "rgba(703346ff)"
 
-colors.primary_fixed = "rgba(d4e3ffff)"
+colors.primary_fixed = "rgba(ffd9e1ff)"
 
-colors.primary_fixed_dim = "rgba(a6c8ffff)"
+colors.primary_fixed_dim = "rgba(ffb1c5ff)"
 
 colors.scrim = "rgba(000000ff)"
 
-colors.secondary = "rgba(bcc7dcff)"
+colors.secondary = "rgba(e3bdc5ff)"
 
-colors.secondary_container = "rgba(3d4758ff)"
+colors.secondary_container = "rgba(5b3f46ff)"
 
-colors.secondary_fixed = "rgba(d8e3f8ff)"
+colors.secondary_fixed = "rgba(ffd9e1ff)"
 
-colors.secondary_fixed_dim = "rgba(bcc7dcff)"
+colors.secondary_fixed_dim = "rgba(e3bdc5ff)"
 
 colors.shadow = "rgba(000000ff)"
 
-colors.source_color = "rgba(357fd5ff)"
+colors.source_color = "rgba(d56589ff)"
 
-colors.surface = "rgba(111318ff)"
+colors.surface = "rgba(191113ff)"
 
-colors.surface_bright = "rgba(37393eff)"
+colors.surface_bright = "rgba(413739ff)"
 
-colors.surface_container = "rgba(1d2024ff)"
+colors.surface_container = "rgba(261d1fff)"
 
-colors.surface_container_high = "rgba(282a2fff)"
+colors.surface_container_high = "rgba(31282aff)"
 
-colors.surface_container_highest = "rgba(32353aff)"
+colors.surface_container_highest = "rgba(3c3234ff)"
 
-colors.surface_container_low = "rgba(191c20ff)"
+colors.surface_container_low = "rgba(22191bff)"
 
-colors.surface_container_lowest = "rgba(0c0e13ff)"
+colors.surface_container_lowest = "rgba(140c0eff)"
 
-colors.surface_dim = "rgba(111318ff)"
+colors.surface_dim = "rgba(191113ff)"
 
-colors.surface_tint = "rgba(a6c8ffff)"
+colors.surface_tint = "rgba(ffb1c5ff)"
 
-colors.surface_variant = "rgba(43474eff)"
+colors.surface_variant = "rgba(514346ff)"
 
-colors.tertiary = "rgba(dabde2ff)"
+colors.tertiary = "rgba(eebd93ff)"
 
-colors.tertiary_container = "rgba(553f5dff)"
+colors.tertiary_container = "rgba(613f1fff)"
 
-colors.tertiary_fixed = "rgba(f7d8ffff)"
+colors.tertiary_fixed = "rgba(ffdcc0ff)"
 
-colors.tertiary_fixed_dim = "rgba(dabde2ff)"
+colors.tertiary_fixed_dim = "rgba(eebd93ff)"
 
 
 -- Derived color aliases used in interface.lua / plugin config
-colors.border_active    = "rgba(a6c8ffd0)"
-colors.border_inactive  = "rgba(01315eff)"
+colors.border_active    = "rgba(ffb1c5d0)"
+colors.border_inactive  = "rgba(551d30ff)"
 colors.border_secondary = "rgba(0000008e)"
 colors.shadow_active    = "rgba(0000004d)"
 colors.shadow_inactive  = "rgba(00000026)"

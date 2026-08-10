@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Effects
+import Quickshell.Widgets
 
 import "../../../config"
 import "../../../utils"
@@ -13,6 +14,8 @@ Item {
     property string icon: ""
     property int duration: 3000
     property int anim_duration: 500
+    property real shadow_pacity: 0
+    property real blur_level: 0
 
     readonly property color surface_container_high: Colors.surface_container_high
     readonly property color shadow: Colors.shadow
@@ -46,16 +49,32 @@ Item {
         root.duration = dur ?? 3000
         root.icon = ico ?? ""
         root.opacity = HyprlandConfig.inactiveOpacity
-        bottomRectangle.width = 0
-        bottomRectangle.height = 0 
-        container.implicitWidth = 0
-        container.implicitHeight = 0
-        bottomLeftCorner.cornerRadius = 0
-        bottomRightCorner.cornerRadius = 0
+        bottomRectangle     .width = row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2) 
+        bottomRectangle     .height = 0 
+        container           .implicitWidth = 0
+        container           .implicitHeight = 0
+        root                .shadow_pacity= 0
+        bottomLeftCorner    .cornerRadius = 0
+        bottomRightCorner   .cornerRadius = 0
         hideTimer.stop()
         hideTimer.interval = Math.max(1, root.duration)
         hideTimer.start()
         showAnimation.restart()
+    }
+
+    function edit(msg, dur, ico) {
+        if(hideTimer.running) {
+            //Toast exist, edit it
+            root.message = msg
+            root.icon = ico ?? ""
+            //reset timer
+            hideTimer.stop()
+            hideTimer.interval = Math.max(1, root.duration)
+            hideTimer.start()
+        } else {
+            //Toast do not exist, show it
+            show(msg, dur, ico)
+        }
     }
 
     readonly property int quarterDuration: anim_duration / 4
@@ -64,12 +83,13 @@ Item {
     Component.onCompleted: {
         console.log("----------------------------")
         console.log("Parent : " + parent)
-        bottomLeftCorner  .cornerRadius = 0
-        bottomRightCorner .cornerRadius = 0
+        bottomLeftCorner    .cornerRadius = 0
+        bottomRightCorner   .cornerRadius = 0
         b_topRightCorner    .cornerRadius = 0
         b_bottomLeftCorner  .cornerRadius = 0
         b2_topRightCorner   .cornerRadius = 0
         b2_bottomLeftCorner .cornerRadius = 0
+        root                .shadow_pacity= 0
         bottomRectangle.height = 0
         bottomRectangle.width = row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2)
     }
@@ -81,16 +101,21 @@ Item {
         repeat: false
         onTriggered: {
             hideTimer.stop()
-            root.opacity = 0
+            //root.opacity = 0
+            hideAnimation.restart()
         }
     }
 
-    /*Behavior on opacity {
+    ParallelAnimation {
+        id: hideAnimation
         NumberAnimation {
-            duration: root.anim_duration
-            easing.type: Easing.InOutQuad
+            target: container
+            property: "y"
+            from: 0
+            to: 500
+            duration: root.halfDuration
         }
-    }*/
+    }
 
     ParallelAnimation {
         id: showAnimation
@@ -179,6 +204,13 @@ Item {
                 duration: root.halfDuration
                 easing.type: Easing.OutCubic
             }
+            NumberAnimation {
+                target: root
+                property: "blur_level"
+                from: 1.5
+                to: 0
+                duration: root.halfDuration
+            }
 
             //Commence apres un délai de 1/4 de la durée totale de l'animation 
             SequentialAnimation {
@@ -202,8 +234,8 @@ Item {
                         property: "width"
                         from: row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2)
                         to: 0
-                        duration: root.halfDuration
-                        easing.type: Easing.OutCubic
+                        duration: root.halfDuration //+ (root.quarterDuration /2)
+                        easing.type: Easing.InOutQuad
                     }
                     SequentialAnimation {
                         //First, grow the 4 bottom angles from 0 to radiusFull
@@ -275,10 +307,29 @@ Item {
                                 duration: root.halfDuration / 2
                                 easing.type: Easing.InCubic
                             }
+                            NumberAnimation {
+                                target: root
+                                property: "shadow_pacity"
+                                from: 0
+                                to: 1
+                                duration: root.halfDuration
+                                easing.type: Easing.OutCubic
+                            }
                         }
                     }
                 }
+            } 
+            /*PauseAnimation {
+                duration: root.halfDuration
             }
+            NumberAnimation {
+                target: root
+                property: "shadow_pacity"
+                from: 0
+                to: 8
+                duration: root.duration
+                easing.type: Easing.OutCubic
+            }*/
         }
     }
 
@@ -305,7 +356,7 @@ Item {
                 cornerColor: root.backgroundColor
                 Layout.alignment: Qt.AlignBottom
             }
-            Rectangle {
+            ClippingRectangle {
                 id: container
                 topLeftRadius: HyprlandConfig.radiusFull
                 topRightRadius: HyprlandConfig.radiusFull
@@ -314,23 +365,31 @@ Item {
                 layer.enabled: true
                 layer.effect: MultiEffect {
                     shadowEnabled: true
-                    shadowColor: root.shadow //"red"//HyprlandConfig.shadowColor
+                    shadowColor: root.shadow //"red"
                     shadowBlur: 2
                     shadowHorizontalOffset: 0
                     shadowVerticalOffset: 8
-                    //radius: container.radius
-                    //paddingEnabled: true
+                    shadowOpacity: shadow_pacity
                 }
         
                 RowLayout {
                     id: row
                     anchors.centerIn: parent
                     spacing: 8
+                    opacity: 1 + (root.blur_level * -1) 
 
-                    Rectangle {
+                    layer.enabled: true
+                    layer.effect: MultiEffect {
+                        blurEnabled: true
+                        blur: blur_level
+                    }
+                    
+
+                    ClippingRectangle {
                         width: 32
                         height: 32
                         color: "transparent" //Colors.primary
+                        radius: HyprlandConfig.radiusFull - 8 //minus spacing for perfect angle
 
                         visible: root.icon !== ""
 
