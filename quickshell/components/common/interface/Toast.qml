@@ -13,6 +13,7 @@ Item {
     property string message: ""
     property string icon: ""
     property int duration: 3000
+    property real progress: -1
     property int anim_duration: 500
     property real shadow_pacity: 0
     property real blur_level: 0
@@ -44,10 +45,19 @@ Item {
         x: 16
     }*/ 
 
-    function show(msg, dur, ico) {
+    function volumeIcon(prog) {
+        if (Audio.sink?.audio?.muted ?? false) return "  ";
+        if (prog > 0.75) return " ";
+        if (prog > 0.5) return " ";
+        if (prog > 0.25) return " ";
+        return " ";
+    }
+
+    function show(msg, dur, ico, prog) {
         root.message = msg
         root.duration = dur ?? 3000
         root.icon = ico ?? ""
+        root.progress = prog ?? -1
         root.opacity = HyprlandConfig.inactiveOpacity
         bottomRectangle     .width = row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2) 
         bottomRectangle     .height = 0 
@@ -56,24 +66,30 @@ Item {
         root                .shadow_pacity= 0
         bottomLeftCorner    .cornerRadius = 0
         bottomRightCorner   .cornerRadius = 0
+        b2_bottomLeftCorner .cornerRadius = 0
+        b2_topRightCorner   .cornerRadius = 0
         hideTimer.stop()
         hideTimer.interval = Math.max(1, root.duration)
         hideTimer.start()
         showAnimation.restart()
     }
 
-    function edit(msg, dur, ico) {
+    function edit(msg, dur, ico, prog) {
         if(hideTimer.running) {
             //Toast exist, edit it
             root.message = msg
+            root.duration = dur ?? 3000
             root.icon = ico ?? ""
+            root.progress = prog ?? root.progress
             //reset timer
             hideTimer.stop()
             hideTimer.interval = Math.max(1, root.duration)
             hideTimer.start()
+            //adapt container size to the new content
+            resizeAnimation.restart()
         } else {
-            //Toast do not exist, show it
-            show(msg, dur, ico)
+            //Toast do not exist, show it 
+            show(msg, dur, ico, prog)
         }
     }
 
@@ -114,6 +130,24 @@ Item {
             from: 0
             to: 500
             duration: root.halfDuration
+        }
+    }
+
+    ParallelAnimation { // Resizes the container to fit new content when the toast is edited
+        id: resizeAnimation
+        NumberAnimation {
+            target: container
+            property: "implicitWidth"
+            to: row.implicitWidth + 16
+            duration: root.halfDuration / 2
+            easing.type: Easing.OutCubic
+        }
+        NumberAnimation {
+            target: container
+            property: "implicitHeight"
+            to: row.implicitHeight + 16
+            duration: root.halfDuration / 2
+            easing.type: Easing.OutCubic
         }
     }
 
@@ -328,7 +362,7 @@ Item {
                 from: 0
                 to: 8
                 duration: root.duration
-                easing.type: Easing.OutCubic
+                easing.type: Easing.OutCubic 
             }*/
         }
     }
@@ -402,11 +436,32 @@ Item {
                         }
                     }
                     Text {
-                        text: root.message
+                        text: root.progress >= 0 ? root.volumeIcon(root.progress) + "  " + Math.round(root.progress * 100) + "%" : root.message
                         font.pixelSize: 13
                         font.family: root.font
                         color: root.foregroundColor
                         Layout.alignment: Qt.AlignVCenter
+                    }
+
+                    Rectangle { // progress track
+                        id: progressTrack
+                        visible: root.progress >= 0
+                        width: 64
+                        height: 4
+                        radius: 2
+                        color: Qt.rgba(root.foregroundColor.r, root.foregroundColor.g, root.foregroundColor.b, 0.2)
+                        Layout.alignment: Qt.AlignVCenter
+
+                        Rectangle { // progress fill
+                            width: parent.width * Math.max(0, Math.min(1, root.progress))
+                            height: parent.height
+                            radius: 2
+                            color: Colors.primary
+
+                            Behavior on width {
+                                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+                            }
+                        }
                     }
                 }
             }

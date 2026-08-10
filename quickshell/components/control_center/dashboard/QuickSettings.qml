@@ -159,7 +159,9 @@ Item {
                         severity: Theme.isDarkMode ? QSButton.Severity.Primary : QSButton.Severity.Secondary
                         Layout.fillWidth: true
                         Layout.preferredWidth: 0
-                        onClicked: Theme.toggle()
+                        onClicked: {
+                            Theme.toggle()
+                        }
                     }
                     QSButton {
                         id: nightModeButton

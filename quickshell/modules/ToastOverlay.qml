@@ -55,9 +55,13 @@ Scope {
 
             Connections {
                 target: ToastService
-                function onToastRequested(message, icon, duration) {
-                    toastItem.show(message, duration, icon)
+                function onToastRequested(message, icon, duration, progress) {
+                    toastItem.show(message, duration, icon, progress)
                     //console.log("Toast requested: " + message + ", duration: " + duration + ", icon: " + icon)
+                }
+                function onEditRequested(message, icon, duration, progress) {
+                    toastItem.edit(message, duration, icon, progress)
+                    //console.log("Toast edited: " + message + ", duration: " + duration + ", icon: " + icon)
                 }
             }
 
