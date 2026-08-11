@@ -332,7 +332,7 @@ Item {
                                         font.pixelSize: 11
                                         color: {
                                             const c = Colors[modelData]
-                                            return (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) > 0.5 ? "#000000" : "#ffffff"
+                                            return (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) > 0.5 ? "#000000" : "#ffffff" 
                                         }
                                     }
                                 }

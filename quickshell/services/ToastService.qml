@@ -18,7 +18,7 @@ Singleton {
         root.message = msg ?? root.message
         root.duration = dur ?? 3000
         root.icon = ico ?? ""
-        root.progress = prog ?? root.progress
+        root.progress = prog ?? -1
         root.toastRequested(root.message, root.icon, root.duration, root.progress)
     }
 
@@ -26,7 +26,7 @@ Singleton {
         root.message = msg ?? root.message
         root.duration = dur ?? 3000
         root.icon = ico ?? ""
-        root.progress = prog ?? root.progress
+        root.progress = prog ?? -1
         root.editRequested(root.message, root.icon, root.duration, root.progress)
     }
 }

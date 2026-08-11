@@ -70,7 +70,7 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - rofi _(App launcher)_
 - kitty
 - fish _(A smart and user-friendly interactive shell)_
-  - fisher _(Plugin manager for Fish shell, with a customised version of **tide** theme)_
+- fisher _(Plugin manager for Fish shell, with a customised version of **tide** theme)_
 - fastfetch _(Fast system info fetcher with logo support, alternative to neofetch)_
 
 ## 📝 TODO/Roadmap

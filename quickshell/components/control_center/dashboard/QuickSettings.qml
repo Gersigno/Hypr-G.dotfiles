@@ -161,6 +161,7 @@ Item {
                         Layout.preferredWidth: 0
                         onClicked: {
                             Theme.toggle()
+                            ToastService.show(Theme.isDarkMode ? "Dark theme enabled" : "Light theme enabled", 3000, Theme.isDarkMode ? "../../../assets/icons/light_off.png" : "../../../assets/icons/light_on.png")
                         }
                     }
                     QSButton {

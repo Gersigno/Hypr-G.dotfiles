@@ -112,7 +112,7 @@ Singleton {
         }
     }
 
-    Connections { // Volume OSD: shows the new level whatever the source (keyboard, slider, wpctl, ...)
+    Connections { // Volume OSD: shows the new level whatever the source (keyboard, slider, wpctl, ...) 
         target: sink?.audio ?? null
         function onMutedChanged() {
             ToastService.edit(Audio.sink.audio.muted ? "    Volume muted" : "   Volume unmuted", 1500)

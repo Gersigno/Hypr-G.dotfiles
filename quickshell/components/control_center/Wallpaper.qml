@@ -176,12 +176,10 @@ Item {
                             carousel.currentIndex = index
                             console.log("carousel index: " +carousel.currentIndex + " defined index: " + index)
                             const path = fileUrl.toString().replace(/^file:\/\//, "")
-                            //console.log("Selected wallpaper: " + path)
                             const command = ["/bin/bash", StandardPaths.standardLocations(StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "") + "/.config/hypr/hypr-g/scripts/set_wallpaper.sh", path]
-                            //console.log("Running command: " + command.join(" "))
                             wallpaperProcess.command = command
                             wallpaperProcess.running = true
-                            ToastService.show("Wallpaper applied", 4000, "../../../assets/icons/success.png")
+                            ToastService.show("Wallpaper applied", 4000, "../../../assets/icons/wallpaper.png")
                         }
                     }
                 }

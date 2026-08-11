@@ -26,6 +26,7 @@ hypr/custom/
 # Ignore fish_variables and all its variants
 fish/fish_variables
 fish/fish_variables.*
+fish/completions/copilot.fish
 
 !kdeglobals
 

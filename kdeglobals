@@ -12,21 +12,21 @@ MaximumRemoteSize=0
 ColorScheme=qt6ct
 
 [Colors:Window]
-BackgroundNormal=#191113
-ForegroundNormal=#efdfe1
-DecorationFocus=#ffb1c5
-DecorationHover=#ffb1c5
+BackgroundNormal=#111318
+ForegroundNormal=#e1e2e9
+DecorationFocus=#a6c8ff
+DecorationHover=#a6c8ff
 
 [Colors:View]
-BackgroundNormal=#191113
-BackgroundAlternate=#191113
-ForegroundNormal=#efdfe1
-DecorationFocus=#ffb1c5
-DecorationHover=#ffb1c5
+BackgroundNormal=#111318
+BackgroundAlternate=#111318
+ForegroundNormal=#e1e2e9
+DecorationFocus=#a6c8ff
+DecorationHover=#a6c8ff
 
 [Colors:Button]
-BackgroundNormal=#261d1f
-ForegroundNormal=#efdfe1
+BackgroundNormal=#1d2024
+ForegroundNormal=#e1e2e9
 
 [General]
 ColorScheme=matugen

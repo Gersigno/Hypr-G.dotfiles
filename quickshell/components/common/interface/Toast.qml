@@ -14,6 +14,7 @@ Item {
     property string icon: ""
     property int duration: 3000
     property real progress: -1
+    property real growRatio: 0
     property int anim_duration: 500
     property real shadow_pacity: 0
     property real blur_level: 0
@@ -54,15 +55,17 @@ Item {
     }
 
     function show(msg, dur, ico, prog) {
+        showAnimation.stop()
+        hideAnimation.stop()
+        container.y = 0
         root.message = msg
         root.duration = dur ?? 3000
         root.icon = ico ?? ""
         root.progress = prog ?? -1
+        root.growRatio = 0
         root.opacity = HyprlandConfig.inactiveOpacity
         bottomRectangle     .width = row.implicitWidth + 16 - (HyprlandConfig.radiusFull * 2) 
         bottomRectangle     .height = 0 
-        container           .implicitWidth = 0
-        container           .implicitHeight = 0
         root                .shadow_pacity= 0
         bottomLeftCorner    .cornerRadius = 0
         bottomRightCorner   .cornerRadius = 0
@@ -77,16 +80,15 @@ Item {
     function edit(msg, dur, ico, prog) {
         if(hideTimer.running) {
             //Toast exist, edit it
+            showAnimation.stop()
             root.message = msg
             root.duration = dur ?? 3000
             root.icon = ico ?? ""
-            root.progress = prog ?? root.progress
+            root.progress = prog ?? -1
             //reset timer
             hideTimer.stop()
             hideTimer.interval = Math.max(1, root.duration)
             hideTimer.start()
-            //adapt container size to the new content
-            resizeAnimation.restart()
         } else {
             //Toast do not exist, show it 
             show(msg, dur, ico, prog)
@@ -130,24 +132,6 @@ Item {
             from: 0
             to: 500
             duration: root.halfDuration
-        }
-    }
-
-    ParallelAnimation { // Resizes the container to fit new content when the toast is edited
-        id: resizeAnimation
-        NumberAnimation {
-            target: container
-            property: "implicitWidth"
-            to: row.implicitWidth + 16
-            duration: root.halfDuration / 2
-            easing.type: Easing.OutCubic
-        }
-        NumberAnimation {
-            target: container
-            property: "implicitHeight"
-            to: row.implicitHeight + 16
-            duration: root.halfDuration / 2
-            easing.type: Easing.OutCubic
         }
     }
 
@@ -223,18 +207,10 @@ Item {
         //Container growth, run in parallel (asynchronous)
         ParallelAnimation {
             NumberAnimation {
-                target: container
-                property: "implicitHeight"
+                target: root
+                property: "growRatio"
                 from: 0
-                to: row.implicitHeight + 16
-                duration: root.halfDuration
-                easing.type: Easing.OutCubic
-            }
-            NumberAnimation {
-                target: container
-                property: "implicitWidth"
-                from: 0
-                to: row.implicitWidth + 16
+                to: 1
                 duration: root.halfDuration
                 easing.type: Easing.OutCubic
             }
@@ -395,6 +371,17 @@ Item {
                 topLeftRadius: HyprlandConfig.radiusFull
                 topRightRadius: HyprlandConfig.radiusFull
                 color: root.backgroundColor
+                implicitWidth: root.growRatio * (row.implicitWidth + 16)
+                implicitHeight: root.growRatio * (row.implicitHeight + 16)
+
+                Behavior on implicitWidth {
+                    enabled: root.growRatio >= 1
+                    NumberAnimation { duration: root.halfDuration / 2; easing.type: Easing.OutCubic }
+                }
+                Behavior on implicitHeight {
+                    enabled: root.growRatio >= 1
+                    NumberAnimation { duration: root.halfDuration / 2; easing.type: Easing.OutCubic }
+                }
 
                 layer.enabled: true
                 layer.effect: MultiEffect {
