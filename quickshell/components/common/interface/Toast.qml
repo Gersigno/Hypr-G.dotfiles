@@ -80,7 +80,7 @@ Item {
     function edit(msg, dur, ico, prog) {
         if(hideTimer.running) {
             //Toast exist, edit it
-            showAnimation.stop()
+            //showAnimation.stop()
             root.message = msg
             root.duration = dur ?? 3000
             root.icon = ico ?? ""
@@ -99,8 +99,6 @@ Item {
     readonly property int halfDuration: anim_duration / 2
 
     Component.onCompleted: {
-        console.log("----------------------------")
-        console.log("Parent : " + parent)
         bottomLeftCorner    .cornerRadius = 0
         bottomRightCorner   .cornerRadius = 0
         b_topRightCorner    .cornerRadius = 0

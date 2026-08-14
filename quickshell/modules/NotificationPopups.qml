@@ -146,6 +146,13 @@ Scope {
                                         const icon = modelData.appIcon || modelData.image
                                         if (!icon) return ""
                                         if (icon.startsWith("/")) return "file://" + icon
+                                        if (icon.startsWith("image://qsimage/")) return ""
+                                        if (icon.startsWith("image://icon/")) {
+                                            const name = icon.slice("image://icon/".length)
+                                            if (name.startsWith("/")) return "file://" + name
+                                            const res = Quickshell.iconPath(name, 32)
+                                            return res ? (res.startsWith("image://") ? res : "file://" + res) : ""
+                                        }
                                         const res = Quickshell.iconPath(icon, 32)
                                         return res ? (res.startsWith("image://") ? res : "file://" + res) : ""
                                     }

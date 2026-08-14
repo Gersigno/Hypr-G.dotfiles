@@ -1,9 +1,11 @@
 import QtQuick
-import Quickshell
 import QtQuick.Layouts
+import Quickshell
 
 import "../notifications_center"
 import "../../services"
+import "../../config"
+import "../../utils"
 
 Item {
     id: root
@@ -11,30 +13,108 @@ Item {
     property int topBarHeight: 0
     readonly property int fullRadius: HyprlandConfig.radiusFull
 
-    Rectangle {
-        id: content
+    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
+    readonly property color variantColor: Config.isOled ? "#fff" : Colors.on_surface_variant
+    readonly property string font: Config.fontFamily
+
+    // Flat list of all notifications, newest first
+    readonly property var chronologicalList: Notifications.list.slice().sort((a, b) => b.time - a.time)
+
+    ColumnLayout {
         anchors.fill: parent
-        
-        color: "transparent"
+        spacing: 8
 
-        ColumnLayout {
-            anchors.fill: parent
+        Actions {
+            id: actions
+            Layout.fillWidth: true
+        }
 
-            spacing: 8
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
-            UserLayout { 
-                id: userLayout
-                width: content.width
+            ListView {
+                id: listView
+                anchors.fill: parent
+                clip: true
+                boundsBehavior: Flickable.StopAtBounds
+
+                model: actions.groupByApp ? Notifications.appNameList : root.chronologicalList
+                spacing: 8
+
+                header: Item { width: 1; height: 2 }
+                footer: Item { width: 1; height: 12 }
+
+                add: Transition {
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: 200
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                displaced: Transition {
+                    NumberAnimation {
+                        properties: "y"
+                        duration: 200
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                delegate: actions.groupByApp ? groupedDelegate : flatDelegate
             }
 
-            Actions {
-                id: actions
-                width: content.width
+            Component {
+                id: flatDelegate
+                NotificationCard {
+                    width: listView.width
+                }
             }
 
+            Component {
+                id: groupedDelegate
+                NotificationGroup {
+                    width: listView.width
+                }
+            }
+
+            // Empty state
             Item {
-                //TODO: remplacer par la liste des notifs
-                Layout.fillHeight: true
+                anchors.fill: parent
+                visible: Notifications.list.length === 0
+
+                Column {
+                    anchors.centerIn: parent
+                    spacing: 8
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "󰂛"
+                        font.family: "Symbols Nerd Font"
+                        font.pixelSize: 40
+                        color: root.variantColor
+                        opacity: 0.6
+                    }
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "No notifications"
+                        font.family: root.font
+                        font.pixelSize: 13
+                        color: root.variantColor
+                    }
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "You're all caught up"
+                        font.family: root.font
+                        font.pixelSize: 11
+                        color: root.variantColor
+                        opacity: 0.7
+                    }
+                }
             }
         }
     }
