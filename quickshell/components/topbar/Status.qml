@@ -257,7 +257,6 @@ Item {
                         anchors.horizontalCenter: bellText.horizontalCenter
                         anchors.bottom: bellText.bottom
                         anchors.bottomMargin: 3.5
-                        textAlignment: Text.AlignHCenter
                     }
 
                     /*Rectangle {

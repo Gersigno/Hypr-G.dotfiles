@@ -16,3 +16,7 @@ hl.env("OZONE_PLATFORM",                "wayland")
 hl.env("GTK_CSD",                       "0")
 hl.env("GTK_OVERLAY_SCROLLING", "1")
 hl.env("CHROMIUM_USER_FLAGS",           "--disable-features=WindowControlsOverlay,WebAppWindowControlsOverlay")
+
+hl.env("XDG_CURRENT_DESKTOP",           "Hyprland")
+hl.env("XDG_SESSION_TYPE",              "wayland")
+hl.env("XDG_SESSION_DESKTOP",           "Hyprland")
