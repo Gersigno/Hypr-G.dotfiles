@@ -15,7 +15,7 @@ KITTY_CONFIG="$HOME/.config/kitty/kitty.conf"
 HYPRLAND_RELOAD="hyprctl reload"
 
 # Path to the wallpaper script
-GET_WALLPAPER_SCRIPT="$HOME/.config/hypr/hypr-g/scripts/get_wallpaper.sh"
+GET_WALLPAPER_SCRIPT="$HOME/.config/quickshell/scripts/get_wallpaper.sh"
 
 # Function to toggle the theme
 toggle_theme() {

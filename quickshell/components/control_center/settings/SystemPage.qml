@@ -1,13 +1,13 @@
 import QtQuick
 import Quickshell
 
-import "../../../config"
+import qs.services
 import "../../../utils"
 
 Item {
     id: root
 
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
+    readonly property color foregroundColor: Colors.on_background
 
     Column {
         spacing: 8
@@ -20,14 +20,14 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 color: foregroundColor
                 font.pixelSize: 20
-                font.family: Config.fontFamily
+                font.family: Settings.fontFamily
                 font.bold: true
             }
             Text {
                 text: "System"
                 color: foregroundColor
                 font.pixelSize: 20
-                font.family: Config.fontFamily
+                font.family: Settings.fontFamily
                 font.bold: true
             }
         }
@@ -36,7 +36,7 @@ Item {
             text: "System settings and information"
             color: foregroundColor
             font.pixelSize: 13
-            font.family: Config.fontFamily
+            font.family: Settings.fontFamily
             opacity: 0.7
         }
     }

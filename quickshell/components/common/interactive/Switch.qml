@@ -2,7 +2,6 @@ import QtQuick
 import Quickshell
 
 import "../../../utils"
-import "../../../config"
 
 Item {
     id: root

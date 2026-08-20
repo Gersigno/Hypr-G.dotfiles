@@ -1,12 +1,11 @@
 import QtQuick
 import QtQuick.Controls
 import Quickshell.Widgets
-import QtCore
+import QtCore as Core
 import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Io
 
-import "../../config"
 import "../../utils"
 import qs.services
 
@@ -35,7 +34,7 @@ Item {
     Process {
         id: getWallpaperProcess
         running: true
-        command: ["/bin/bash", StandardPaths.standardLocations(StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "") + "/.config/hypr/hypr-g/scripts/get_wallpaper.sh"]
+        command: ["/bin/bash", Core.StandardPaths.standardLocations(Core.StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "") + "/.config/quickshell/scripts/get_wallpaper.sh"]
 
         property string accumulatedOutput: ""
 
@@ -62,7 +61,7 @@ Item {
     // Image files model from wallpapersPath
     FolderListModel {
         id: wallpaperModel
-        folder: Config.wallpapersPath
+        folder: Settings.wallpapersPath
         nameFilters: ["*.jpg", "*.jpeg", "*.png", "*.webp", "*.bmp", "*.gif", "*.tiff", "*.tif"]
         showDirs: false
         sortField: FolderListModel.Name
@@ -73,9 +72,9 @@ Item {
     //Fallback text if no file found
     Text {
         anchors.centerIn: parent
-        text: "No wallpapers found in " + Config.wallpapersPath
+        text: "No wallpapers found in " + Settings.wallpapersPath
         color: "white"
-        font.family: Config.fontFamily
+        font.family: Settings.fontFamily
         font.pixelSize: 12
         visible: wallpaperModel.count === 0
     }
@@ -163,7 +162,7 @@ Item {
                             text: fileName
                             color: "white"
                             font.pixelSize: 10
-                            font.family: Config.fontFamily
+                            font.family: Settings.fontFamily
                             elide: Text.ElideRight
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -176,7 +175,7 @@ Item {
                             carousel.currentIndex = index
                             console.log("carousel index: " +carousel.currentIndex + " defined index: " + index)
                             const path = fileUrl.toString().replace(/^file:\/\//, "")
-                            const command = ["/bin/bash", StandardPaths.standardLocations(StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "") + "/.config/hypr/hypr-g/scripts/set_wallpaper.sh", path]
+                            const command = ["/bin/bash", Core.StandardPaths.standardLocations(Core.StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "") + "/.config/quickshell/scripts/set_wallpaper.sh", path]
                             wallpaperProcess.command = command
                             wallpaperProcess.running = true
                             ToastService.show("Wallpaper applied", 4000, "../../../assets/icons/wallpaper.png")

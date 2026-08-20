@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 
 import "../components/common/interface"
-import "../config"
+import qs.services
 import "../services"
 import "../utils"
 
@@ -11,7 +11,7 @@ Scope {
     id: root
 
     property int globalRadius: HyprlandConfig.radiusFull
-    property color globalColor: Config.isOled ? "#000000" : Colors.background
+    property color globalColor: (Settings.isOled && Theme.isDarkMode) ? "#000000" : Colors.background
 
     Component.onCompleted: {
         console.info("Loaded component: [ScreenCorners]")

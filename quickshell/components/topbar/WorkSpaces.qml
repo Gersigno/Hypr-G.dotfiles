@@ -3,16 +3,16 @@ import Quickshell
 import Quickshell.Hyprland
 
 import "../../services"
-import "../../config"
+import qs.services
 import "../../utils"
 import "../common/interface"
 
 Item {
     id: root
 
-    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background 
-    readonly property color foregroundColor: Config.isOled ? "lightgrey" : Colors.on_background
-    readonly property color primary: Config.isOled ? "#fff" : Colors.primary
+    readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000" : Colors.background 
+    readonly property color foregroundColor: Colors.on_background
+    readonly property color primary: (Settings.isOled && Theme.isDarkMode) ? "#fff" : Colors.primary
     property var screen
     property var workspaceIds: HyprlandConfig.workspacesByMonitor[screen?.name ?? ""] ?? []
 

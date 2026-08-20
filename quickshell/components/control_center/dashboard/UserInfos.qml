@@ -1,12 +1,12 @@
 import QtQuick
 import Quickshell
-import QtCore
+import QtCore as Core
 import Quickshell.Widgets
 import Qt5Compat.GraphicalEffects
 import QtQuick.Effects
 import Quickshell.Io
 
-import "../../../config"
+import qs.services
 import "../../../utils"
 import "../../../services"
 import "../../common/interface"
@@ -14,11 +14,11 @@ import "../../common/interface"
 Item {
     id: root
 
-    readonly property string home: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
+    readonly property string home: Core.StandardPaths.standardLocations(Core.StandardPaths.HomeLocation)[0]
     readonly property string userName: home.split('/').pop().charAt(0).toUpperCase() + home.split('/').pop().slice(1)
     
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
-    readonly property string font: Config.fontFamily
+    readonly property color foregroundColor: Colors.on_background
+    readonly property string font: Settings.fontFamily
 
     BackgroundLayer {
         id: background

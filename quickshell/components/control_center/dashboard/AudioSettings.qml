@@ -1,12 +1,11 @@
 import QtQuick
 import Quickshell
-import QtCore
 import Quickshell.Widgets
 import Qt5Compat.GraphicalEffects
 import QtQuick.Effects
 import Quickshell.Io
 
-import "../../../config"
+import qs.services
 import "../../../utils"
 import "../../../services"
 import "../../common/interface"
@@ -15,8 +14,8 @@ Item {
     id: root
 
     
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
-    readonly property string font: Config.fontFamily
+    readonly property color foregroundColor: Colors.on_background
+    readonly property string font: Settings.fontFamily
 
     BackgroundLayer {
         id: background

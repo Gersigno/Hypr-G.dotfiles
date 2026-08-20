@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 
-import "../../../config"
+import qs.services
 import "../../../utils"
 import "../../../services"
 import "../../common/interactive"
@@ -10,11 +10,11 @@ import "../../common/interface"
 Item {
     id: root
 
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
-    readonly property color mutedColor: Config.isOled ? "#aaa" : Colors.on_surface_variant
+    readonly property color foregroundColor: Colors.on_background
+    readonly property color mutedColor: Settings.isOled ? "#aaa" : Colors.on_surface_variant
     readonly property color surfaceColor: Colors.surface_container_high
     readonly property color surfaceBorder: Colors.surface_variant
-    readonly property string font: Config.fontFamily
+    readonly property string font: Settings.fontFamily
 
     function getDeviceIcon(device) {
         var ic = device.icon || ""

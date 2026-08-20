@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 
-import "../../config"
+import qs.services
 import "../../utils"
 
 Item {
@@ -10,8 +10,8 @@ Item {
     implicitWidth: 800
     implicitHeight: 450
 
-    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
+    readonly property color backgroundColor: Settings.isOled ? "#000" : Colors.background
+    readonly property color foregroundColor: Colors.on_background
 
     Text {
         text: "Performances"

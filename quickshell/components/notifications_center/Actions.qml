@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 
-import "../../config"
+import qs.services
 import "../../utils"
 import "../../services"
 import "../common/interactive"
@@ -15,11 +15,11 @@ Item {
     implicitWidth: 300
     implicitHeight: 60
 
-    readonly property color textColor: Config.isOled ? "#fff" : Colors.on_surface
-    readonly property color textVariantColor: Config.isOled ? "#fff" : Colors.on_surface_variant
+    readonly property color textColor: Colors.on_surface
+    readonly property color textVariantColor: Colors.on_surface_variant
     readonly property color badgeColor: Colors.primary
     readonly property color badgeTextColor: Colors.on_primary
-    readonly property string font: Config.fontFamily
+    readonly property string font: Settings.fontFamily
 
     ColumnLayout {
         anchors.fill: parent

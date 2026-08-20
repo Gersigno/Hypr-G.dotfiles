@@ -2,8 +2,9 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Wayland
+import Qt5Compat.GraphicalEffects
 
-import "../../config"
+import qs.services
 import "../../utils"
 
 Item {
@@ -21,15 +22,24 @@ Item {
             const name = root.activeWindow?.appId || "Desktop";
             return name.charAt(0).toUpperCase() + name.slice(1);
         }
-        color: Config.isOled ? "#fff" : Colors.on_background
+        color: Colors.on_background
         font.pixelSize: 12
-        style: Text.Raised
-        font.weight: Font.Medium
+        font.weight: Font.Mediums
         verticalAlignment: Text.AlignVCenter
         
         anchors {
             top: parent.top
             bottom: parent.bottom
         }
+    }
+
+    DropShadow {
+        anchors.fill: windowTitle
+        source: windowTitle
+        horizontalOffset: 0
+        verticalOffset: 1
+        radius: 5.0
+        samples: 10
+        color: "#A0000000"
     }
 }

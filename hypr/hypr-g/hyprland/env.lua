@@ -8,7 +8,7 @@ hl.env("QT_QPA_PLATFORMTHEME",          "qt6ct")
 hl.env("QT_QPA_PLATFORM",               "wayland")
 hl.env("XDG_MENU_PREFIX",               "arch-")
 
-hl.env("THEME_MODE",                "dark")
+hl.env("THEME_MODE",                "light")
 hl.env("HYPRSHOT_DIR",                  os.getenv("HOME") .. "/Pictures/Screenshots")
 
 hl.env("ELECTRON_OZONE_PLATFORM_HINT",  "wayland")

@@ -3,7 +3,6 @@ import Quickshell
 import Quickshell.Io
 import QtQuick.Layouts
 
-import "../../config"
 import "../../utils"
 import qs.services
 import "../common/interactive"
@@ -35,7 +34,7 @@ Item {
                     
                     Text {
                         anchors.centerIn: parent
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         text: modelData
                         color: "white"
                     }
@@ -88,7 +87,7 @@ Item {
                             text: "Buttons :";
                             color: "white";
                             font.pixelSize: 18;
-                            font.family: Config.fontFamily
+                            font.family: Settings.fontFamily
                             font.bold: true;
                         }
                         Row {
@@ -98,7 +97,7 @@ Item {
                                 Text {
                                     text: "Default buttons";
                                     color: Colors.on_surface_variant;
-                                    font.family: Config.fontFamily;
+                                    font.family: Settings.fontFamily;
                                     font.pixelSize: 12;
                                 }
                                 Button {
@@ -123,7 +122,7 @@ Item {
                                 Text {
                                     text: "Disabled buttons";
                                     color: Colors.on_surface_variant;
-                                    font.family: Config.fontFamily;
+                                    font.family: Settings.fontFamily;
                                     font.pixelSize: 12;
                                 }
                                 Button {
@@ -152,7 +151,7 @@ Item {
                                 Text {
                                     text: "Full rounded buttons";
                                     color: Colors.on_surface_variant;
-                                    font.family: Config.fontFamily;
+                                    font.family: Settings.fontFamily;
                                     font.pixelSize: 12;
                                 }
                                 Button {
@@ -181,7 +180,7 @@ Item {
                             text: "QSButtons (QuickSettings):";
                             color: "white";
                             font.pixelSize: 18;
-                            font.family: Config.fontFamily
+                            font.family: Settings.fontFamily
                             font.bold: true;
                         }
                         Item {
@@ -198,7 +197,7 @@ Item {
                                     Text {
                                         text: "Default QSButtons";
                                         color: Colors.on_surface_variant;
-                                        font.family: Config.fontFamily;
+                                        font.family: Settings.fontFamily;
                                         font.pixelSize: 12;
                                     }
                                     QSButton {
@@ -228,7 +227,7 @@ Item {
                                     Text {
                                         text: "Description";
                                         color: Colors.on_surface_variant;
-                                        font.family: Config.fontFamily;
+                                        font.family: Settings.fontFamily;
                                         font.pixelSize: 12;
                                     }
                                     QSButton {
@@ -313,7 +312,7 @@ Item {
                                     height: parent.height
                                     text: modelData
                                     color: Colors.on_surface_variant
-                                    font.family: Config.fontFamily
+                                    font.family: Settings.fontFamily
                                     font.pixelSize: 12
                                     verticalAlignment: Text.AlignVCenter
                                     elide: Text.ElideRight
@@ -328,7 +327,7 @@ Item {
                                     Text {
                                         anchors.centerIn: parent
                                         text: Colors[modelData].toString().toUpperCase()
-                                        font.family: Config.fontFamily
+                                        font.family: Settings.fontFamily
                                         font.pixelSize: 11
                                         color: {
                                             const c = Colors[modelData]
@@ -355,7 +354,7 @@ Item {
                         text: "Toast Service Testing"
                         color: "white"
                         font.pixelSize: 18
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         font.bold: true
                     }
 
@@ -399,7 +398,7 @@ Item {
                         text: "System notifications testing"
                         color: "white"
                         font.pixelSize: 18
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         font.bold: true
                     }
 

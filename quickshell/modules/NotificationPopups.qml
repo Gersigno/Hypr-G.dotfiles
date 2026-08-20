@@ -5,7 +5,7 @@ import Quickshell.Wayland
 
 import "../services"
 import "../utils"
-import "../config"
+import qs.services
 import "../utils"
 import "../components/common/interface"
 
@@ -15,7 +15,7 @@ Scope {
     readonly property int globalRadius: HyprlandConfig.radiusFull
     readonly property int innerRadius: HyprlandConfig.radius > 0 ? HyprlandConfig.radius : 12
 
-    readonly property color backgroundColor: Config.isOled ? "#000000" : Colors.background
+    readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000000" : Colors.background
     readonly property color foregroundColor: Colors.on_surface
     readonly property color foregroundVariantColor: Colors.on_surface_variant
 
@@ -177,7 +177,7 @@ Scope {
                                 Text {
                                     text: modelData.appName || modelData.summary || ""
                                     color: root.foregroundVariantColor
-                                    font.family: Config.fontFamily
+                                    font.family: Settings.fontFamily
                                     font.pixelSize: 11
                                     elide: Text.ElideRight
                                     Layout.fillWidth: true
@@ -187,7 +187,7 @@ Scope {
                                 Text {
                                     text: modelData.summary || ""
                                     color: root.foregroundColor
-                                    font.family: Config.fontFamily
+                                    font.family: Settings.fontFamily
                                     font.pixelSize: 13
                                     font.bold: true
                                     elide: Text.ElideRight
@@ -198,7 +198,7 @@ Scope {
                                 Text {
                                     text: modelData.body || ""
                                     color: root.foregroundVariantColor
-                                    font.family: Config.fontFamily
+                                    font.family: Settings.fontFamily
                                     font.pixelSize: 12
                                     elide: Text.ElideRight
                                     wrapMode: Text.Wrap

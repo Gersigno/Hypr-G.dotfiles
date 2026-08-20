@@ -6,15 +6,15 @@ import Quickshell.Wayland
 
 import "../common/interface"
 import "../../services"
-import "../../config"
+import qs.services
 import "../../utils"
 
 Item {
     id: root 
 
-    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
-    readonly property string fontFamily: Config.fontFamily
+    readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000" : Colors.background
+    readonly property color foregroundColor: Colors.on_background
+    readonly property string fontFamily: Settings.fontFamily
 
     readonly property var chargeState: Battery.chargeState
     readonly property bool isCharging: Battery.isCharging
@@ -250,7 +250,7 @@ Item {
                     Text {
                         id: bellBadgeText
                         text: Notifications.list.length > 99 ? "99+" : Notifications.list.length
-                        color: Colors.backgroundColor
+                        color: Colors.background 
                         font.bold: true
                         font.family: root.fontFamily
                         font.pixelSize: Notifications.list.length > 99 ? 7 : 10

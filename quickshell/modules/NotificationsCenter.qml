@@ -9,7 +9,7 @@ import "./"
 
 import "../services"
 import "../components/common/interface"
-import "../config"
+import qs.services
 import "../utils"
 import "../components/notifications_center"
 
@@ -27,7 +27,7 @@ Item {
     readonly property real statusHeight: topBarComponent ? topBarComponent.barHeight : 0
     readonly property int radius: HyprlandConfig.radius
     readonly property int fullRadius: HyprlandConfig.radiusFull
-    readonly property color backgroundColor: Config.isOled ? "#000000" : Colors.background
+    readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000000" : Colors.background 
 
     //Default properties for our animations
     readonly property real defaultWidth: statusWidth

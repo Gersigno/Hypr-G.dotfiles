@@ -3,7 +3,7 @@ import QtQuick
 
 import "../../../../utils"
 import "../../../../services"
-import "../../../../config"
+import qs.services
 
 Item {
     id: root
@@ -104,7 +104,7 @@ Item {
                     Text {
                         id: topIcon
                         font.pixelSize: 13
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         color: root.textColor
                         font.bold: (root.severity === 0)
                     }
@@ -112,7 +112,7 @@ Item {
                     Text {
                         id: label
                         font.pixelSize: 13
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         color: root.textColor
                         font.bold: (root.severity === 0)
                     }
@@ -120,7 +120,7 @@ Item {
                     Text {
                         id: desc
                         font.pixelSize: 11
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         color: root.textColor
                         opacity: 0.7
                         font.bold: (root.severity === 0)
@@ -145,7 +145,7 @@ Item {
             anchors.topMargin: root.expandIcon === "⋯" ? 0 : 6
             text: root.expanded ? "✕" : root.expandIcon
             font.pixelSize: expandArea.containsMouse ? 13 : 11
-            font.family: Config.fontFamily
+            font.family: Settings.fontFamily
             color: root.textColor
             visible: root.showExpandButton
         }
@@ -286,7 +286,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         text: root.topIcon
                         font.pixelSize: 13
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         color: root.textColor
                         font.bold: (root.severity === 0)
                     }
@@ -297,7 +297,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         text: label.text
                         font.pixelSize: 13
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         color: root.textColor
                         font.bold: true
                     }
@@ -307,7 +307,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "✕"
                         font.pixelSize: 12
-                        font.family: Config.fontFamily
+                        font.family: Settings.fontFamily
                         color: root.textColor
                         opacity: 0.7
 
@@ -343,7 +343,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData
                                 font.pixelSize: 13
-                                font.family: Config.fontFamily
+                                font.family: Settings.fontFamily
                                 color: root.textColor
                                 elide: Text.ElideRight
                             }

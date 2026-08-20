@@ -11,7 +11,7 @@ Singleton {
 
     readonly property string homePath: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "")
     readonly property string configPath: homePath + "/.config/hypr/hypr-g/hyprland/env.lua"
-    readonly property string toggleScript: homePath + "/.config/hypr/hypr-g/scripts/toggle-theme.sh"
+    readonly property string toggleScript: homePath + "/.config/quickshell/scripts/toggle-theme.sh"
 
     property bool isDarkMode: true
 

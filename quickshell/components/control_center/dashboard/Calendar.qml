@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 
-import "../../../config"
+import qs.services
 import "../../../utils"
 import "../../../services"
 import "../../common/interface"
@@ -14,8 +14,8 @@ Item {
     readonly property color fgMuted:  Colors.outline
     readonly property color accent:   Colors.primary
     readonly property color accentFg: Colors.on_primary
-    readonly property string fontName: Config.fontFamily
-    readonly property string font: Config.fontFamily
+    readonly property string fontName: Settings.fontFamily
+    readonly property string font: Settings.fontFamily
 
     property int viewYear:  new Date().getFullYear()
     property int viewMonth: new Date().getMonth()

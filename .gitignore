@@ -34,6 +34,7 @@ hypr/hypr-g/hyprlock/colors.conf
 kitty/colors.conf
 rofi/colors.rasi
 quickshell/colors.json
+quickshell/settings.json
 yazi/flavors/
 kdeglobals
 

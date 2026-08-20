@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 
 import "."
-import "../../config"
+import qs.services
 import "../../utils"
 import "../../services"
 import "../common/interactive"
@@ -19,7 +19,7 @@ Item {
     readonly property color textVariantColor: Colors.on_surface_variant
     readonly property color badgeColor: Colors.primary
     readonly property color badgeTextColor: Colors.on_primary
-    readonly property string font: Config.fontFamily
+    readonly property string font: Settings.fontFamily
 
     implicitWidth: 300
     implicitHeight: column.implicitHeight

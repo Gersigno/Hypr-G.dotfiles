@@ -2,17 +2,17 @@ import QtQuick
 import Quickshell
 
 import "../common/interface"
-import "../../config"
+import qs.services
 import "../../services"
 import "../../utils"
 
 Item {
     id: root
     //readonly property var controlCenterComponent: null
-    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
+    readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000" : Colors.background
+    readonly property color foregroundColor: Colors.on_background
     readonly property int radius: HyprlandConfig.radius
-    readonly property string font: Config.fontFamily
+    readonly property string font: Settings.fontFamily
 
     implicitWidth: container.width
     height: parent.height

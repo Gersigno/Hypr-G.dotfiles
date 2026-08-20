@@ -6,7 +6,6 @@ import QtCore
 
 import "../components/common/interface"
 import "../services"
-import "../config"
 import "../utils"
 
 

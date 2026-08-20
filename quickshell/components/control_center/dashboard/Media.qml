@@ -5,7 +5,6 @@ import Quickshell.Widgets
 import QtQuick.Shapes
 import QtQuick.Effects
 
-import "../../../config"
 import "../../../utils"
 import "../../common/interface"
 import qs.services
@@ -20,7 +19,7 @@ Item {
     readonly property color surfaceHigh:    Colors.surface_container_high
     readonly property color surfaceHighest: Colors.surface_container_highest
     readonly property color onAccent:       Colors.on_primary
-    readonly property string font:          Config.fontFamily
+    readonly property string font:          Settings.fontFamily
 
     readonly property MprisPlayer player: Media.activePlayer
     readonly property bool hasPlayer: player !== null
@@ -206,7 +205,7 @@ Item {
                 anchors.centerIn: parent
                 text: root.prettySource(root.player)
                 color: root.accent
-                font.family: Config.fontFamily
+                font.family: Settings.fontFamily
                 font.pixelSize: 11
                 font.weight: Font.DemiBold
                 font.letterSpacing: 0.4
@@ -226,7 +225,7 @@ Item {
                 width: parent.width - sourceBadge.width - 8
                 text: root.player?.trackTitle ?? "Not playing"
                 color: root.fg
-                font.family: Config.fontFamily
+                font.family: Settings.fontFamily
                 font.pixelSize: 16
                 font.weight: Font.Bold
                 elide: Text.ElideRight
@@ -238,7 +237,7 @@ Item {
                 width: parent.width
                 text: root.player?.trackArtist ?? ""
                 color: root.fgSub
-                font.family: Config.fontFamily
+                font.family: Settings.fontFamily
                 font.pixelSize: 13
                 elide: Text.ElideRight
             }
@@ -377,7 +376,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text: root.hasPlayer ? root.formatTime(root.localPosition) : "-:--"
                     color: root.fgSub
-                    font.family: Config.fontFamily
+                    font.family: Settings.fontFamily
                     font.pixelSize: 11
                 }
                 Text {
@@ -385,7 +384,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text: root.hasPlayer ? "−" + root.formatTime(Math.max(0, (root.player?.length ?? 0) - root.localPosition)) : "-:--"
                     color: root.fgSub
-                    font.family: Config.fontFamily
+                    font.family: Settings.fontFamily
                     font.pixelSize: 11
                 }
             }

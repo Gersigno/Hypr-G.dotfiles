@@ -3,7 +3,7 @@ import QtQuick
 
 import "../../../utils"
 import "../../../services"
-import "../../../config"
+import qs.services
 
 Item {
     id: root
@@ -94,7 +94,7 @@ Item {
                     anchors.centerIn: parent
 
                     font.pixelSize: 13
-                    font.family: Config.fontFamily
+                    font.family: Settings.fontFamily
                     color: root.textColor
                     font.bold: (root.severity === 0)
                 }

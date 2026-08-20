@@ -8,7 +8,7 @@ import Quickshell.Io
 
 import "../services"
 import "../components/common/interface"
-import "../config"
+import qs.services
 import "../utils"
 //import "../components/control_center" as ControlCenterComponents
 
@@ -25,8 +25,9 @@ Item {
     readonly property real clockHeight: topBarComponent ? topBarComponent.barHeight : 0
     readonly property int radius: HyprlandConfig.radius
     readonly property int fullRadius: HyprlandConfig.radiusFull
-    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
-    readonly property string familyFont: Config.fontFamily
+    readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000" : Colors.background
+    readonly property color foregroundColor: Colors.on_background
+    readonly property string familyFont: Settings.fontFamily
 
     readonly property real defaultWidth: clockWidth + (radius * 2)
     readonly property real defaultHeight: clockHeight
@@ -304,7 +305,7 @@ Item {
                                 color: {
                                     const fileName = model.fileName.replace(".qml", "")
                                     if (fileName === "_Debug") return Colors.primary
-                                    return "white"
+                                    return foregroundColor 
                                 }
                                 opacity: isCurrent ? 1.0 : 0.4
                                 font.pixelSize: 14

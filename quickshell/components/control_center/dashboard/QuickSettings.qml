@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import QtCore
 import Quickshell.Widgets
 import Qt5Compat.GraphicalEffects
 import QtQuick.Effects
@@ -8,7 +7,6 @@ import Quickshell.Io
 import QtQuick.Layouts
 import Quickshell.Hyprland
 
-import "../../../config"
 import "../../../utils"
 import "../../common/interface"
 import "../../common/interactive"
@@ -18,8 +16,8 @@ import "quicksettings"
 Item {
     id: root
 
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
-    readonly property string font: Config.fontFamily
+    readonly property color foregroundColor: Colors.on_background
+    readonly property string font: Settings.fontFamily
 
     BackgroundLayer {
         id: background
@@ -176,9 +174,13 @@ Item {
                         id: oledButton
                         topIcon: "󰌫"
                         text: "Oled mode"
-                        severity: QSButton.Severity.Secondary
+                        severity: Settings.isOled ? QSButton.Severity.Primary : QSButton.Severity.Secondary
                         Layout.fillWidth: true
                         Layout.preferredWidth: 0
+                        onClicked: {
+                            Settings.isOled = !Settings.isOled
+                            ToastService.show(Settings.isOled ? "Oled mode enabled" : "Oled mode disabled", 3000, "success.png")
+                        }
                     }
                     QSButton {
                         id: batterySaverButton

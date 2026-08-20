@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Effects
 import Quickshell.Widgets
 
-import "../../../config"
+import qs.services
 import "../../../utils"
 import "../../../services"
 
@@ -23,10 +23,10 @@ Item {
     readonly property color shadow: Colors.shadow
     readonly property color on_surface: Colors.on_surface
 
-    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
+    readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000" : Colors.background
+    readonly property color foregroundColor: Colors.on_background
     readonly property int radius: HyprlandConfig.radius
-    readonly property string font: Config.fontFamily
+    readonly property string font: Settings.fontFamily
 
     //width: 400//main.implicitWidth
     height: 400//main.implicitHeight

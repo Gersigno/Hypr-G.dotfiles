@@ -4,7 +4,7 @@ import Quickshell
 
 import "../notifications_center"
 import "../../services"
-import "../../config"
+import qs.services
 import "../../utils"
 
 Item {
@@ -13,9 +13,9 @@ Item {
     property int topBarHeight: 0
     readonly property int fullRadius: HyprlandConfig.radiusFull
 
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
-    readonly property color variantColor: Config.isOled ? "#fff" : Colors.on_surface_variant
-    readonly property string font: Config.fontFamily
+    readonly property color foregroundColor:Colors.on_background
+    readonly property color variantColor: Settings.isOled ? "#fff" : Colors.on_surface_variant
+    readonly property string font: Settings.fontFamily
 
     // Flat list of all notifications, newest first
     readonly property var chronologicalList: Notifications.list.slice().sort((a, b) => b.time - a.time)

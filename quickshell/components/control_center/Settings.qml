@@ -1,7 +1,6 @@
 import QtQuick
 import Quickshell
 
-import "../../config"
 import "../../utils"
 import "../common/interface"
 import "../common/interactive"
@@ -13,8 +12,8 @@ Item {
     implicitWidth: 700
     implicitHeight: 500
 
-    readonly property color backgroundColor: Config.isOled ? "#000" : Colors.background
-    readonly property color foregroundColor: Config.isOled ? "#fff" : Colors.on_background
+    readonly property color backgroundColor: Settings.isOled ? "#000" : Colors.background
+    readonly property color foregroundColor: Colors.on_background
 
     property int currentIndex: 0
 
