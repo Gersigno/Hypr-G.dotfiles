@@ -35,6 +35,7 @@ kitty/colors.conf
 rofi/colors.rasi
 quickshell/colors.json
 quickshell/settings.json
+quickshell/finder.json
 yazi/flavors/
 kdeglobals
 

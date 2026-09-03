@@ -18,6 +18,10 @@ Item {
     // Path returned by get_wallpaper.sh, stored while the model may still be loading
     property string pendingWallpaperPath: ""
 
+    readonly property string wallpapersFolderUrl: Settings.wallpapersPath.startsWith("file:")
+        ? Settings.wallpapersPath
+        : "file://" + Settings.wallpapersPath
+
     function trySetWallpaperIndex(path) {
         if (path === "" || wallpaperModel.count === 0) return
         for (let i = 0; i < wallpaperModel.count; i++) {
@@ -61,8 +65,8 @@ Item {
     // Image files model from wallpapersPath
     FolderListModel {
         id: wallpaperModel
-        folder: Settings.wallpapersPath
-        nameFilters: ["*.jpg", "*.jpeg", "*.png", "*.webp", "*.bmp", "*.gif", "*.tiff", "*.tif"]
+        folder: root.wallpapersFolderUrl
+        nameFilters: ["*.jpg", "*.jpeg", "*.png", "*.webp", "*.bmp", "*.gif", "*.tiff", "*.tif"] //todo: check compatibility with hyprlock, awww & matugen
         showDirs: false
         sortField: FolderListModel.Name
         // If the model finishes loading after the process, set the index now

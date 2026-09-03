@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import QtQuick.Layouts
+import QtCore
 
 import "../../utils"
 import qs.services
@@ -13,6 +14,9 @@ Item {
 
     implicitWidth: 800
     implicitHeight: 600
+
+    readonly property string home: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
+    readonly property string userName: home.split('/').pop().charAt(0).toUpperCase() + home.split('/').pop().slice(1)
 
     ColumnLayout {
         anchors.fill: parent
@@ -87,7 +91,7 @@ Item {
                             text: "Buttons :";
                             color: "white";
                             font.pixelSize: 18;
-                            font.family: Settings.fontFamily
+                            //font.family: Settings.fontFamily
                             font.bold: true;
                         }
                         Row {
@@ -97,7 +101,7 @@ Item {
                                 Text {
                                     text: "Default buttons";
                                     color: Colors.on_surface_variant;
-                                    font.family: Settings.fontFamily;
+                                    //font.family: Settings.fontFamily;
                                     font.pixelSize: 12;
                                 }
                                 Button {
@@ -122,7 +126,7 @@ Item {
                                 Text {
                                     text: "Disabled buttons";
                                     color: Colors.on_surface_variant;
-                                    font.family: Settings.fontFamily;
+                                    //font.family: Settings.fontFamily;
                                     font.pixelSize: 12;
                                 }
                                 Button {
@@ -151,7 +155,7 @@ Item {
                                 Text {
                                     text: "Full rounded buttons";
                                     color: Colors.on_surface_variant;
-                                    font.family: Settings.fontFamily;
+                                    //font.family: Settings.fontFamily;
                                     font.pixelSize: 12;
                                 }
                                 Button {
@@ -180,7 +184,7 @@ Item {
                             text: "QSButtons (QuickSettings):";
                             color: "white";
                             font.pixelSize: 18;
-                            font.family: Settings.fontFamily
+                            //font.family: Settings.fontFamily
                             font.bold: true;
                         }
                         Item {
@@ -197,7 +201,7 @@ Item {
                                     Text {
                                         text: "Default QSButtons";
                                         color: Colors.on_surface_variant;
-                                        font.family: Settings.fontFamily;
+                                        //font.family: Settings.fontFamily;
                                         font.pixelSize: 12;
                                     }
                                     QSButton {
@@ -227,7 +231,7 @@ Item {
                                     Text {
                                         text: "Description";
                                         color: Colors.on_surface_variant;
-                                        font.family: Settings.fontFamily;
+                                        //font.family: Settings.fontFamily;
                                         font.pixelSize: 12;
                                     }
                                     QSButton {
@@ -312,7 +316,7 @@ Item {
                                     height: parent.height
                                     text: modelData
                                     color: Colors.on_surface_variant
-                                    font.family: Settings.fontFamily
+                                    //font.family: Settings.fontFamily
                                     font.pixelSize: 12
                                     verticalAlignment: Text.AlignVCenter
                                     elide: Text.ElideRight
@@ -327,7 +331,7 @@ Item {
                                     Text {
                                         anchors.centerIn: parent
                                         text: Colors[modelData].toString().toUpperCase()
-                                        font.family: Settings.fontFamily
+                                        //font.family: Settings.fontFamily
                                         font.pixelSize: 11
                                         color: {
                                             const c = Colors[modelData]
@@ -354,7 +358,7 @@ Item {
                         text: "Toast Service Testing"
                         color: "white"
                         font.pixelSize: 18
-                        font.family: Settings.fontFamily
+                        //font.family: Settings.fontFamily
                         font.bold: true
                     }
 
@@ -386,10 +390,10 @@ Item {
                         }
 
                         Button {
-                            text: "Show very long toast (icon)"
+                            text: "Show welcome notification"
                             severity: Button.Severity.Primary
                             onClicked: {
-                                ToastService.show("Toast with icon Toast with icon Toast with icon Toast with icon Toast with icon Toast with icon Toast with icon", 4000, "../../../assets/default_face.png")
+                                ToastService.show("Welcome back, " + userName + " !", 6000, root.home + "/.face.png")
                             }
                         }
                     }
@@ -398,7 +402,7 @@ Item {
                         text: "System notifications testing"
                         color: "white"
                         font.pixelSize: 18
-                        font.family: Settings.fontFamily
+                        //font.family: Settings.fontFamily
                         font.bold: true
                     }
 

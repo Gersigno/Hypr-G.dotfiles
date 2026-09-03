@@ -78,7 +78,8 @@ hl.bind(mainMod .. " + C",         hl.dsp.exec_cmd(programs.ide))
 hl.bind(mainMod .. " + T",         hl.dsp.exec_cmd(programs.terminal))
 hl.bind(mainMod .. " + E",         hl.dsp.exec_cmd(programs.file_explorer))
 hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("hyprlock"))
-hl.bind("ALT + Space",             hl.dsp.exec_cmd(programs.launcher))
+hl.bind("ALT + Space",             hl.dsp.global("quickshell:launcherToggle"))
+hl.bind(mainMod .. " + S",         hl.dsp.global("quickshell:launcherToggle"))
 hl.bind(mainMod .. " + semicolon", hl.dsp.exec_cmd(programs.emoji))
 
 -- Debug keybinds

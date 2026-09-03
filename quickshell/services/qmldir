@@ -7,6 +7,7 @@ singleton Brightness 1.0 Brightness.qml
 singleton Network 1.0 Network.qml
 singleton Media 1.0 Media.qml
 singleton ToastService 1.0 ToastService.qml
+singleton FinderService 1.0 FinderService.qml
 singleton Notifications 1.0 Notifications.qml
 singleton Theme 1.0 Theme.qml
 singleton NavigationState 1.0 NavigationState.qml

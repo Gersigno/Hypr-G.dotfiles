@@ -1,0 +1,2 @@
+module qs.services.finder
+singleton Fuzzy 1.0 Fuzzy.qml

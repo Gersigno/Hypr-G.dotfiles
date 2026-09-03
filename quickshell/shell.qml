@@ -35,6 +35,10 @@ ShellRoot {
         id: toastOverlay
     }
 
+    FinderOverlay {
+        id: finderOverlay
+    }
+
     NotificationPopups {
         id: notificationPopups
     }

@@ -60,11 +60,11 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `Ctrl` + `Alt`+ `→` **Switch** to right workspace
 - `⌘` + `Ctrl` + `Alt`+ `←` **Switch** to left workspace
 
-## 📦 Packages
+## 📦 Packages (not up to date)
 
 - hyprland _(Dynamic tiling Wayland compositor)_
 - hyprlock _(Simple and secure screen locker)_
-- hyprpm 
+- hyprpm
 - matugen _(Automatically generates color palettes from wallpapers)_
 - quickshell-git
 - rofi _(App launcher)_
@@ -75,15 +75,19 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 
 ## 📝 TODO/Roadmap
 
-- Setting GUI app
 - Install, Update & Uninstall scripts
+
+## TODO for installation script :
+
+- Create /home/USER/Pictures/Wallpapers
+- Move default wallpaper to /home/USER/Pictures/Wallpapers
+- Call /home/USER/.config/quickshell/scripts/set_wallpaper.sh to default wallpaper to generate all matugen color schematics
 
 ## Fonts list
 
 - `JetBrains Mono Nerd.ttf`
 - `StretchPro.otf`
 - `SF Pro Display Bold.otf` & `SF Pro Display Regular.otf`
-- `StretchPro.otf`
 
 ## Credits
 

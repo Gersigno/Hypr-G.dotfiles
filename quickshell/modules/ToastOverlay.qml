@@ -60,12 +60,10 @@ Scope {
                 }
                 function onEditRequested(message, icon, duration, progress) {
                     toastItem.edit(message, duration, icon, progress)
-                    //console.log("Toast edited: " + message + ", duration: " + duration + ", icon: " + icon)
                 }
             }
 
             Component.onCompleted: {
-                //console.log("Home .face.png file path: " + root.home + "/.face.png")
                 welcomeTimer.start()
             }
 
