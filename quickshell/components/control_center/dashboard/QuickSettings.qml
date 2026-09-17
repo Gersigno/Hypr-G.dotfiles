@@ -215,10 +215,14 @@ Item {
                         Layout.fillHeight: true
                     }
                     QSButton {
-                        id: doNotDisturbButton
+                        id: caffeineButton
                         topIcon: ""
                         text: "Caffeine"
-                        severity: QSButton.Severity.Secondary
+                        severity: Caffeine.enabled ? QSButton.Severity.Primary : QSButton.Severity.Secondary
+                        onClicked: {
+                            Caffeine.toggle()
+                            ToastService.show(Caffeine.enabled ? "Caffeine enabled" : "Caffeine disabled", 3000, "success.png")
+                        }
                         Layout.fillWidth: true
                         Layout.preferredWidth: 0
                     }

@@ -43,8 +43,12 @@ Item {
             currentIndex = 1
         } else if (page === "bluetooth") {
             currentIndex = 2
+        } else if (page === "audio") {
+            currentIndex = 3
         }
-        NavigationState.requestedSettingsPage = ""
+        Qt.callLater(() => {
+            NavigationState.requestedSettingsPage = ""
+        })
     }
 
     Item {
