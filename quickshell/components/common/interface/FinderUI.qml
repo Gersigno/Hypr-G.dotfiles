@@ -75,7 +75,6 @@ Item {
     //      API (show/hide)
     // ----------------------------------------------------------------
     function show() {
-        console.log("[F] show() called")
         showAnimation.stop()
         hideAnimation.stop()
         container.y = 0
@@ -98,7 +97,6 @@ Item {
     }
 
     function hide() {
-        console.log("[F] hide() called")
         showAnimation.stop()
         hideAnimation.restart()
     }
@@ -130,7 +128,6 @@ Item {
 
     function trySubmit(result) {
         const r = result ?? (listView.count > 0 && listView.currentIndex >= 0 ? listView.currentItem?.modelData : null)
-        console.log("[F] trySubmit: direct=" + (result != null) + " resolved=" + (r != null) + " idx=" + listView.currentIndex)
         if (r != null)
             root.submitted(r)
     }
@@ -522,7 +519,6 @@ Item {
 
                                 onTextChanged: root.searchTextChanged(text)
 
-                                onActiveFocusChanged: console.log("[F] field focus=" + searchInput.activeFocus)
 
                                 onAccepted: root.trySubmit()
                             }
@@ -578,7 +574,6 @@ Item {
                         onCountChanged: if (listView.currentIndex < 0 || listView.currentIndex >= count) listView.currentIndex = 0
 
                         onCurrentIndexChanged: {
-                            console.log("[F] currentIndex=" + listView.currentIndex + " count=" + listView.count)
                             if (count > 0 && currentIndex >= 0)
                                 listView.positionViewAtIndex(currentIndex, ListView.Contain)
                         }
@@ -598,7 +593,6 @@ Item {
 
                             readonly property bool selected: listView.currentIndex === index
 
-                            onSelectedChanged: if (selected) console.log("[F] row selected idx=" + index)
 
                             implicitHeight: root.rowHeight
                             width: listView.width

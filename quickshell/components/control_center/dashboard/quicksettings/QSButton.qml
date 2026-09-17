@@ -1,5 +1,6 @@
 import Quickshell
 import QtQuick
+import QtQuick.Effects
 
 import "../../../../utils"
 import "../../../../services"
@@ -20,6 +21,7 @@ Item {
     property bool expanded: false
     property var overrideAction: undefined
     property string expandIcon: "⋯"
+    property real blur_level: expanded ? 0 : 2
 
     signal clicked
     signal optionSelected(string option)
@@ -59,6 +61,13 @@ Item {
 
     implicitWidth: content.implicitWidth + 16
     implicitHeight: content.implicitHeight + 16
+
+    Behavior on blur_level {
+        NumberAnimation { 
+            duration: 200; 
+            easing.type: Easing.InOutQuad
+        }
+    }
 
     Rectangle {
         id: externalBorder
@@ -212,6 +221,16 @@ Item {
             color: Colors.surface_container_high
             radius: HyprlandConfig.radius
 
+            layer.enabled: false
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "black"
+                shadowBlur: 2
+                shadowHorizontalOffset: 0
+                shadowVerticalOffset: 8
+                shadowOpacity: 0.8
+            }
+
             states: [
                 State {
                     name: "expanded"
@@ -264,7 +283,7 @@ Item {
                         duration: 600; 
                         easing.type: Easing.OutElastic; 
                         easing.period: 0.6; 
-                        easing.amplitude: 0.2 
+                        easing.amplitude: 0 
                     }
                 }
             ]
@@ -275,6 +294,19 @@ Item {
                 y: 8
                 width: parent.width - 16
                 spacing: 4
+                opacity: root.expanded ? 1 : 0
+                Behavior on opacity {
+                    NumberAnimation { 
+                        duration: 200; 
+                        easing.type: Easing.InOutQuad 
+                    }
+                }
+
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    blurEnabled: true
+                    blur: blur_level
+                }
 
                 Item {
                     height: 20

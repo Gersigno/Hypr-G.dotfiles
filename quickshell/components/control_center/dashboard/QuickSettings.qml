@@ -179,7 +179,7 @@ Item {
                         Layout.preferredWidth: 0
                         onClicked: {
                             Settings.isOled = !Settings.isOled
-                            ToastService.show(Settings.isOled ? "Oled mode enabled" : "Oled mode disabled", 3000, "success.png")
+                            ToastService.show(Settings.isOled ? "󰌫 Oled mode enabled" : "󰌫 Oled mode disabled", 3000)
                         }
                     }
                     QSButton {
@@ -221,7 +221,7 @@ Item {
                         severity: Caffeine.enabled ? QSButton.Severity.Primary : QSButton.Severity.Secondary
                         onClicked: {
                             Caffeine.toggle()
-                            ToastService.show(Caffeine.enabled ? "Caffeine enabled" : "Caffeine disabled", 3000, "success.png")
+                            ToastService.show(Caffeine.enabled ? "󰅶  Caffeine enabled" : "󰅶  Caffeine disabled", 3000)
                         }
                         Layout.fillWidth: true
                         Layout.preferredWidth: 0

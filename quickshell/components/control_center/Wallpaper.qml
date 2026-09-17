@@ -109,6 +109,30 @@ Item {
             //vertical align to center
             anchors.verticalCenter: parent.verticalCenter
 
+            // Mouse wheel / trackpad scrolling
+            WheelHandler {
+                id: wallpaperScroll
+                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+
+                property real accumulatedDelta: 0
+
+                onWheel: (event) => {
+                    const isTrackpad = event.pixelDelta.x !== 0 || event.pixelDelta.y !== 0
+                    const dx = isTrackpad ? event.pixelDelta.x : event.angleDelta.x
+                    const dy = isTrackpad ? event.pixelDelta.y : event.angleDelta.y
+                    const horizontal = Math.abs(dx) > Math.abs(dy)
+
+                    accumulatedDelta += horizontal ? dx : dy
+
+                    if (Math.abs(accumulatedDelta) >= (isTrackpad ? 60 : 120)) {
+                        const forward = horizontal ? accumulatedDelta > 0 : accumulatedDelta < 0
+                        carousel.currentIndex = Math.max(0, Math.min(carousel.count - 1, carousel.currentIndex + (forward ? 1 : -1)))
+                        accumulatedDelta = 0
+                    }
+                    event.accepted = true
+                }
+            }
+
             delegate: Item {
                 required property string fileUrl
                 required property string fileName

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Wayland
@@ -19,6 +20,7 @@ Item {
     //property bool topBarVisible: true
     readonly property bool opened: openedScreenName !== ""
     readonly property int animationDuration: 450
+    property real blur_level: (opened) ? 0 : 1.5
 
     property var topBarComponent: null
     readonly property real clockWidth: topBarComponent ? topBarComponent.clockWidth : 0
@@ -31,6 +33,13 @@ Item {
 
     readonly property real defaultWidth: clockWidth + (radius * 2)
     readonly property real defaultHeight: clockHeight
+
+    Behavior on blur_level {
+        NumberAnimation { 
+            duration: root.animationDuration / 1.7; 
+            easing.type: Easing.InOutQuad
+        }
+    }
 
     Component.onCompleted: {
         console.info("Loaded component: [ControlCenter]")
@@ -193,6 +202,19 @@ Item {
                     interactive: false
                     //currentIndex: 1 //! Clock (alphabetical: Calendar=0, Clock=1, Media=2, Wallpaper=3)
 
+                    layer.enabled: true
+                    layer.effect: MultiEffect {
+                        blurEnabled: true
+                        blur: blur_level
+                    }
+                    opacity: isOpened ? 1.0 : 0.0
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: root.animationDuration / 1.2
+                            easing.type: Easing.InOutQuad
+                        }
+                    }
+
                     Component.onCompleted: {
                         contentItem.highlightMoveDuration = 0
                         contentItem.cacheBuffer = 0
@@ -235,6 +257,12 @@ Item {
                             // hidden items park at center (slot 2), invisible
                             readonly property int slot: isCurrent ? 2
                                 : (isPrev1 ? 1 : (isPrev2 ? 0 : (isNext1 ? 3 : (isNext2 ? 4 : 2))))
+
+                            layer.enabled: true
+                            layer.effect: MultiEffect {
+                                blurEnabled: true
+                                blur: blur_level
+                            }
 
                             width: tabBar.width / 5
                             height: tabBar.height
@@ -419,11 +447,9 @@ Item {
         root.openedScreenName === name ? root.close() : root.open()
     }
     function close() {
-        console.log("Closing Control Center")
         root.openedScreenName = ""
     }
     function open() {
-        console.log("Opening Control Center")
         root.openedScreenName = Hyprland.focusedMonitor ? Hyprland.focusedMonitor.name : ""
     }
 
