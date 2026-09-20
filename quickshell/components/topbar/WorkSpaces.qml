@@ -12,6 +12,7 @@ Item {
 
     readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000" : Colors.background 
     readonly property color foregroundColor: Colors.on_background
+    readonly property color secondary: Colors.secondary
     readonly property color primary: (Settings.isOled && Theme.isDarkMode) ? "#fff" : Colors.primary
     property var screen
     property var workspaceIds: HyprlandConfig.workspacesByMonitor[screen?.name ?? ""] ?? []
@@ -108,8 +109,8 @@ Item {
                         width: parent.isActive ? 20 : 8
                         height: 8
                         radius: 4
-                        color: parent.isActive ? root.primary : (parent.hasWindowsValue ? root.foregroundColor : root.foregroundColor)
-                        opacity: parent.isActive ? 1 : (parent.hasWindowsValue ? 1 : 0.3)
+                        color: parent.isActive ? root.primary : (parent.hasWindowsValue ? root.primary : root.foregroundColor)
+                        opacity: parent.isActive ? 1 : (parent.hasWindowsValue ? 0.6 : 0.3)
 
                         Behavior on width { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
                         Behavior on color { ColorAnimation { duration: 150; easing.type: Easing.InOutQuad } }

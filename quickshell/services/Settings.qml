@@ -36,9 +36,33 @@ Singleton {
             try {
                 const data = JSON.parse(templateFile.text())
                 data.wallpapersPath = root.homePath + data.wallpapersPath
-                setText(JSON.stringify(data, null, 2))
+                setText(JSON.stringify(data, null, 4))
             } catch (e) {
                 console.log("[Settings] Failed to generate settings.json:", e)
+            }
+        }
+
+        // Settings added by newer versions (present in the template but missing
+        // from an existing settings.json) are merged in without touching current values
+        onLoaded: syncWithTemplate()
+
+        function syncWithTemplate() {
+            try {
+                const current = JSON.parse(settingsFile.text())
+                if (current === null || typeof current !== "object" || Array.isArray(current))
+                    return
+                const defaults = JSON.parse(templateFile.text())
+                let changed = false
+                for (const key in defaults) {
+                    if (!Object.prototype.hasOwnProperty.call(current, key)) {
+                        current[key] = (key === "wallpapersPath") ? root.homePath + defaults[key] : defaults[key]
+                        changed = true
+                    }
+                }
+                if (changed)
+                    setText(JSON.stringify(current, null, 4))
+            } catch (e) {
+                console.log("[Settings] Failed to sync settings.json with the template:", e)
             }
         }
 
