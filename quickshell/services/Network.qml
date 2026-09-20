@@ -34,6 +34,10 @@ Singleton {
 
     property string networkName: ""
     property int networkStrength
+
+    property var connections: []
+    readonly property var vpnConnections: connections.filter(c => c.vpn)
+    property bool connectionBusy: false
     property string materialSymbol: root.ethernet
         ? "lan"
         : root.wifiEnabled
@@ -92,6 +96,37 @@ Singleton {
 
     function forgetNetwork(ssid: string): void {
         forgetProc.exec(["nmcli", "connection", "delete", ssid])
+    }
+
+    // Connections / VPN
+    function refreshConnections(): void {
+        connectionsRefreshTimer.restart();
+    }
+
+    function activateConnection(name: string): void {
+        runConnectionAction("up", name);
+    }
+
+    function deactivateConnection(name: string): void {
+        runConnectionAction("down", name);
+    }
+
+    function deleteConnection(name: string): void {
+        runConnectionAction("delete", name);
+    }
+
+    function importVpnConnection(type: string, file: string): void {
+        importVpnProc.errorText = "";
+        connectionBusy = true;
+        importVpnProc.exec(["nmcli", "connection", "import", "type", type, "file", file]);
+    }
+
+    function runConnectionAction(action: string, name: string): void {
+        connectionActionProc.action = action;
+        connectionActionProc.target = name;
+        connectionActionProc.errorText = "";
+        connectionBusy = true;
+        connectionActionProc.exec(["nmcli", "connection", action, name]);
     }
 
     function changePassword(network: WifiAccessPoint, password: string, username = ""): void {
@@ -168,12 +203,100 @@ Singleton {
         }
     }
 
+    Timer {
+        id: connectionsRefreshTimer
+        interval: 150
+        onTriggered: getConnections.running = true
+    }
+
+    Process {
+        id: connectionActionProc
+        property string action: ""
+        property string target: ""
+        property string errorText: ""
+        environment: ({
+            LANG: "C",
+            LC_ALL: "C"
+        })
+        stderr: SplitParser {
+            onRead: line => connectionActionProc.errorText += line + "\n"
+        }
+        onExited: (exitCode, exitStatus) => {
+            if (exitCode === 0) {
+                if (connectionActionProc.action === "up")
+                    ToastService.show("󰦝  Connected to " + connectionActionProc.target, 2000);
+                else if (connectionActionProc.action === "delete")
+                    ToastService.show("󰅖  Deleted " + connectionActionProc.target, 2000);
+            } else {
+                ToastService.show("󰅚  " + (connectionActionProc.errorText.trim() || "Connection command failed"), 3500);
+            }
+            connectionActionProc.action = "";
+            connectionActionProc.target = "";
+            root.connectionBusy = false;
+            root.update();
+        }
+    }
+
+    Process {
+        id: importVpnProc
+        property string errorText: ""
+        environment: ({
+            LANG: "C",
+            LC_ALL: "C"
+        })
+        stderr: SplitParser {
+            onRead: line => importVpnProc.errorText += line + "\n"
+        }
+        onExited: (exitCode, exitStatus) => {
+            if (exitCode === 0)
+                ToastService.show("󰦝  VPN connection imported", 2500);
+            else
+                ToastService.show("󰅚  Import failed: " + (importVpnProc.errorText.trim() || "unknown error"), 4000);
+            root.connectionBusy = false;
+            root.update();
+        }
+    }
+
+    Process {
+        id: getConnections
+        running: true
+        command: ["nmcli", "-t", "-f", "NAME,TYPE,DEVICE,ACTIVE", "connection", "show"]
+        environment: ({
+            LANG: "C",
+            LC_ALL: "C"
+        })
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const PLACEHOLDER = "STRINGWHICHHOPEFULLYWONTBEUSED";
+                const rep = new RegExp("\\\\:", "g");
+                const rep2 = new RegExp(PLACEHOLDER, "g");
+
+                root.connections = text.trim().split("\n").filter(l => l.length > 0).map(line => {
+                    const parts = line.replace(rep, PLACEHOLDER).split(":");
+                    const type = parts[1] ?? "";
+                    return {
+                        name: (parts[0] ?? "").replace(rep2, ":"),
+                        type: type,
+                        device: (parts[2] ?? "").replace(rep2, ":"),
+                        active: parts[3] === "yes",
+                        vpn: type.includes("vpn") || type === "wireguard"
+                    };
+                }).filter(c => c.name.length > 0 && c.type !== "loopback" && c.type !== "bridge").sort((a, b) => {
+                    if (a.active !== b.active) return a.active ? -1 : 1;
+                    if (a.vpn !== b.vpn) return a.vpn ? -1 : 1;
+                    return a.name.localeCompare(b.name);
+                });
+            }
+        }
+    }
+
     // Status update
     function update() {
         updateConnectionType.startCheck();
         wifiStatusProcess.running = true
         updateNetworkName.running = true;
         updateNetworkStrength.running = true;
+        refreshConnections();
     }
 
     Process {

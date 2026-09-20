@@ -21,6 +21,12 @@ Item {
     property bool showPassword: false
     property bool passwordDialogVisible: false
 
+    property var deleteTarget: null
+    property bool deleteDialogVisible: false
+    property bool vpnDialogVisible: false
+    property string vpnFilePath: ""
+    property string vpnType: "openvpn"
+
     function getSignalIcon(strength) {
         if (strength > 75) return "󰤨"
         if (strength > 50) return "󰤥"
@@ -48,6 +54,46 @@ Item {
             passwordDialogVisible = false
             passwordTarget = null
         }
+    }
+
+    function connectionTypeIcon(type) {
+        if (type.indexOf("wireless") !== -1) return "󰖩"
+        if (type.indexOf("ethernet") !== -1) return "󰈀"
+        if (type === "wireguard" || type.indexOf("vpn") !== -1) return "󰦝"
+        if (type === "bridge") return "󰡄"
+        return "󰛳"
+    }
+
+    function connectionTypeLabel(type) {
+        if (type.indexOf("wireless") !== -1) return "Wi-Fi"
+        if (type.indexOf("ethernet") !== -1) return "Ethernet"
+        if (type === "wireguard") return "WireGuard"
+        if (type.indexOf("vpn") !== -1) return "VPN"
+        if (type === "bridge") return "Bridge"
+        return type
+    }
+
+    function openVpnDialog() {
+        vpnFilePath = ""
+        vpnType = "openvpn"
+        vpnDialogVisible = true
+    }
+
+    function submitVpnImport() {
+        if (vpnFilePath.length === 0) return
+        Network.importVpnConnection(vpnType, vpnFilePath)
+        vpnDialogVisible = false
+    }
+
+    function openDeleteDialog(conn) {
+        deleteTarget = conn
+        deleteDialogVisible = true
+    }
+
+    function confirmDelete() {
+        if (deleteTarget) Network.deleteConnection(deleteTarget.name)
+        deleteDialogVisible = false
+        deleteTarget = null
     }
 
     Flickable {
@@ -529,6 +575,188 @@ Item {
                 }
             }
 
+            // ========== VPN HEADER ==========
+            Item {
+                width: parent.width
+                height: 30
+
+                Text {
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "VPN Connections"
+                    color: foregroundColor
+                    font.pixelSize: 13
+                    font.family: root.font
+                    font.bold: true
+                }
+
+                Row {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 8
+
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: Network.vpnConnections.length + " saved"
+                        color: mutedColor
+                        font.pixelSize: 11
+                        font.family: root.font
+                    }
+
+                    Button {
+                        text: "󰐕  Add VPN"
+                        severity: Button.Severity.Secondary
+                        implicitHeight: 26
+                        onClicked: root.openVpnDialog()
+                    }
+                }
+            }
+
+            // ========== VPN LIST ==========
+            Repeater {
+                model: Network.vpnConnections
+
+                delegate: Rectangle {
+                    id: connDelegate
+                    required property var modelData
+                    width: parent.width
+                    height: connRow.height + 12
+                    radius: HyprlandConfig.radius
+                    color: connMouse.containsMouse
+                        ? Qt.rgba(1, 1, 1, 0.05)
+                        : (modelData.active
+                            ? Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.1)
+                            : "transparent")
+                    border.color: modelData.active ? Colors.primary : "transparent"
+                    border.width: modelData.active ? 1 : 0
+
+                    Behavior on color {
+                        ColorAnimation { duration: 100; easing.type: Easing.InOutQuad }
+                    }
+
+                    MouseArea {
+                        id: connMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (modelData.active) Network.deactivateConnection(modelData.name)
+                            else Network.activateConnection(modelData.name)
+                        }
+                    }
+
+                    Row {
+                        id: connRow
+                        x: 10
+                        y: 6
+                        width: parent.width - 20
+                        spacing: 6
+
+                        Text {
+                            text: modelData.active ? "●" : "○"
+                            color: modelData.active ? Colors.primary : mutedColor
+                            font.pixelSize: 10
+                            font.family: root.font
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text: root.connectionTypeIcon(modelData.type)
+                            color: modelData.active ? Colors.primary : (modelData.vpn ? Colors.tertiary : foregroundColor)
+                            font.pixelSize: 18
+                            font.family: root.font
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 1
+                            width: connDelegate.width - 250
+
+                            Text {
+                                text: modelData.name
+                                color: foregroundColor
+                                font.pixelSize: 12
+                                font.family: root.font
+                                font.bold: modelData.active
+                                elide: Text.ElideRight
+                                width: parent.width
+                            }
+
+                            Text {
+                                text: {
+                                    var parts = [root.connectionTypeLabel(modelData.type)]
+                                    if (modelData.device.length > 0) parts.push(modelData.device)
+                                    parts.push(modelData.active ? "Connected" : "Disconnected")
+                                    return parts.join("  ·  ")
+                                }
+                                color: mutedColor
+                                font.pixelSize: 10
+                                font.family: root.font
+                                elide: Text.ElideRight
+                                width: parent.width
+                            }
+                        }
+
+                        Button {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: modelData.active ? "Disconnect" : "Connect"
+                            implicitHeight: 26
+                            implicitWidth: 90
+                            severity: modelData.active ? Button.Severity.Secondary : Button.Severity.Primary
+                            disabled: Network.connectionBusy
+                            onClicked: {
+                                if (modelData.active) Network.deactivateConnection(modelData.name)
+                                else Network.activateConnection(modelData.name)
+                            }
+                        }
+
+                        Button {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Delete"
+                            implicitHeight: 26
+                            implicitWidth: 60
+                            severity: Button.Severity.Danger
+                            disabled: Network.connectionBusy
+                            onClicked: root.openDeleteDialog(modelData)
+                        }
+                    }
+                }
+            }
+
+            // ========== VPN EMPTY STATE ==========
+            Rectangle {
+                width: parent.width
+                height: 60
+                radius: HyprlandConfig.radius
+                color: surfaceColor
+                border.color: surfaceBorder
+                border.width: 1
+                visible: Network.vpnConnections.length === 0
+
+                Column {
+                    anchors.centerIn: parent
+                    spacing: 4
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "󰦝  No VPN connections"
+                        color: mutedColor
+                        font.pixelSize: 12
+                        font.family: root.font
+                    }
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "Use \"Add VPN\" to import a configuration file"
+                        color: mutedColor
+                        font.pixelSize: 10
+                        font.family: root.font
+                        opacity: 0.7
+                    }
+                }
+            }
+
             // ========== DIVIDER ==========
             /*Rectangle {
                 width: parent.width
@@ -557,7 +785,7 @@ Item {
                     ColorAnimation { duration: 100; easing.type: Easing.InOutQuad }
                 }
 
-                Text { x: 8; anchors.verticalCenter: parent.verticalCenter; text: "󰖂"; color: foregroundColor; font.pixelSize: 16; font.family: root.font }
+                Text { x: 8; anchors.verticalCenter: parent.verticalCenter; text: "󰦝"; color: foregroundColor; font.pixelSize: 16; font.family: root.font }
                 Column { x: 32; anchors.verticalCenter: parent.verticalCenter; spacing: 1
                     Text { text: "DNS Configuration"; color: foregroundColor; font.pixelSize: 12; font.family: root.font }
                     Text { text: "Custom DNS servers, DHCP options"; color: mutedColor; font.pixelSize: 10; font.family: root.font }
@@ -780,6 +1008,208 @@ Item {
                         implicitWidth: 80
                         disabled: passwordInputText.length === 0
                         onClicked: root.submitPassword()
+                    }
+                }
+            }
+        }
+    }
+
+    // ========== DELETE CONNECTION OVERLAY ==========
+    Rectangle {
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.6)
+        z: 100
+        visible: root.deleteDialogVisible
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {} // block clicks
+        }
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: parent.width - 32
+            height: delCol.height + 24
+            radius: HyprlandConfig.radius
+            color: Colors.surface_container_high
+            border.color: Colors.surface_variant
+            border.width: 1
+
+            Column {
+                id: delCol
+                x: 12
+                y: 12
+                width: parent.width - 24
+                spacing: 10
+
+                Text {
+                    text: "󰅖  Delete Connection"
+                    color: foregroundColor
+                    font.pixelSize: 15
+                    font.family: root.font
+                    font.bold: true
+                }
+
+                Text {
+                    text: "Delete \"" + (root.deleteTarget ? root.deleteTarget.name : "") + "\"? The saved connection profile will be removed."
+                    color: mutedColor
+                    font.pixelSize: 11
+                    font.family: root.font
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                }
+
+                Row {
+                    spacing: 6
+                    width: parent.width
+
+                    Item { width: 1; height: 1 }
+
+                    Button {
+                        text: "Cancel"
+                        severity: Button.Severity.Secondary
+                        implicitHeight: 30
+                        implicitWidth: 72
+                        onClicked: {
+                            root.deleteDialogVisible = false
+                            root.deleteTarget = null
+                        }
+                    }
+
+                    Button {
+                        text: "Delete"
+                        severity: Button.Severity.Danger
+                        implicitHeight: 30
+                        implicitWidth: 80
+                        onClicked: root.confirmDelete()
+                    }
+                }
+            }
+        }
+    }
+
+    // ========== ADD VPN OVERLAY ==========
+    Rectangle {
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.6)
+        z: 100
+        visible: root.vpnDialogVisible
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {} // block clicks
+        }
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: parent.width - 32
+            height: vpnCol.height + 24
+            radius: HyprlandConfig.radius
+            color: Colors.surface_container_high
+            border.color: Colors.surface_variant
+            border.width: 1
+
+            Column {
+                id: vpnCol
+                x: 12
+                y: 12
+                width: parent.width - 24
+                spacing: 10
+
+                Text {
+                    text: "󰦝  Add VPN Connection"
+                    color: foregroundColor
+                    font.pixelSize: 15
+                    font.family: root.font
+                    font.bold: true
+                }
+
+                Text {
+                    text: "Import an OpenVPN (.ovpn) or WireGuard (.conf) configuration file."
+                    color: mutedColor
+                    font.pixelSize: 11
+                    font.family: root.font
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                }
+
+                Row {
+                    spacing: 6
+
+                    Button {
+                        text: "OpenVPN"
+                        severity: root.vpnType === "openvpn" ? Button.Severity.Primary : Button.Severity.Secondary
+                        implicitHeight: 28
+                        implicitWidth: 90
+                        onClicked: root.vpnType = "openvpn"
+                    }
+
+                    Button {
+                        text: "WireGuard"
+                        severity: root.vpnType === "wireguard" ? Button.Severity.Primary : Button.Severity.Secondary
+                        implicitHeight: 28
+                        implicitWidth: 90
+                        onClicked: root.vpnType = "wireguard"
+                    }
+                }
+
+                Rectangle {
+                    width: parent.width
+                    height: 34
+                    radius: 6
+                    color: Colors.surface
+                    border.color: Colors.outline
+                    border.width: 1
+
+                    TextInput {
+                        anchors.fill: parent
+                        anchors.leftMargin: 8
+                        anchors.rightMargin: 8
+                        verticalAlignment: Text.AlignVCenter
+                        color: foregroundColor
+                        font.pixelSize: 13
+                        font.family: root.font
+                        clip: true
+                        text: root.vpnFilePath
+                        focus: visible
+                        onTextChanged: root.vpnFilePath = text
+                        onAccepted: root.submitVpnImport()
+                    }
+
+                    Text {
+                        anchors.fill: parent
+                        anchors.leftMargin: 8
+                        verticalAlignment: Text.AlignVCenter
+                        visible: root.vpnFilePath.length === 0
+                        text: "/path/to/config." + (root.vpnType === "openvpn" ? "ovpn" : "conf")
+                        color: mutedColor
+                        opacity: 0.6
+                        font.pixelSize: 12
+                        font.family: root.font
+                    }
+                }
+
+                Row {
+                    spacing: 6
+                    width: parent.width
+
+                    Item { width: 1; height: 1 }
+
+                    Button {
+                        text: "Cancel"
+                        severity: Button.Severity.Secondary
+                        implicitHeight: 30
+                        implicitWidth: 72
+                        onClicked: root.vpnDialogVisible = false
+                    }
+
+                    Button {
+                        text: "Import"
+                        severity: Button.Severity.Primary
+                        implicitHeight: 30
+                        implicitWidth: 80
+                        disabled: root.vpnFilePath.length === 0
+                        onClicked: root.submitVpnImport()
                     }
                 }
             }

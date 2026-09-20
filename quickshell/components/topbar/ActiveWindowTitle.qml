@@ -24,7 +24,7 @@ Item {
         }
         color: Colors.on_background
         font.pixelSize: 12
-        font.weight: Font.Mediums
+        //font.weight: Font.Mediums
         verticalAlignment: Text.AlignVCenter
         
         anchors {

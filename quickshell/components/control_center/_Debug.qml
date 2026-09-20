@@ -29,7 +29,7 @@ Item {
             spacing: 5
             
             Repeater {
-                model: ["Components", "Color Scheme", "Testing"]
+                model: ["Infos", "Components", "Color Scheme", "Testing"]
                 
                 /*Rectangle {
                     implicitWidth: 100
@@ -70,6 +70,32 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: 0 
+
+            Rectangle {
+                color: "transparent";
+                clip: true
+
+                Flickable {
+                    anchors.fill: parent
+                    anchors.margins: 16
+                    contentHeight: infosColumn.implicitHeight
+                    clip: true
+
+                    Column {
+                        id: infosColumn
+                        width: parent.width
+                        spacing: 23
+
+                        Text {
+                            text: "Live logs"
+                            color: "white"
+                            font.pixelSize: 18
+                            font.bold: true;
+                        }
+                        //Livelogs of the current quickshell process
+                    }
+                }
+            }
 
             //?Components
             Rectangle {

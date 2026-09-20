@@ -34,13 +34,13 @@ Item {
 
     Item {
         id: container
-        width: workspaceRow.width + 8 + HyprlandConfig.radius
+        width: workspaceRow.width + 18 + HyprlandConfig.radius
         height: parent.height
 
         Rectangle {
             x: 0
             y: 0
-            width: workspaceRow.width + 8
+            width: workspaceRow.width + 12 + osLogo.width
             height: parent.height
             color: root.backgroundColor
             bottomRightRadius: HyprlandConfig.radius
@@ -50,40 +50,50 @@ Item {
             corner: InvertedCorner.Corner.TopLeft
             cornerRadius: HyprlandConfig.radius
             cornerColor: root.backgroundColor
-            x: workspaceRow.width + 8
+            x: workspaceRow.width + 12 + osLogo.width
             y: 0
+        }
+
+        //OS logo
+        Text {
+            id: osLogo
+            verticalAlignment: Text.AlignVCenter
+            anchors {
+                left: parent.left
+                leftMargin: 4
+                top: parent.top
+                bottom: parent.bottom
+            }
+            color: root.primary
+            text: SystemInfo.distroIcon
+            font.pixelSize: 12
         }
 
         Row {
             id: workspaceRow
             height: parent.height
-            spacing: 1
-            x: 4
+            spacing: 0
+            x: 8 + osLogo.width
 
             Repeater {
                 model: root.workspaceIds
 
                 Item {
-                    width: 18
+                    id: wsItem
+                    width: itemWidth
                     height: workspaceRow.height
 
                     property int workspaceId: modelData
+                    property var workspace: Hyprland.workspaces.values.find(ws => ws.id === workspaceId) ?? null
                     property bool isActive: Hyprland.focusedWorkspace?.id === workspaceId
-                    property bool hasWindowsValue: false
+                    property bool hasWindowsValue: workspace !== null && workspace.toplevels.values.length > 0
+                    property int itemWidth: isActive ? 26 : 12
 
-                    function updateHasWindows() {
-                        const workspace = Hyprland.workspaces.values.find(ws => ws.id === workspaceId);
-                        hasWindowsValue = workspace ? workspace.lastWindow !== null && workspace.lastWindow !== undefined : false;
-                    }
+                    Behavior on width { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
 
-                    Component.onCompleted: updateHasWindows()
+                    
 
-                    Connections {
-                        target: Hyprland.workspaces
-                        function onValuesChanged() { updateHasWindows(); }
-                    }
-
-                    Text {
+                    /*Text {
                         anchors.centerIn: parent
                         text: {
                             if (parent.isActive) return "●";
@@ -92,6 +102,18 @@ Item {
                         }
                         color: parent.isActive ? root.primary : root.foregroundColor
                         font.pixelSize: 12
+                    }*/
+                    Rectangle {
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: parent.isActive ? 20 : 8
+                        height: 8
+                        radius: 4
+                        color: parent.isActive ? root.primary : (parent.hasWindowsValue ? root.foregroundColor : root.foregroundColor)
+                        opacity: parent.isActive ? 1 : (parent.hasWindowsValue ? 1 : 0.3)
+
+                        Behavior on width { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
+                        Behavior on color { ColorAnimation { duration: 150; easing.type: Easing.InOutQuad } }
+                        Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
                     }
 
                     MouseArea {
