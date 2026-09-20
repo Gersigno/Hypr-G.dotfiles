@@ -157,6 +157,66 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }*/
+
+                Item {
+                    id: notificationBell
+                    height: parent.height
+                    width: bellText.implicitWidth
+                    visible: Notifications.list.length > 0
+
+                    Text {
+                        id: bellText
+                        text: ""
+                        font.pixelSize: 14
+                        font.family: root.fontFamily
+                        color: foregroundColor
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Rectangle {
+                        color: foregroundColor
+                        height: 11
+                        width: 11
+                        radius: 13
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: bellText.horizontalCenter
+                    }
+
+                    Text {
+                        id: bellBadgeText
+                        text: Notifications.list.length > 9 ? "9+" : Notifications.list.length
+                        color: Colors.background 
+                        font.bold: true
+                        font.family: root.fontFamily
+                        font.pixelSize: Notifications.list.length > 9 ? 9 : 10
+                        anchors.horizontalCenter: bellText.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        //anchors.bottom: bellText.bottom
+                        //anchors.bottomMargin: 3.5
+                    }
+
+                    /*Rectangle {
+                        id: bellBadge
+                        height: 13
+                        width: Math.max(13, bellBadgeText.implicitWidth + 6)
+                        radius: 6.5
+                        color: Colors.primary
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: 2
+
+                        Text {
+                            id: bellBadgeText
+                            anchors.centerIn: parent
+                            text: Notifications.list.length > 99 ? "99+" : Notifications.list.length
+                            color: Colors.on_primary
+                            font.family: root.fontFamily
+                            font.pixelSize: 8
+                            font.weight: Font.Bold
+                        }
+                    }*/
+                }
+
                 Item {
                     id: battery
                     height: parent.height
@@ -231,54 +291,6 @@ Item {
                             font.family: root.fontFamily
                         }
                     }
-                }
-                Item {
-                    id: notificationBell
-                    height: parent.height
-                    width: bellText.implicitWidth
-                    visible: Notifications.list.length > 0
-
-                    Text {
-                        id: bellText
-                        text: ""
-                        font.pixelSize: 14
-                        font.family: root.fontFamily
-                        color: foregroundColor
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                        id: bellBadgeText
-                        text: Notifications.list.length > 99 ? "99+" : Notifications.list.length
-                        color: Colors.background 
-                        font.bold: true
-                        font.family: root.fontFamily
-                        font.pixelSize: Notifications.list.length > 99 ? 7 : 10
-                        anchors.horizontalCenter: bellText.horizontalCenter
-                        anchors.bottom: bellText.bottom
-                        anchors.bottomMargin: 3.5
-                    }
-
-                    /*Rectangle {
-                        id: bellBadge
-                        height: 13
-                        width: Math.max(13, bellBadgeText.implicitWidth + 6)
-                        radius: 6.5
-                        color: Colors.primary
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.topMargin: 2
-
-                        Text {
-                            id: bellBadgeText
-                            anchors.centerIn: parent
-                            text: Notifications.list.length > 99 ? "99+" : Notifications.list.length
-                            color: Colors.on_primary
-                            font.family: root.fontFamily
-                            font.pixelSize: 8
-                            font.weight: Font.Bold
-                        }
-                    }*/
                 }
             }
         }
