@@ -1,7 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import QtCore
+import QtCore as Core
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
@@ -57,7 +57,7 @@ Singleton {
     }
 
     // ------------------------- history (app usage) -------------------------
-    readonly property string homePath: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "")
+    readonly property string homePath: Core.StandardPaths.standardLocations(Core.StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "")
     readonly property string historyPath: homePath + "/.config/quickshell/finder.json"
 
     FileView {

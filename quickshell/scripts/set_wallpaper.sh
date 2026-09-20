@@ -3,16 +3,13 @@
 # Define the path to your wallpaper file
 WALLPAPER_PATH=$1
 
-# Path to the Hyprland environment file (MODIFIÉ EN .LUA)
-THEME_FILE="$HOME/.config/hypr/hypr-g/hyprland/env.lua"
+# Source of truth for the theme mode (gitignored, managed by quickshell)
+SETTINGS_FILE="$HOME/.config/quickshell/settings.json"
 
-# Load the current theme mode from the environment file
-if [ -f "$THEME_FILE" ]; then
-    # Parse THEME_MODE depuis la syntaxe Lua hl.env("THEME_MODE", "valeur")
-    THEME_MODE=$(grep "hl.env(\"THEME_MODE\"" "$THEME_FILE" | sed -E 's/.*"([^"]+)".*/\1/')
-else
-    # Default to dark mode if the file doesn't exist
-    THEME_MODE="dark"
+# Load the current theme mode from the quickshell settings (defaults to dark)
+THEME_MODE="dark"
+if [ -f "$SETTINGS_FILE" ] && jq -e '.isDarkMode == false' "$SETTINGS_FILE" >/dev/null 2>&1; then
+    THEME_MODE="light"
 fi
 
 # Check if the wallpaper file exists

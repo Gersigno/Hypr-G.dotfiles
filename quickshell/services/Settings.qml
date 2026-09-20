@@ -46,12 +46,14 @@ Singleton {
             id: adapter
 
             property bool isOled: false
+            property bool isDarkMode: true
             property string fontFamily: "SF Pro Display"
             property string wallpapersPath: root.homePath + "/Pictures/Wallpapers"
         }
     }
 
     property alias isOled: adapter.isOled
+    property alias isDarkMode: adapter.isDarkMode
     property alias fontFamily: adapter.fontFamily
     property alias wallpapersPath: adapter.wallpapersPath
 }

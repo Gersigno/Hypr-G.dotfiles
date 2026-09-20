@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import QtQuick.Layouts
-import QtCore
+import QtCore as Core
 
 import "../../utils"
 import qs.services
@@ -15,7 +15,7 @@ Item {
     implicitWidth: 800
     implicitHeight: 600
 
-    readonly property string home: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
+    readonly property string home: Core.StandardPaths.standardLocations(Core.StandardPaths.HomeLocation)[0]
     readonly property string userName: home.split('/').pop().charAt(0).toUpperCase() + home.split('/').pop().slice(1)
 
     ColumnLayout {

@@ -1,5 +1,6 @@
 {
   "isOled": false,
+  "isDarkMode": true,
   "fontFamily": "SF Pro Display",
   "wallpapersPath": "/Pictures/Wallpapers"
 }
