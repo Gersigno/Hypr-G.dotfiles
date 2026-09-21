@@ -70,8 +70,15 @@ Scope {
 
             color: "transparent"
 
+            // While the finder is open, capture pointer input on the whole
+            // screen on every monitor: the mouse can never hover a window
+            // underneath, so follow_mouse can't steal the finder's focus,
+            // and clicks outside the Finder UI can be caught (MouseArea below).
             mask: Region {
-                item: isOpened ? finderUI : null
+                x: 0
+                y: 0
+                width: root.opened ? panelRoot.width : 0
+                height: root.opened ? panelRoot.height : 0
             }
 
             implicitWidth: modelData ? modelData.width : 0
@@ -87,6 +94,16 @@ Scope {
                 windows: [ panelRoot ]
                 active: isOpened
                 onCleared: if (active) FinderService.close()
+            }
+
+            // Click-outside-to-close. Declared before FinderUI, so it stays
+            // below it in stacking order: clicks on the finder itself never
+            // reach this catcher.
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.AllButtons
+                enabled: root.opened
+                onPressed: FinderService.close()
             }
 
             FinderUI {

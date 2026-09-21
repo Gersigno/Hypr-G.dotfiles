@@ -77,6 +77,8 @@ Item {
     function show() {
         showAnimation.stop()
         hideAnimation.stop()
+        // Fresh start on every open: never carry the previous query over.
+        searchInput.text = ""
         container.y = 0
         root.growRatio = 0
         root.opacity = 1//HyprlandConfig.inactiveOpacity
@@ -416,6 +418,13 @@ Item {
                 }
             }
         }
+    }
+
+    // Absorb clicks on the Finder's own area so they don't reach the
+    // click-outside catcher in FinderOverlay.
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.AllButtons
     }
 
     // ----------------------------------------------------------------

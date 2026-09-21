@@ -4,7 +4,6 @@ import QtQuick
 import QtCore as Core
 import Quickshell
 import Quickshell.Io
-import Quickshell.Hyprland
 
 import qs.services
 import qs.services.finder
@@ -15,10 +14,10 @@ import qs.services.finder
  * stateful lives here, following the ToastService pattern.
  *
  * Query grammar (rofi-like):
- *   (nothing)          -> apps (usage-sorted) + open windows
- *   arbitrary text     -> fuzzy search across apps and windows
+ *   (nothing)          -> apps (usage-sorted)
+ *   arbitrary text     -> fuzzy search across apps
  *   > <command>        -> run shell command
- *   = <expression>     -> calculate with qalc (if installed)
+ *   = <expression>     -> calculate locally (built-in evaluator, no external tool)
  *   ? <phrase>         -> web search
  *   : <action>         -> finder/search actions (dark, light, oled, wallpaper...)
  */
@@ -142,92 +141,9 @@ Singleton {
         }
     }
 
-    property var windowsCache: []
-
-    function refreshWindows() {
-        let arr = []
-        try {
-            arr = toArray(Hyprland.toplevels)
-        } catch (e) { /* Hyprland not available */ }
-        root.windowsCache = arr.filter(t => t && t.address).map(t => {
-            const cls = t.lastIpcObject?.class ?? ""
-            return {
-                title: t.title,
-                className: cls,
-                address: t.address,
-                activated: t.activated,
-                icon: t.iconGuess ?? root.windowIcon(cls),
-                fuzzyTitle: Fuzzy.prepare((t.title + " " + cls).trim()),
-            }
-        })
-    }
-
-    function windowIcon(cls) {
-        if (!cls) return ""
-        const direct = DesktopEntries.byId(cls) ?? DesktopEntries.byId(cls.toLowerCase())
-        if (direct && direct.icon) return direct.icon
-        const heuristic = DesktopEntries.heuristicLookup(cls)
-        if (heuristic && heuristic.icon) return heuristic.icon
-        return ""
-    }
-
-    // Keep window list fresh (title/class changes are frequent, so debounce).
-    Connections {
-        target: Hyprland
-
-        function onRawEvent() {
-            refreshTimer.restart()
-        }
-    }
-
-    Timer {
-        id: refreshTimer
-        interval: 150
-        repeat: false
-        onTriggered: root.refreshWindows()
-    }
-
-    // ------------------------- math (qalc) -------------------------
-    property string mathValue: ""
-    property bool mathQuiet: false
-
-    Timer {
-        id: mathDebounce
-        interval: 350
-        repeat: false
-        onTriggered: {
-            if (!root.query.startsWith("=") || root.query.length < 2) {
-                root.mathValue = ""
-                return
-            }
-            const expr = root.query.slice(1).trim()
-            if (!expr) {
-                root.mathValue = ""
-                return
-            }
-            mathQuiet = false
-            mathProc.command = ["qalc", "-t", expr]
-            mathProc.running = false
-            mathProc.running = true
-        }
-    }
-
-    Process {
-        id: mathProc
-        command: []
-        running: false
-
-        stdout: SplitParser {
-            onRead: data => {
-                if (!root.mathQuiet && data != null && String(data).trim() !== "")
-                    root.mathValue = String(data).trim()
-            }
-        }
-        onExited: exitCode => {
-            if (exitCode != 0 && root.mathValue == "")
-                root.mathQuiet = true
-        }
-    }
+    // ------------------------- math -------------------------
+    // Expressions are evaluated in-process by the MathEval singleton
+    // (sandboxed parser, no qalc / shell / eval). Nothing to debounce.
 
     // ------------------------- actions -------------------------
     readonly property var actions: [
@@ -293,15 +209,17 @@ Singleton {
         }
 
         if (q.startsWith("=")) {
-            if (root.mathValue) {
+            const expr = q.slice(1).trim()
+            const value = expr ? MathEval.evaluate(expr) : null
+            if (value !== null) {
                 out.push({
                     key: "math", type: "math",
-                    name: "= " + root.mathValue,
-                    hint: "Math result",
+                    name: "= " + value,
+                    hint: expr,
                     verb: "Copy",
                     iconGlyph: "=",
                     execute: () => {
-                        Quickshell.clipboardText = root.mathValue
+                        Quickshell.clipboardText = value
                         ToastService.show("Math result copied", 1500)
                     },
                 })
@@ -341,13 +259,8 @@ Singleton {
             return out
         }
 
-        // -------- empty query: windows on top, then ALL apps (recent first) --------
+        // -------- empty query: ALL apps (recent first) --------
         if (q === "") {
-            const wins = root.windowsCache.slice().sort((a, b) => (a.activated ? 0 : 1) - (b.activated ? 0 : 1))
-            for (const w of wins) {
-                out.push(root.windowResult(w))
-            }
-
             const apps = root.appsCache.slice()
                 .map(a => ({ a, count: root.historyCount(a.entry.id) }))
                 .sort((x, y) => y.count - x.count || x.a.name.localeCompare(y.a.name))
@@ -359,15 +272,12 @@ Singleton {
 
         // -------- fuzzy search --------
         const appMatches = Fuzzy.go(q, root.appsCache, { all: true, key: "fuzzy" })
-        const winMatches = Fuzzy.go(q, root.windowsCache, { all: true, key: "fuzzyTitle" })
 
         const appResults = appMatches.slice(0, 30).map(r => root.appResult(r.obj))
-        const winResults = winMatches.slice(0, 12).map(r => root.windowResult(r.obj))
         out.push(...appResults)
-        out.push(...winResults)
 
-        // No app/window matches: stay useful, rofi run/web fallback
-        if (appResults.length === 0 && winResults.length === 0) {
+        // No app matches: stay useful, rofi run/web fallback
+        if (appResults.length === 0) {
             out.push({
                 key: "run", type: "run",
                 name: q,
@@ -399,28 +309,7 @@ Singleton {
         }
     }
 
-    function windowResult(w) {
-        return {
-            key: "window:" + w.address,
-            type: "window",
-            name: w.title,
-            hint: w.className || "Window",
-            iconName: w.icon,
-            verb: w.activated ? "Focus" : "Switch",
-            execute: () => {
-                if (Hyprland.usingLua)
-                    Hyprland.dispatch(`hl.dsp.focus({ window = "address:${w.address}" })`)
-                else
-                    Hyprland.dispatch(`focuswindow address:${w.address}`)
-            },
-        }
-    }
-
     Component.onCompleted: {
-        root.refreshWindows()
         root.rebuildApps()
     }
-
-    // Keep math results updating while typing.
-    onQueryChanged: mathDebounce.restart()
 }

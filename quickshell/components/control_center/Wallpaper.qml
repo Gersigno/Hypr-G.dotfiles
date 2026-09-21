@@ -206,7 +206,7 @@ Item {
                             const command = ["/bin/bash", Core.StandardPaths.standardLocations(Core.StandardPaths.HomeLocation)[0].toString().replace(/^file:\/\//, "") + "/.config/quickshell/scripts/set_wallpaper.sh", path]
                             wallpaperProcess.command = command
                             wallpaperProcess.running = true
-                            ToastService.show("Wallpaper applied", 4000, "../../../assets/icons/wallpaper.png")
+                            ToastService.show("󰋩  Wallpaper applied", 4000)
                         }
                     }
                 }
