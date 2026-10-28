@@ -27,9 +27,9 @@ input_path = '~/.config/matugen/kitty.conf.tpl'
 output_path = '~/.config/kitty/colors.conf'
 post_hook = 'pkill -SIGUSR1 kitty'
 
-[templates.rofi]
-input_path = '~/.config/matugen/rofi.rasi.tpl'
-output_path = '~/.config/rofi/colors.rasi'
+#[templates.rofi]
+#input_path = '~/.config/matugen/rofi.rasi.tpl'
+#output_path = '~/.config/rofi/colors.rasi'
 
 [templates.dolphin]
 input_path = '~/.config/matugen/dolphin.kvconfig.tpl'

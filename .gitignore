@@ -12,7 +12,6 @@ hypr/custom/
 !kitty/
 !xdg-desktop-portal/
 !matugen/
-!rofi/
 !quickshell/
 
 !yazi/
@@ -32,7 +31,6 @@ fish/completions/copilot.fish
 hypr/hypr-g/hyprland/colors.lua
 hypr/hypr-g/hyprlock/colors.conf
 kitty/colors.conf
-rofi/colors.rasi
 quickshell/colors.json
 quickshell/settings.json
 quickshell/finder.json

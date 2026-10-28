@@ -66,8 +66,7 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - hyprlock _(Simple and secure screen locker)_
 - hyprpm
 - matugen _(Automatically generates color palettes from wallpapers)_
-- quickshell-git
-- rofi _(App launcher)_
+- quickshell
 - kitty
 - fish _(A smart and user-friendly interactive shell)_
 - fisher _(Plugin manager for Fish shell, with a customised version of **tide** theme)_
