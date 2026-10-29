@@ -24,13 +24,13 @@ Item {
     readonly property bool isCritical: percentage <= 10
     readonly property bool isSuspending: percentage <= 5
     readonly property bool isFull: percentage >= 100
-    readonly property var chargingBatteryIcons: ["", "", "", "", ""]
-    property int chargingBatteryFrame: 0
+    //readonly property var chargingBatteryIcons: ["", "", "", "", ""]
+    //property int chargingBatteryFrame: 0
 
 
     readonly property string batteryIconText: {
         if (!Battery.available) return "";
-        if (isCharging) return chargingBatteryIcons[chargingBatteryFrame];
+        //if (isCharging) return chargingBatteryIcons[chargingBatteryFrame];
         if (percentage > 80) return "";
         if (percentage > 60) return "";
         if (percentage > 40) return "";
@@ -68,18 +68,18 @@ Item {
 
     readonly property color batteryTextColor: (isLow && !isCharging) ? (isCritical ? "red" : "orange") : foregroundColor
 
-    onIsChargingChanged: {
-        if (!isCharging) chargingBatteryFrame = 0;
-    }
+    //onIsChargingChanged: {
+    //    if (!isCharging) chargingBatteryFrame = 0;
+    //}
 
-    Timer {
-        interval: 600
-        repeat: true
-        running: Battery.available && root.isCharging
-        onTriggered: {
-            root.chargingBatteryFrame = (root.chargingBatteryFrame + 1) % root.chargingBatteryIcons.length;
-        }
-    }
+    //Timer {
+    //    interval: 600
+    //    repeat: true
+    //    running: Battery.available && root.isCharging
+    //    onTriggered: {
+    //        root.chargingBatteryFrame = (root.chargingBatteryFrame + 1) % root.chargingBatteryIcons.length;
+    //    }
+    //}
 
     implicitWidth: invertedCorner.width + container.width
     height: parent.height
@@ -265,8 +265,8 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
-                            text: Battery.available ? ( Battery.isCharging ? "󱐋" + Math.round(root.percentage) : Math.round(root.percentage)) : ""
-                            color: "black"
+                            text: Battery.available ? (Battery.isFullyCharged ? "Full" : (Battery.isCharging ? "󱐋" + Math.round(root.percentage) : Math.round(root.percentage))) : ""
+                            color: root.backgroundColor
                             width: battery.width
                             horizontalAlignment: Text.AlignHCenter
                             font.pixelSize: 10
@@ -282,8 +282,8 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         color: "transparent"
                         Text {
-                            text: Battery.available ? ( Battery.isCharging ? "󱐋" + Math.round(root.percentage) : Math.round(root.percentage)) : ""
-                            color: "black"
+                            text: Battery.available ? (Battery.isFullyCharged ? "Full" : (Battery.isCharging ? "󱐋" + Math.round(root.percentage) : Math.round(root.percentage))) : ""
+                            color: root.backgroundColor
                             width: battery.width
                             horizontalAlignment: Text.AlignHCenter
                             font.pixelSize: 10
