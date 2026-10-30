@@ -1,10 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
 
-import "../services"
-import "../utils"
 import qs.services
 import "../utils"
 import "../components/common/interface"
@@ -12,8 +11,19 @@ import "../components/common/interface"
 Scope {
     id: root
 
-    readonly property int globalRadius: HyprlandConfig.radiusFull
+    // Same pattern as ControlCenter / NotificationsCenter
+    property var topBarComponent: null
+    readonly property real topBarHeight: topBarComponent ? topBarComponent.barHeight : 0
+
+    readonly property int outerRadius: HyprlandConfig.radiusFull
     readonly property int innerRadius: HyprlandConfig.radius > 0 ? HyprlandConfig.radius : 12
+
+    readonly property int bubbleWidth: 340
+    readonly property int bubblePadding: 12
+    readonly property int iconSize: 36
+
+    // Same base pattern as ControlCenter / NotificationsCenter
+    readonly property int animationDuration: Settings.animDuration(450)
 
     readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000000" : Colors.background
     readonly property color foregroundColor: Colors.on_surface
@@ -34,93 +44,159 @@ Scope {
             WlrLayershell.exclusiveZone: 0
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-            // Only consume space of the actual notification list
-            mask: Region { item: notifList }
+            // The list fills the whole surface, but only the area actually covered by
+            // notifications should take clicks (see interactiveArea below).
+            mask: Region { item: interactiveArea }
 
-            implicitWidth: 360
-            implicitHeight: notifList.implicitHeight + notifList.y
+            implicitWidth: root.bubbleWidth * 1.2
+            // The surface covers the whole area below the top bar, but the input
+            // region stays limited to the list itself (see mask above). This way the
+            // bubbles are never clipped by the surface while they animate out.
+            implicitHeight: screen.height - root.topBarHeight
 
             anchors {
                 top: true
                 right: true
             }
 
+            // Notifications.popupList is rebuilt on every change, so wrapping it in a
+            // ScriptModel turns those rebuilds into proper insert/remove operations.
+            // Without it, ListView destroys and recreates every delegate each time.
+            // Newest first, so the newest bubble sits at the top of the list.
+            ScriptModel {
+                id: popupModel
+                values: [...Notifications.popupList].reverse()
+            }
+
             ListView {
                 id: notifList
                 anchors.top: parent.top
-                anchors.topMargin: root.globalRadius * 2
+                anchors.topMargin: root.outerRadius * 2
                 anchors.right: parent.right
-                //anchors.rightMargin: 12
-                width: 340
+                anchors.bottom: parent.bottom
+                width: root.bubbleWidth
+                clip: false
 
-                model: Notifications.popupList
+                model: popupModel
                 spacing: root.innerRadius * 2
-                implicitHeight: contentHeight
-                verticalLayoutDirection: ListView.BottomToTop
+                // TopToBottom (the default) anchors the content to the top and keeps
+                // contentY at 0, so shrinking the content does not move the delegates
+                // that are currently animating out.
+                verticalLayoutDirection: ListView.TopToBottom
 
-                /*add: Transition {
-                    NumberAnimation { property: "scale"; from: 0; to: 1; duration: 250; easing.type: Easing.OutCubic }
-                    NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 250; easing.type: Easing.OutCubic }
+                // Opening: the bubble itself grows with an elastic bump, while its
+                // content fades in and gets unblurred.
+                add: Transition {
+                    ParallelAnimation {
+                        NumberAnimation {
+                            property: "openProgress"
+                            from: 0
+                            to: 1
+                            duration: root.animationDuration * 1.5
+                            easing.type: Easing.OutElastic
+                            easing.period: 0.6
+                            easing.amplitude: 0.2
+                        }
+                        NumberAnimation {
+                            property: "contentOpacity"
+                            from: 0
+                            to: 1
+                            duration: root.animationDuration / 1.2
+                            easing.type: Easing.OutCubic
+                        }
+                        NumberAnimation {
+                            property: "contentBlur"
+                            from: 2
+                            to: 0
+                            duration: root.animationDuration / 1.2
+                            easing.type: Easing.OutCubic
+                        }
+                    }
                 }
 
-                displaced: Transition {
-                    NumberAnimation { 
-                        properties: "y"; 
-                        duration: 250; 
-                        easing.type: Easing.OutCubic 
+                // Closing: same properties, reversed, with a softer curve.
+                remove: Transition {
+                    ParallelAnimation {
+                        NumberAnimation {
+                            property: "openProgress"
+                            to: 0
+                            duration: root.animationDuration / 1.5
+                            easing.type: Easing.InOutCubic
+                        }
+                        NumberAnimation {
+                            property: "contentOpacity"
+                            to: 0
+                            duration: root.animationDuration / 1.5
+                            easing.type: Easing.InOutCubic
+                        }
+                        NumberAnimation {
+                            property: "contentBlur"
+                            to: 2
+                            duration: root.animationDuration / 1.5
+                            easing.type: Easing.InOutCubic
+                        }
                     }
-                }*/
+                }
 
                 delegate: Item {
                     id: delegateItem
 
-                    //transformOrigin: Item.CenterRight
+                    required property var modelData
+                    required property int index
 
-                    ListView.delayRemove: false
-                    ListView.onRemove: removeAnimation.start()
+                    // Driven by the add/remove transitions above.
+                    // 0 = collapsed (pill), 1 = fully open.
+                    property real openProgress: 1
+                    property real contentOpacity: 1
+                    property real contentBlur: 0
 
-                    /*SequentialAnimation {
-                        id: removeAnimation
-                        PropertyAction { target: delegateItem; property: "ListView.delayRemove"; value: true }
-                        ParallelAnimation {
-                            //NumberAnimation { target: delegateItem; property: "scale"; to: 0; duration: 2000; easing.type: Easing.InCubic }
-                            //NumberAnimation { target: delegateItem; property: "opacity"; to: 0; duration: 2000; easing.type: Easing.InCubic }
-                        }
-                        PropertyAction { target: delegateItem; property: "ListView.delayRemove"; value: false }
-                    }*/
+                    // index 0 is the newest bubble, at the top of the list
+                    readonly property bool isTopmost: index === 0
+                    readonly property bool isBottommost: index === notifList.count - 1
 
                     width: notifList.width
-                    height: bubble.height + bottomRightCorner.height // Account for corner radius
+                    // The bottom corner sits below the bubble and is part of the item's height
+                    height: bubble.height + bottomRightCorner.height
 
-                    //Bottom
+                    // Bottom
                     InvertedCorner {
                         id: bottomRightCorner
                         corner: InvertedCorner.Corner.TopRight
-                        cornerRadius: index > 0 ? root.innerRadius : root.globalRadius
+                        cornerRadius: (delegateItem.isBottommost ? root.outerRadius : root.innerRadius) * delegateItem.openProgress
                         cornerColor: root.backgroundColor
                         anchors.top: bubble.bottom
                         anchors.right: parent.right
+                        opacity: 1
                     }
 
-                    //Top
+                    // Top
                     InvertedCorner {
                         id: topRightCorner
                         corner: InvertedCorner.Corner.BottomRight
-                        cornerRadius: index < notifList.count - 1 ? root.innerRadius : root.globalRadius
+                        cornerRadius: (delegateItem.isTopmost ? root.outerRadius : root.innerRadius) * delegateItem.openProgress
                         cornerColor: root.backgroundColor
                         anchors.bottom: bubble.top
                         anchors.right: parent.right
+                        opacity: 1
                     }
 
                     Rectangle {
                         id: bubble
-                        width: notifList.width
-                        height: innerRow.implicitHeight + 20
-                        //radius: HyprlandConfig.radius > 0 ? HyprlandConfig.radius : 12
-                        topLeftRadius: root.globalRadius
-                        bottomLeftRadius: root.globalRadius
+
+                        readonly property real fullHeight: innerRow.implicitHeight + root.bubblePadding * 2
+                        // A radius of half the (final) height is a perfect pill
+                        readonly property real pillRadius: fullHeight / 2
+                        readonly property real currentRadius: pillRadius + (root.outerRadius - pillRadius) * delegateItem.openProgress
+
+                        width: parent.width * delegateItem.openProgress
+                        height: fullHeight * delegateItem.openProgress
+                        clip: true
+
+                        topLeftRadius: Math.max(0, Math.min(currentRadius, height / 2))
+                        bottomLeftRadius: Math.max(0, Math.min(currentRadius, height / 2))
+
                         color: root.backgroundColor
-                        anchors.right: parent ? parent.right : undefined
+                        anchors.right: parent.right
 
                         RowLayout {
                             id: innerRow
@@ -128,14 +204,23 @@ Scope {
                                 left: parent.left
                                 right: parent.right
                                 verticalCenter: parent.verticalCenter
-                                margins: 12
+                                margins: root.bubblePadding
                             }
                             spacing: 10
 
+                            opacity: delegateItem.contentOpacity
+
+                            layer.enabled: true
+                            layer.effect: MultiEffect {
+                                blurEnabled: true
+                                blurMax: 16
+                                blur: delegateItem.contentBlur
+                            }
+
                             // App icon
                             Item {
-                                Layout.preferredWidth: 36
-                                Layout.preferredHeight: 36
+                                Layout.preferredWidth: root.iconSize
+                                Layout.preferredHeight: root.iconSize
                                 Layout.alignment: Qt.AlignVCenter
 
                                 Image {
@@ -217,12 +302,12 @@ Scope {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: Notifications.timeoutNotification(modelData.notificationId)
+                                    onClicked: Notifications.timeoutNotification(delegateItem.modelData.notificationId)
 
                                     Text {
                                         anchors.centerIn: parent
                                         text: "×"
-                                        color: foregroundVariantColor
+                                        color: root.foregroundVariantColor
                                         font.pixelSize: 18
                                     }
                                 }
@@ -230,7 +315,16 @@ Scope {
                         }
                     }
                 }
-                
+            }
+
+            // Input region: exactly the area covered by the notification bubbles, so
+            // clicks anywhere else go through to the windows below.
+            Item {
+                id: interactiveArea
+                x: notifList.x
+                y: notifList.y
+                width: notifList.width
+                height: notifList.contentHeight
             }
         }
     }

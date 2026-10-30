@@ -4,6 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import Quickshell.Io
+import QtQuick.Effects
 
 import "./"
 
@@ -52,6 +53,14 @@ Item {
 
         readonly property bool isOpened: root.openedScreenName === modelData.name
         readonly property bool localFullyClosed: !(layer.width === root.defaultWidth && layer.height === root.defaultHeight)
+        property real blurlevel: !isOpened ? 2 : 0.0
+
+        Behavior on blurlevel { 
+            NumberAnimation { 
+                duration: root.animationDuration; 
+                easing.type: Easing.InOutQuint 
+            } 
+        }
 
         WlrLayershell.namespace: "quickshell:notificationsCenter"
         WlrLayershell.layer: localFullyClosed ? WlrLayer.Top : WlrLayer.Bottom
@@ -100,6 +109,9 @@ Item {
                 NumberAnimation { 
                     duration: root.animationDuration; 
                     easing.type: Easing.InOutQuint 
+                    //easing.type: Easing.OutElastic
+                    //easing.period: 0.6
+                    //easing.amplitude: 0.2                
                 } 
             }
             Behavior on height { 
@@ -168,6 +180,21 @@ Item {
                         anchors.rightMargin: (root.fullRadius) + root.radius
                         anchors.leftMargin: root.radius
                         topBarHeight: root.statusHeight
+
+                        opacity: isOpened
+
+                        layer.enabled: true
+                        layer.effect: MultiEffect {
+                            blurEnabled: true
+                            blur: blurlevel
+                        }
+
+                        Behavior on opacity { 
+                            NumberAnimation { 
+                                duration: root.animationDuration; 
+                                easing.type: Easing.InOutQuint
+                            }
+                        }
                     }
                 }
             }

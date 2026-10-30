@@ -1,9 +1,6 @@
 //@ pragma Env QS_NO_RELOAD_POPUP=1
 //@ pragma Env QSG_RENDER_LOOP=threaded
 //@ pragma Env QT_QUICK_FLICKABLE_WHEEL_DECELERATION=10000 
-// Silences a benign Qt layer-shell warning (text-input-v3 disableSurface with no
-// focused surface) emitted whenever the Control/Notifications Center loses focus.
-// Nécessite un redémarrage complet de quickshell (pas un simple reload).
 //@ pragma Env QT_LOGGING_RULES=qt.qpa.wayland.textinput.warning=false
 
 import Quickshell
@@ -46,6 +43,7 @@ ShellRoot {
 
     NotificationPopups {
         id: notificationPopups
+        topBarComponent: rootShell.topBarComponent
     }
 
     Binding {

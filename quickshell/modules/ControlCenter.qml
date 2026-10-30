@@ -183,7 +183,7 @@ Item {
 
                 Behavior on width { 
                     NumberAnimation { 
-                        duration: root.animationDuration * (!isClosing ? 1.7 : 0.5); 
+                        duration: root.animationDuration * (!isClosing ? 2.5 : 0.5); 
                         easing.type: !isClosing ? Easing.OutElastic : Easing.InOutQuad
                         easing.period: !isClosing ? 0.6 : 1
                         easing.amplitude: !isClosing ? 0.2 : 1
