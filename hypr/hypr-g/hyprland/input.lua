@@ -29,9 +29,11 @@ hl.config({
     },
 })
 
--- Per-device config
--- Run `hyprctl devices` to list device names
-hl.device({
-    name        = "logitech-pro-x-2-se-1",
-    sensitivity = -0.5,
+-- Touchpad gestures
+-- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
+-- Swipe left/right with 3 fingers to switch workspace on the current monitor.
+hl.gesture({
+    fingers   = 3,
+    direction = "horizontal",
+    action    = "workspace",
 })
