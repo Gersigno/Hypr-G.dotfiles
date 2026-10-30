@@ -16,7 +16,7 @@ import "../components/notifications_center"
 Item {
     id: root
 
-    readonly property int animationDuration: 450
+    readonly property int animationDuration: Settings.animDuration(450)
 
     property string openedScreenName: ""
     readonly property bool opened: openedScreenName !== ""
@@ -208,8 +208,10 @@ Item {
                 right: parent.right
             }
             onClicked: {
-                console.log("Toggling Notifications Center from status area click")
-                root.toggle()
+                // Même logique que le Control Center : le clic qui vide le focus
+                // grab ne doit pas rouvrir le panneau juste après l'avoir fermé.
+                console.log("Closing Notifications Center from status area click")
+                root.close()
             }
         }
     

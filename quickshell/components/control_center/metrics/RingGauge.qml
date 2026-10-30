@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Shapes
 
+import qs.services
+
 Item {
     id: root
 
@@ -12,7 +14,7 @@ Item {
     property color progressColor: "#a6c8ff"
     property real glowOpacity: 0.16
     property real glowWidth: 2.0           // glow stroke width, relative to lineWidth
-    property int animationDuration: 700
+    property int animationDuration: Settings.animDuration(700)
 
     implicitWidth: 140
     implicitHeight: 140

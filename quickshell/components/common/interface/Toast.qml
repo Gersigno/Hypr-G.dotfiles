@@ -12,10 +12,10 @@ Item {
 
     property string message: ""
     property string icon: ""
-    property int duration: 3000
+    property int duration: Settings.animDuration(3000)
     property real progress: -1
     property real growRatio: 0
-    property int anim_duration: 500
+    property int anim_duration: Settings.animDuration(500)
     property real shadow_pacity: 0
     property real blur_level: 0
 
@@ -52,14 +52,14 @@ Item {
         if (prog > 0.5) return " ";
         if (prog > 0.25) return " ";
         return " ";
-    }
+    } 
 
     function show(msg, dur, ico, prog) {
         showAnimation.stop()
         hideAnimation.stop()
         container.y = 0
         root.message = msg
-        root.duration = dur ?? 3000
+        root.duration = dur ?? Settings.animDuration(3000)
         root.icon = ico ?? ""
         root.progress = prog ?? -1
         root.growRatio = 0
@@ -82,7 +82,7 @@ Item {
             //Toast exist, edit it
             //showAnimation.stop()
             root.message = msg
-            root.duration = dur ?? 3000
+            root.duration = dur ?? Settings.animDuration(3000)
             root.icon = ico ?? ""
             root.progress = prog ?? -1
             //reset timer
@@ -444,7 +444,7 @@ Item {
                             color: Colors.primary
 
                             Behavior on width {
-                                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+                                NumberAnimation { duration: Settings.animDuration(150); easing.type: Easing.OutCubic }
                             }
                         }
                     }

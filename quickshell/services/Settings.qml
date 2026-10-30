@@ -73,6 +73,12 @@ Singleton {
             property bool isDarkMode: true
             property string fontFamily: "SF Pro Display"
             property string wallpapersPath: root.homePath + "/Pictures/Wallpapers"
+
+            // Debug settings
+            property JsonObject debug: JsonObject {
+                id: debugSettings
+                property bool slowAnimations: false
+            }
         }
     }
 
@@ -80,4 +86,14 @@ Singleton {
     property alias isDarkMode: adapter.isDarkMode
     property alias fontFamily: adapter.fontFamily
     property alias wallpapersPath: adapter.wallpapersPath
+
+    // Debug settings
+    property alias debugSlowAnimations: debugSettings.slowAnimations
+
+    // Multiplier applied to every animation duration when slow animations are enabled
+    readonly property int slowAnimationFactor: debugSlowAnimations ? 20 : 1
+
+    function animDuration(ms) {
+        return Math.round(ms * slowAnimationFactor)
+    }
 }

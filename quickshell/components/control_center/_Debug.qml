@@ -17,6 +17,7 @@ Item {
 
     readonly property string home: Core.StandardPaths.standardLocations(Core.StandardPaths.HomeLocation)[0]
     readonly property string userName: home.split('/').pop().charAt(0).toUpperCase() + home.split('/').pop().slice(1)
+    readonly property color textColor: Colors.on_surface_variant
 
     ColumnLayout {
         anchors.fill: parent
@@ -88,7 +89,7 @@ Item {
 
                         Text {
                             text: "Live logs"
-                            color: "white"
+                            color: root.textColor
                             font.pixelSize: 18
                             font.bold: true;
                         }
@@ -115,7 +116,7 @@ Item {
 
                         Text {
                             text: "Buttons :";
-                            color: "white";
+                            color: root.textColor
                             font.pixelSize: 18;
                             //font.family: Settings.fontFamily
                             font.bold: true;
@@ -208,7 +209,7 @@ Item {
                         }
                         Text {
                             text: "QSButtons (QuickSettings):";
-                            color: "white";
+                            color: root.textColor
                             font.pixelSize: 18;
                             //font.family: Settings.fontFamily
                             font.bold: true;
@@ -226,7 +227,7 @@ Item {
                                     spacing: 8
                                     Text {
                                         text: "Default QSButtons";
-                                        color: Colors.on_surface_variant;
+                                        color: root.textColor;
                                         //font.family: Settings.fontFamily;
                                         font.pixelSize: 12;
                                     }
@@ -256,7 +257,7 @@ Item {
                                     spacing: 8
                                     Text {
                                         text: "Description";
-                                        color: Colors.on_surface_variant;
+                                        color: root.textColor;
                                         //font.family: Settings.fontFamily;
                                         font.pixelSize: 12;
                                     }
@@ -341,7 +342,7 @@ Item {
                                     width: 250
                                     height: parent.height
                                     text: modelData
-                                    color: Colors.on_surface_variant
+                                    color: root.textColor
                                     //font.family: Settings.fontFamily
                                     font.pixelSize: 12
                                     verticalAlignment: Text.AlignVCenter
@@ -381,8 +382,39 @@ Item {
                     anchors.margins: 16
 
                     Text {
+                        text: "Debug settings"
+                        color: root.textColor
+                        font.pixelSize: 18
+                        //font.family: Settings.fontFamily
+                        font.bold: true
+                    }
+
+                    RowLayout {
+                        spacing: 12
+
+                        ColumnLayout {
+                            spacing: 2
+
+                            Text {
+                                text: "Slow animations (×20)"
+                                color: root.textColor
+                                font.pixelSize: 14
+                            }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
+                        Switch {
+                            checked: Settings.debugSlowAnimations
+                            onToggled: (value) => Settings.debugSlowAnimations = value
+                        }
+                    }
+
+                    Text {
                         text: "Toast Service Testing"
-                        color: "white"
+                        color: root.textColor
                         font.pixelSize: 18
                         //font.family: Settings.fontFamily
                         font.bold: true
@@ -426,7 +458,7 @@ Item {
 
                     Text {
                         text: "System notifications testing"
-                        color: "white"
+                        color: root.textColor
                         font.pixelSize: 18
                         //font.family: Settings.fontFamily
                         font.bold: true

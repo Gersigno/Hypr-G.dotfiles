@@ -54,7 +54,7 @@ Item {
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 600
+                    duration: Settings.animDuration(600)
                     easing.type: Easing.OutCubic
                 }
             }

@@ -19,8 +19,9 @@ Item {
     property string openedScreenName: ""
     //property bool topBarVisible: true
     readonly property bool opened: openedScreenName !== ""
-    readonly property int animationDuration: 450
+    readonly property int animationDuration: Settings.animDuration(450)
     property real blur_level: (opened) ? 0 : 1.5
+    property real shadowOpacity: opened ? 1 : 0.0
 
     property var topBarComponent: null
     readonly property real clockWidth: topBarComponent ? topBarComponent.clockWidth : 0
@@ -35,6 +36,13 @@ Item {
     readonly property real defaultHeight: clockHeight
 
     Behavior on blur_level {
+        NumberAnimation { 
+            duration: root.animationDuration / 1.7; 
+            easing.type: Easing.InOutQuad
+        }
+    }
+
+    Behavior on shadowOpacity {
         NumberAnimation { 
             duration: root.animationDuration / 1.7; 
             easing.type: Easing.InOutQuad
@@ -78,7 +86,9 @@ Item {
         property var modelData
         screen: modelData
 
-        readonly property bool isOpened: root.openedScreenName === modelData.name
+        property bool isOpened: root.openedScreenName === modelData.name
+        property bool isFullyOpened: isOpened && (container.height === (carousel.currentItem && carousel.currentItem.item ? carousel.currentItem.item.implicitHeight : 0) + tabBar.height)
+
         readonly property bool isClosing: !isOpened && localFullyClosed
         readonly property bool localFullyClosed: !(container.height === root.defaultHeight)
         property bool modelInitialized: false
@@ -109,7 +119,9 @@ Item {
         HyprlandFocusGrab {
             windows: [ controlCenterRoot ]
             active: isOpened
-            onCleared: if (!active) root.close()
+            onCleared: {
+                if (!active) root.close()
+            }
         }
 
         Item {
@@ -130,6 +142,17 @@ Item {
             //align row to center of control center root
             anchors.horizontalCenter: parent.horizontalCenter
             //height: parent.height
+
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: Colors.shadow
+                shadowBlur: 2
+                shadowHorizontalOffset: 0
+                shadowVerticalOffset: 8
+                shadowOpacity: root.shadowOpacity
+            }
+
 
             InvertedCorner {
                 id: topLeftCorner
@@ -160,7 +183,7 @@ Item {
 
                 Behavior on width { 
                     NumberAnimation { 
-                        duration: root.animationDuration * (!isClosing ? 2 : 0.5); 
+                        duration: root.animationDuration * (!isClosing ? 1.7 : 0.5); 
                         easing.type: !isClosing ? Easing.OutElastic : Easing.InOutQuad
                         easing.period: !isClosing ? 0.6 : 1
                         easing.amplitude: !isClosing ? 0.2 : 1
@@ -197,7 +220,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: tabBar.top
-                    visible: isOpened
+                    //visible: true
                     clip: true 
                     interactive: false
                     //currentIndex: 1 //! Clock (alphabetical: Calendar=0, Clock=1, Media=2, Wallpaper=3)
@@ -266,9 +289,8 @@ Item {
 
                             width: tabBar.width / 5
                             height: tabBar.height
-                            // x follows displaySlot (no Behavior) so width changes never trigger animations
                             x: displaySlot * (tabBar.width / 5)
-                            opacity: (isCurrent || isPrev1 || isPrev2 || isNext1 || isNext2) ? 1.0 : 0.0
+                            opacity: ((isCurrent || isPrev1 || isPrev2 || isNext1 || isNext2) && isOpened) ? 1.0 : 0.0
                             z: isCurrent ? 1 : 0
 
                             // displaySlot is the animated proxy — only moves when slot changes
@@ -403,7 +425,11 @@ Item {
 
             cursorShape: Qt.PointingHandCursor
 
-            onClicked: root.toggle()
+            // Le 2e clic sur l'horloge est routé vers cette fenêtre (elle tient le
+            // focus grab) : le grab est alors vidé -> onCleared -> close(). Il ne
+            // faut donc surtout pas toggle() ici, sinon le panneau se rouvre
+            // immédiatement. On se contente de fermer.
+            onClicked: root.close()
         }
 
         Connections {

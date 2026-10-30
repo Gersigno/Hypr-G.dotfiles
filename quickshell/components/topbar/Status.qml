@@ -25,6 +25,10 @@ Item {
     readonly property bool isSuspending: percentage <= 5
     readonly property bool isFull: percentage >= 100
     //readonly property var chargingBatteryIcons: ["", "", "", "", ""]
+    readonly property string batteryText: Battery.available ? (
+        //isFull ? "" :
+        (isCharging && !isFull ? "󱐋" : "") + Math.round(percentage)
+        ) : ""
     //property int chargingBatteryFrame: 0
 
 
@@ -248,9 +252,9 @@ Item {
                     //Battery end
                     Rectangle {
                         id: batteryEnd
-                        color: "grey"
+                        color: isFull ? root.batteryTextColor : "grey"
                         height: 4
-                        width: 2
+                        width: 1
                         //opacity: 0.3
                         topRightRadius: 8
                         bottomRightRadius: 8
@@ -265,7 +269,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
-                            text: Battery.available ? (Battery.isFullyCharged ? "Full" : (Battery.isCharging ? "󱐋" + Math.round(root.percentage) : Math.round(root.percentage))) : ""
+                            text: batteryText
                             color: root.backgroundColor
                             width: battery.width
                             horizontalAlignment: Text.AlignHCenter
@@ -282,7 +286,8 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         color: "transparent"
                         Text {
-                            text: Battery.available ? (Battery.isFullyCharged ? "Full" : (Battery.isCharging ? "󱐋" + Math.round(root.percentage) : Math.round(root.percentage))) : ""
+                            //text: Battery.available ? (Battery.isFullyCharged ? "Full" : (Battery.isCharging ? "󱐋" + Math.round(root.percentage) : Math.round(root.percentage))) : ""
+                            text: batteryText
                             color: root.backgroundColor
                             width: battery.width
                             horizontalAlignment: Text.AlignHCenter

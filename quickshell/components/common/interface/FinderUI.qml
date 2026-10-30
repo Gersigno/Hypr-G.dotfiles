@@ -24,7 +24,7 @@ Item {
     property string query: ""
     property var results: []
     property real growRatio: 0
-    property int anim_duration: 500
+    property int anim_duration: Settings.animDuration(500)
     property real shadow_pacity: 0
     property real blur_level: 0
     property bool active: false

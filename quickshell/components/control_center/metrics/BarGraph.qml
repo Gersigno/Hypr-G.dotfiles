@@ -1,5 +1,7 @@
 import QtQuick
 
+import qs.services
+
 Item {
     id: root
 
@@ -13,7 +15,7 @@ Item {
     property real barRadius: 4        // clamped to half the bar width (pill shape)
     property real minBarHeight: 2
     property bool highlightLast: true
-    property int animationDuration: 450
+    property int animationDuration: Settings.animDuration(450)
 
     readonly property real scaleMax: {
         if (!autoScale)
