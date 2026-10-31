@@ -24,9 +24,11 @@ hl.config({
     },
 
     misc = {
-        background_color           = colors.background,
-        allow_session_lock_restore = true,
-        middle_click_paste         = false,
+        background_color            = colors.background,
+        allow_session_lock_restore  = true,
+        middle_click_paste          = false,
+        force_default_wallpaper     = -1,
+        disable_hyprland_logo       = true
     },
 
     decoration = {
@@ -70,6 +72,9 @@ hl.config({
     animations = {
         enabled = true,
     },
+    xwayland = {
+        force_zero_scaling = true
+    }
 })
 
 -- DISABLED: borders-plus-plus crashes Hyprland 0.55 (pluginInit calls addConfigValueV2 which ABORTs)
