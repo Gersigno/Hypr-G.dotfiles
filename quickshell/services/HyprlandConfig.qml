@@ -37,6 +37,22 @@ Singleton {
         return workspacesByMonitor[screenName] ?? [];
     }
 
+    // --- Debug / last read timestamp ---
+
+    // Timestamp (ms since epoch) of the last time a Hyprland option was read by Quickshell
+    readonly property real lastRead: _lastRead
+    property real _lastRead: 0
+
+    function markRead() {
+        root._lastRead = Date.now();
+    }
+
+    function lastReadText() {
+        if (root._lastRead <= 0)
+            return "never";
+        return Qt.formatDateTime(new Date(root._lastRead), "yyyy-MM-dd HH:mm:ss");
+    }
+
     // --- Loaders ---
 
     Process {
@@ -45,6 +61,7 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 root.radius = JSON.parse(text).int;
+                root.markRead();
             }
         }
     }
@@ -63,6 +80,7 @@ Singleton {
                 else
                     raw = String(data.int);
                 root.gapsOut = parseInt(raw.trim().split(/\s+/)[0]);
+                root.markRead();
             }
         }
     }
@@ -73,6 +91,7 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 root.activeOpacity = JSON.parse(text).float;
+                root.markRead();
             }
         }
     }
@@ -83,6 +102,7 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 root.inactiveOpacity = JSON.parse(text).float;
+                root.markRead();
             }
         }
     }
@@ -93,6 +113,7 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 root.shadowRange = JSON.parse(text).int;
+                root.markRead();
             }
         }
     }
@@ -103,6 +124,7 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 root.shadowRenderPower = JSON.parse(text).int;
+                root.markRead();
             }
         }
     }
@@ -140,6 +162,7 @@ Singleton {
                 }
                 //console.log("[HyprlandConfig] parsed workspacesByMonitor:", JSON.stringify(result));
                 root.workspacesByMonitor = result;
+                root.markRead();
             }
         }
     }

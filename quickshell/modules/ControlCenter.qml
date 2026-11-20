@@ -11,6 +11,13 @@ import "../services"
 import "../components/common/interface"
 import qs.services
 import "../utils"
+// Ces imports ne sont pas utilisés directement : ils rendent les dossiers
+// visibles au scanner de Quickshell, qui ne surveille que les fichiers
+// atteignables depuis le graphe d'imports statique. Sans eux, les pages du
+// carousel (chargées dynamiquement via FolderListModel + Loader) ne sont pas
+// surveillées et le hot reload ne fonctionne pas.
+import "../components/control_center" as ControlCenterPages
+import "../components/control_center/debug" as DebugPages
 //import "../components/control_center" as ControlCenterComponents
 
 Item {
@@ -67,6 +74,16 @@ Item {
         folder: Qt.resolvedUrl("../components/control_center")
         nameFilters: ["*.qml"]
         showDirs: false
+    }
+
+    // `_Debug.qml` commence par un underscore : le scanner de Quickshell ne
+    // scanne que les fichiers commençant par une majuscule, il ne le surveille
+    // donc pas. On le surveille explicitement pour que ses modifications
+    // déclenchent aussi un hot reload.
+    FileView {
+        watchChanges: true
+        path: Quickshell.shellPath("components/control_center/_Debug.qml")
+        onFileChanged: Quickshell.reload(false)
     }
 
     //Set the Clock component from the  top bar opacity to zero when the control center is opened to avoid having two clocks visible during the animation

@@ -34,7 +34,7 @@ Item {
                 width: parent.width
                 height: left_column.availablHeight * 0.2
             }
-            Calendar {
+            Calendar { 
                 width: parent.width
                 height: left_column.availablHeight * 0.8
             }
