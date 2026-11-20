@@ -69,6 +69,16 @@ Item {
         }
     }
 
+    layer.enabled: true
+    layer.effect: MultiEffect {
+        shadowEnabled: true
+        shadowColor: Colors.shadow
+        shadowBlur: 0.2
+        shadowHorizontalOffset: 0
+        shadowVerticalOffset: 1
+        shadowOpacity: 0.15
+    }
+
     Rectangle {
         id: externalBorder
         anchors.fill: parent
@@ -79,18 +89,18 @@ Item {
         Rectangle {
             id: topBorderLayer
             anchors.fill: parent
-            anchors.bottomMargin: mouseArea.containsMouse ? 2 : 1
+            anchors.bottomMargin: 1.5//mouseArea.containsMouse ? 2 : 1
             color: root.borderTopColor
             radius: externalBorder.radius > 0 ? externalBorder.radius - 1 : 0
 
-            Behavior on anchors.bottomMargin {
-                NumberAnimation { duration: 100; easing.type: Easing.InOutQuad }
-            }
+            //Behavior on anchors.bottomMargin {
+            //    NumberAnimation { duration: 100; easing.type: Easing.InOutQuad }
+            //}
 
             Rectangle {
                 id: innerBackground
                 anchors.fill: parent
-                anchors.topMargin: 1
+                anchors.topMargin: 1.5
                 anchors.bottomMargin: 0
                 color: mouseArea.containsMouse ? root.hoverBackgroundColor : root.backgroundColor
                 radius: topBorderLayer.radius > 0 ? topBorderLayer.radius - 1 : 0
