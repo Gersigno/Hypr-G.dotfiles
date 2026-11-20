@@ -19,7 +19,7 @@ if [ -f "$WALLPAPER_PATH" ]; then
     echo "Setting wallpaper with swww at cursor position: $cursor"
     
     # Correction de awww -> swww (ajuste si awww était un wrapper perso)
-    awww img "$WALLPAPER_PATH" -t grow --transition-duration 2.5 --transition-step 90 --transition-fps 60 --transition-pos "$cursor" 
+    awww img "$WALLPAPER_PATH" -t grow --transition-duration 2.5 --transition-step 90 --transition-fps 60 
     
     # Generate and apply a color palette using Matugen with the stored mode
     matugen image "$WALLPAPER_PATH" --mode "$THEME_MODE" --source-color-index 0
