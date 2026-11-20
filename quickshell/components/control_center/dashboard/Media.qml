@@ -101,6 +101,9 @@ Item {
             anchors.fill: parent
             source: root.player?.trackArtUrl ?? ""
             fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+            smooth: true
+            mipmap: true
             opacity: root.player?.isPlaying ?? false ? 0.7 : 0
             //blur
             layer.enabled: true
@@ -167,6 +170,11 @@ Item {
                 source: root.player?.trackArtUrl ?? ""
                 fillMode: Image.PreserveAspectCrop
                 visible: status === Image.Ready
+                asynchronous: true
+                smooth: true
+                mipmap: true
+                sourceSize.width: 240
+                sourceSize.height: 240
             }
 
             // Fallback icon
