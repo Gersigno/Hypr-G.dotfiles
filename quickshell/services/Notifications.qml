@@ -26,6 +26,8 @@ Singleton {
             "text": action.text,
         })) ?? []
         property bool popup: false
+        property bool closing: false
+        property bool discardAfterClose: false
         property bool isTransient: notification?.hints.transient ?? false
         property string appIcon: notification?.appIcon ?? ""
         property string appName: notification?.appName ?? ""
@@ -67,7 +69,7 @@ Singleton {
         onTriggered: () => {
             const index = root.list.findIndex((notif) => notif.notificationId === notificationId);
             const notifObject = root.list[index];
-            print("[Notifications] Notification timer triggered for ID: " + notificationId + ", transient: " + notifObject?.isTransient);
+            //print("[Notifications] Notification timer triggered for ID: " + notificationId + ", transient: " + notifObject?.isTransient);
             if (notifObject.isTransient) root.discardNotification(notificationId);
             else root.timeoutNotification(notificationId);
             destroy()
@@ -78,7 +80,7 @@ Singleton {
     property int unread: 0
     property string filePath: StandardPaths.writableLocation(StandardPaths.GenericCacheLocation) + "/notifications/notifications.json"
     property list<Notif> list: []
-    property var popupList: list.filter((notif) => notif.popup);
+    property var popupList: list.filter((notif) => notif.popup || notif.closing);
     property bool popupInhibited: silent
     property var latestTimeForApp: ({})
 
@@ -194,7 +196,26 @@ Singleton {
     function discardNotification(id) {
         console.log("[Notifications] Discarding notification with ID: " + id);
         const index = root.list.findIndex((notif) => notif.notificationId === id);
+        const notif = index !== -1 ? root.list[index] : null;
         const notifServerIndex = notifServer.trackedNotifications.values.findIndex((notif) => notif.id + root.idOffset === id);
+
+        // Already being discarded (e.g. re-entered via dismiss below): nothing to do.
+        if (notif !== null && notif.discardAfterClose) {
+            return;
+        }
+
+        // If the notification is currently a popup, animate it out before removing it.
+        if (notif !== null && (notif.popup || notif.closing)) {
+            notif.closing = true;
+            notif.discardAfterClose = true;
+            // Dismiss from the server right away: this does not affect our visual list.
+            if (notifServerIndex !== -1) {
+                notifServer.trackedNotifications.values[notifServerIndex].dismiss()
+            }
+            root.discard(id); // Emit signal
+            return;
+        }
+
         if (index !== -1) {
             root.list.splice(index, 1);
             notifFileView.setText(stringifyList(root.list));
@@ -225,8 +246,24 @@ Singleton {
     function timeoutNotification(id) {
         const index = root.list.findIndex((notif) => notif.notificationId === id);
         if (root.list[index] != null)
-            root.list[index].popup = false;
+            root.list[index].closing = true;
         root.timeout(id);
+    }
+
+    // Called by the popup delegate once its closing animation has finished.
+    function finishPopupClose(id) {
+        const index = root.list.findIndex((notif) => notif.notificationId === id);
+        if (index === -1) return;
+        const notif = root.list[index];
+        const shouldDiscard = notif.discardAfterClose;
+        notif.popup = false;
+        notif.closing = false;
+        if (shouldDiscard) {
+            notif.discardAfterClose = false;
+            root.list.splice(index, 1);
+            notifFileView.setText(stringifyList(root.list));
+            triggerListChange()
+        }
     }
 
     function timeoutAll() {

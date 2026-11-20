@@ -18,7 +18,7 @@ Rectangle {
 
     readonly property var colorKeys: [
         "background",        "error",                    "error_container",
-        "inverse_on_surface","inverse_primary",          "inverse_surface",
+        "inverse_on_surface","inverse_primary",          "inverse_surface", 
         "on_background",     "on_error",                 "on_error_container",
         "on_primary",        "on_primary_container",     "on_primary_fixed",
         "on_primary_fixed_variant",

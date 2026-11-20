@@ -11,9 +11,14 @@ Item {
     property bool selected: false
     property bool disabled: false
 
+    // Onglets empilés verticalement : le contenu est aligné à gauche et
+    // l'indicateur d'accent est une barre verticale.
+    property bool vertical: false
+
     signal clicked
 
-    implicitWidth: Math.ceil(content.implicitWidth) + 36
+    implicitWidth: root.vertical ? Math.ceil(content.implicitWidth) + 40
+                                 : Math.ceil(content.implicitWidth) + 36
     implicitHeight: 40
 
     opacity: disabled ? 0.45 : 1.0
@@ -24,7 +29,8 @@ Item {
     // Fond discret au survol, l'indicateur se charge de l'état actif
     Rectangle {
         anchors.fill: parent
-        anchors.bottomMargin: 4
+        anchors.rightMargin: root.vertical ? 4 : 0
+        anchors.bottomMargin: root.vertical ? 0 : 4
         radius: HyprlandConfig.radius
         color: Colors.surface_container_high
         opacity: mouseArea.containsMouse && !root.selected && !root.disabled ? 1.0 : 0.0
@@ -36,7 +42,10 @@ Item {
 
     Row {
         id: content
-        anchors.centerIn: parent
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: root.vertical ? undefined : parent.horizontalCenter
+        anchors.left: root.vertical ? parent.left : undefined
+        anchors.leftMargin: root.vertical ? 16 : 0
         spacing: root.icon.length > 0 ? 7 : 0
 
         Text {
@@ -71,8 +80,9 @@ Item {
         }
     }
 
-    // Barre d'accentuation sous l'onglet actif
+    // Barre d'accentuation sous l'onglet actif (horizontal)
     Rectangle {
+        visible: !root.vertical
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         width: root.selected ? Math.ceil(content.implicitWidth) + 12 : 0
@@ -82,6 +92,25 @@ Item {
         opacity: root.selected ? 1.0 : 0.0
 
         Behavior on width {
+            NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
+        }
+        Behavior on opacity {
+            NumberAnimation { duration: 140; easing.type: Easing.InOutQuad }
+        }
+    }
+
+    // Barre d'accentuation à gauche de l'onglet actif (vertical)
+    Rectangle {
+        visible: root.vertical
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        width: 3
+        height: root.selected ? Math.ceil(content.implicitHeight) + 12 : 0
+        radius: width / 2
+        color: Colors.primary
+        opacity: root.selected ? 1.0 : 0.0
+
+        Behavior on height {
             NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
         }
         Behavior on opacity {

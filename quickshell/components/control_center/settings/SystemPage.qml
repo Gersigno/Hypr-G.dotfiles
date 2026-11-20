@@ -3,6 +3,7 @@ import Quickshell
 
 import qs.services
 import "../../../utils"
+import "../../common/interactive"
 
 Item {
     id: root
@@ -38,6 +39,24 @@ Item {
             font.pixelSize: 13
             font.family: Settings.fontFamily
             opacity: 0.7
+        }
+
+        Row {
+            width: parent.width
+            
+            Text {
+                text: "Developer mode"
+                color: foregroundColor
+                font.pixelSize: 13
+                font.family: Settings.fontFamily
+            }
+            Switch {
+                id: developerModeSwitch
+                checked: Settings.developerMode
+                onCheckedChanged: {
+                    Settings.developerMode = checked
+                }
+            }
         }
     }
 }

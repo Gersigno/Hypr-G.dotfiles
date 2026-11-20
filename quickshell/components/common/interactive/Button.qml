@@ -107,10 +107,11 @@ Item {
                     id: label
                     anchors.centerIn: parent
 
-                    font.pixelSize: 13
+                    font.pixelSize: 12
                     font.family: Settings.fontFamily
                     color: root.textColor
                     font.bold: true//(root.severity === 0)
+                    //font.weight: Font.Medium
                 }
             }
         }

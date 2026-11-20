@@ -5,6 +5,10 @@ import "../../utils"
 import "../common/interface"
 import "../common/interactive"
 import qs.services
+// Non utilisé directement : rend le dossier `settings/` visible au scanner de
+// Quickshell, pour que ses sous-pages (chargées dynamiquement par Loader)
+// soient surveillées et bénéficient du hot reload.
+import "./settings" as SettingsPages
 
 Item {
     id: root
@@ -12,19 +16,7 @@ Item {
     implicitWidth: 700
     implicitHeight: 500
 
-    readonly property color backgroundColor: Settings.isOled ? "#000" : Colors.background
-    readonly property color foregroundColor: Colors.on_background
-
-    property int currentIndex: 0
-
-    readonly property var pages: [
-        { name: "System",     file: "settings/SystemPage.qml" },
-        { name: "Network",    file: "settings/NetworkPage.qml" },
-        { name: "Bluetooth",  file: "settings/BluetoothPage.qml" },
-        { name: "Audio",      file: "settings/AudioPage.qml" },
-        { name: "Display",    file: "settings/DisplayPage.qml" },
-        { name: "Customize",  file: "settings/CustomizePage.qml" }
-    ]
+    readonly property alias currentIndex: tabs.currentIndex
 
     Component.onCompleted: {
         handleNavigationRequest()
@@ -40,57 +32,36 @@ Item {
     function handleNavigationRequest() {
         var page = NavigationState.requestedSettingsPage
         if (page === "network") {
-            currentIndex = 1
+            tabs.currentIndex = 1
         } else if (page === "bluetooth") {
-            currentIndex = 2
+            tabs.currentIndex = 2
         } else if (page === "audio") {
-            currentIndex = 3
+            tabs.currentIndex = 3
         }
         Qt.callLater(() => {
             NavigationState.requestedSettingsPage = ""
         })
     }
 
-    Item {
+    TabView {
+        id: tabs
         anchors.fill: parent
+        anchors.margins: 8
 
-        Row {
-            anchors.fill: parent
-            anchors.margins: 8
-            spacing: 8
+        orientation: TabView.Orientation.Vertical
+        contentSpacing: 8
+        contentMargin: 8
 
-            Item {
-                id: navBar
-                width: 130
-                height: parent.height
+        baseUrl: Qt.resolvedUrl("settings")
+        contentBackground: Component { BackgroundLayer {} }
 
-                Column {
-                    spacing: 4
-                    anchors.topMargin: 10
-
-                    Repeater {
-                        model: pages
-
-                        delegate: Button {
-                            width: navBar.width
-                            text: modelData.name
-                            severity: currentIndex === index ? Button.Severity.Primary : Button.Severity.Secondary
-                            onClicked: currentIndex = index
-                        }
-                    }
-                }
-            }
-
-            BackgroundLayer {
-                height: parent.height
-                width: parent.width - navBar.width - parent.spacing
-
-                Loader {
-                    anchors.fill: parent
-                    anchors.margins: 8
-                    source: pages[currentIndex].file
-                }
-            }
-        }
+        model: [
+            { title: "System",    source: "SystemPage.qml" },
+            { title: "Network",   source: "NetworkPage.qml" },
+            { title: "Bluetooth", source: "BluetoothPage.qml" },
+            { title: "Audio",     source: "AudioPage.qml" },
+            { title: "Display",   source: "DisplayPage.qml" },
+            { title: "Customize", source: "CustomizePage.qml" }
+        ]
     }
 }

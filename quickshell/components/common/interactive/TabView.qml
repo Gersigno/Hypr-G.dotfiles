@@ -27,13 +27,20 @@ import "../../../services"
  *
  * Le modèle est un tableau d'objets { title, icon, source }.
  * `source` peut être relatif à `baseUrl`, ou une URL absolue.
+ *
+ * `orientation` vaut `TabView.Orientation.Horizontal` (onglets en haut) ou
+ * `TabView.Orientation.Vertical` (onglets à gauche).
  */
 Item {
     id: root
 
+    enum Orientation { Horizontal, Vertical }
+
     // --- API ---
     property var model: []
     property url baseUrl: ""
+
+    property int orientation: TabView.Orientation.Horizontal
 
     property alias currentIndex: stack.currentIndex
 
@@ -49,9 +56,22 @@ Item {
     property int tabSpacing: 4
     property int contentSpacing: 12
 
+    // Taille de la barre d'onglets : hauteur en mode horizontal, largeur en
+    // mode vertical.
+    property real tabBarHeight: 40
+    property real tabBarWidth: 140
+
+    // Marge interne de la zone de contenu (utile quand `contentBackground` est
+    // défini, pour écarter les pages du bord de la carte).
+    property int contentMargin: 0
+
+    // Composant optionnel affiché derrière la zone de contenu.
+    property Component contentBackground: null
+
     property Item currentPage: null
 
     readonly property int count: model ? (model.length ?? model.count ?? 0) : 0
+    readonly property bool vertical: orientation === TabView.Orientation.Vertical
 
     signal tabClicked(int index)
     signal pageLoaded(int index, Item page)
@@ -111,34 +131,77 @@ Item {
     onCurrentIndexChanged: updateCurrentPage()
     Component.onCompleted: updateCurrentPage()
 
-    // --- Structure ---
-    ColumnLayout {
-        anchors.fill: parent
-        spacing: root.contentSpacing
+    // --- Barre d'onglets horizontale ---
+    Row {
+        id: horizontalTabBar
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: root.tabBarHeight
+        spacing: root.tabSpacing
+        visible: !root.vertical
 
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: root.tabSpacing
+        Repeater {
+            model: root.model
 
-            Repeater {
-                model: root.model
-
-                TabButton {
-                    text: root.tabTitle(modelData, index)
-                    icon: root.tabIcon(modelData)
-                    selected: root.currentIndex === index
-                    onClicked: {
-                        root.currentIndex = index
-                        root.tabClicked(index)
-                    }
+            TabButton {
+                text: root.tabTitle(modelData, index)
+                icon: root.tabIcon(modelData)
+                selected: root.currentIndex === index
+                onClicked: {
+                    root.currentIndex = index
+                    root.tabClicked(index)
                 }
             }
+        }
+    }
+
+    // --- Barre d'onglets verticale ---
+    Column {
+        id: verticalTabBar
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        width: root.tabBarWidth
+        spacing: root.tabSpacing
+        visible: root.vertical
+
+        Repeater {
+            model: root.model
+
+            TabButton {
+                width: verticalTabBar.width
+                text: root.tabTitle(modelData, index)
+                icon: root.tabIcon(modelData)
+                selected: root.currentIndex === index
+                vertical: true
+                onClicked: {
+                    root.currentIndex = index
+                    root.tabClicked(index)
+                }
+            }
+        }
+    }
+
+    // --- Zone de contenu ---
+    Item {
+        id: contentArea
+        anchors.top: root.vertical ? parent.top : horizontalTabBar.bottom
+        anchors.left: root.vertical ? verticalTabBar.right : parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.topMargin: root.vertical ? 0 : root.contentSpacing
+        anchors.leftMargin: root.vertical ? root.contentSpacing : 0
+
+        Loader {
+            anchors.fill: parent
+            sourceComponent: root.contentBackground
         }
 
         StackLayout {
             id: stack
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            anchors.fill: parent
+            anchors.margins: root.contentMargin
 
             Repeater {
                 id: pageRepeater

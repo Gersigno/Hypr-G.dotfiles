@@ -84,59 +84,12 @@ Scope {
                 // that are currently animating out.
                 verticalLayoutDirection: ListView.TopToBottom
 
-                // Opening: the bubble itself grows with an elastic bump, while its
-                // content fades in and gets unblurred.
-                add: Transition {
-                    ParallelAnimation {
-                        NumberAnimation {
-                            property: "openProgress"
-                            from: 0
-                            to: 1
-                            duration: root.animationDuration * 1.5
-                            easing.type: Easing.OutElastic
-                            easing.period: 0.6
-                            easing.amplitude: 0.2
-                        }
-                        NumberAnimation {
-                            property: "contentOpacity"
-                            from: 0
-                            to: 1
-                            duration: root.animationDuration / 1.2
-                            easing.type: Easing.OutCubic
-                        }
-                        NumberAnimation {
-                            property: "contentBlur"
-                            from: 2
-                            to: 0
-                            duration: root.animationDuration / 1.2
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-                }
-
-                // Closing: same properties, reversed, with a softer curve.
-                remove: Transition {
-                    ParallelAnimation {
-                        NumberAnimation {
-                            property: "openProgress"
-                            to: 0
-                            duration: root.animationDuration / 1.5
-                            easing.type: Easing.InOutCubic
-                        }
-                        NumberAnimation {
-                            property: "contentOpacity"
-                            to: 0
-                            duration: root.animationDuration / 1.5
-                            easing.type: Easing.InOutCubic
-                        }
-                        NumberAnimation {
-                            property: "contentBlur"
-                            to: 2
-                            duration: root.animationDuration / 1.5
-                            easing.type: Easing.InOutCubic
-                        }
-                    }
-                }
+                // The open/close animations live in the delegate itself (see its
+                // states/transitions below), NOT in ListView add/remove transitions.
+                // ListView transitions are shared at the view level: adding a new bubble
+                // while another is still animating interrupts the ongoing animation and
+                // redirects it to the newest item. Per-delegate states give every bubble
+                // its own independent animation.
 
                 delegate: Item {
                     id: delegateItem
@@ -144,15 +97,114 @@ Scope {
                     required property var modelData
                     required property int index
 
-                    // Driven by the add/remove transitions above.
+                    // Driven by this delegate's own state machine, so every bubble
+                    // animates independently of the others.
                     // 0 = collapsed (pill), 1 = fully open.
-                    property real openProgress: 1
-                    property real contentOpacity: 1
-                    property real contentBlur: 0
+                    property real openProgress: 0
+                    property real contentOpacity: 0
+                    property real contentBlur: 2
+
+                    // Set by the Notifications service when this bubble should close.
+                    readonly property bool closing: modelData && modelData.closing ? modelData.closing : false
 
                     // index 0 is the newest bubble, at the top of the list
                     readonly property bool isTopmost: index === 0
                     readonly property bool isBottommost: index === notifList.count - 1
+
+                    // Each delegate instance owns its own states/transitions, so a bubble
+                    // already animating is never interrupted by another bubble appearing.
+                    state: "collapsed"
+                    states: [
+                        State {
+                            name: "collapsed"
+                            PropertyChanges {
+                                target: delegateItem
+                                openProgress: 0
+                                contentOpacity: 0
+                                contentBlur: 2
+                            }
+                        },
+                        State {
+                            name: "open"
+                            PropertyChanges {
+                                target: delegateItem
+                                openProgress: 1
+                                contentOpacity: 1
+                                contentBlur: 0
+                            }
+                        }
+                    ]
+
+                    transitions: [
+                        // Opening: the bubble grows with an elastic bump, while its
+                        // content fades in and gets unblurred.
+                        Transition {
+                            from: "collapsed"
+                            to: "open"
+                            ParallelAnimation {
+                                NumberAnimation {
+                                    property: "openProgress"
+                                    duration: root.animationDuration * 1.5
+                                    easing.type: Easing.OutElastic
+                                    easing.period: 0.6
+                                    easing.amplitude: 0.2
+                                }
+                                NumberAnimation {
+                                    property: "contentOpacity"
+                                    duration: root.animationDuration / 1.2
+                                    easing.type: Easing.OutCubic
+                                }
+                                NumberAnimation {
+                                    property: "contentBlur"
+                                    duration: root.animationDuration / 1.2
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
+                        },
+                        // Closing: same properties, reversed, with a softer curve. Once
+                        // the animation is done, tell the service to drop the bubble.
+                        Transition {
+                            from: "open"
+                            to: "collapsed"
+                            SequentialAnimation {
+                                ParallelAnimation {
+                                    NumberAnimation {
+                                        property: "openProgress"
+                                        duration: root.animationDuration / 1.5
+                                        easing.type: Easing.InOutCubic
+                                    }
+                                    NumberAnimation {
+                                        property: "contentOpacity"
+                                        duration: root.animationDuration / 1.5
+                                        easing.type: Easing.InOutCubic
+                                    }
+                                    NumberAnimation {
+                                        property: "contentBlur"
+                                        duration: root.animationDuration / 1.5
+                                        easing.type: Easing.InOutCubic
+                                    }
+                                }
+                                ScriptAction {
+                                    script: {
+                                        const id = delegateItem.modelData.notificationId
+                                        // Defer the model removal to the next event loop tick so the
+                                        // delegate is destroyed only after this animation completes.
+                                        Qt.callLater(() => Notifications.finishPopupClose(id))
+                                    }
+                                }
+                            }
+                        }
+                    ]
+
+                    Component.onCompleted: {
+                        if (!delegateItem.closing)
+                            delegateItem.state = "open"
+                    }
+
+                    onClosingChanged: {
+                        if (delegateItem.closing)
+                            delegateItem.state = "collapsed"
+                    }
 
                     width: notifList.width
                     // The bottom corner sits below the bubble and is part of the item's height
@@ -201,9 +253,9 @@ Scope {
                         RowLayout {
                             id: innerRow
                             anchors {
+                                top: parent.top
                                 left: parent.left
                                 right: parent.right
-                                verticalCenter: parent.verticalCenter
                                 margins: root.bubblePadding
                             }
                             spacing: 10

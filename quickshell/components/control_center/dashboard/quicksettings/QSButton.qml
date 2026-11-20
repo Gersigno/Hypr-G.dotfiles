@@ -384,7 +384,7 @@ Item {
                                 anchors.leftMargin: 8
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData
-                                font.pixelSize: 13
+                                font.pixelSize: 12
                                 font.family: Settings.fontFamily
                                 color: root.textColor
                                 elide: Text.ElideRight

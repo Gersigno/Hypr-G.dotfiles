@@ -3,6 +3,7 @@
   "isDarkMode": true,
   "fontFamily": "SF Pro Display",
   "wallpapersPath": "/Pictures/Wallpapers",
+  "developerMode": false,
   "debug": {
     "slowAnimations": false
   }

@@ -135,7 +135,7 @@ Item {
                     }
 
                     Text {
-                        text: "Wi-Fi and network configuration"
+                        text: "Wi-Fi,network and VPN configuration"
                         color: foregroundColor
                         font.pixelSize: 13
                         font.family: root.font
