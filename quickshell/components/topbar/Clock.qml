@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import QtQuick.Effects
 
 import "../common/interface"
 import qs.services
@@ -11,13 +12,35 @@ Item {
     //readonly property var controlCenterComponent: null
     readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000" : Colors.background
     readonly property color foregroundColor: Colors.on_background
+    readonly property color lightred: Colors.error_container
+    readonly property color red: Colors.on_error
     readonly property int radius: HyprlandConfig.radius
     readonly property string font: Settings.fontFamily
+
+    property color privacyColor: root.lightred
 
     implicitWidth: container.width
     height: parent.height
 
+    Behavior on privacyColor {
+        ColorAnimation {
+            duration: 500
+        }
+    }
 
+    Timer {
+        id: privacyTimer
+        interval: 1000
+        repeat: true
+        running: true
+        onTriggered: {
+            if (Privacy.screenActive || Privacy.cameraActive || Privacy.microphoneActive) {
+                root.privacyColor = root.privacyColor === root.lightred ? root.red : root.lightred;
+            } else {
+                root.privacyColor = root.lightred;
+            }
+        }
+    }
 
     Item {
         id: container
@@ -50,45 +73,44 @@ Item {
                     anchors.centerIn: parent
 
                     Row {
+                        id: privacyIconsRow
                         height: parent.height
                         spacing: 6
 
-                        Text {
-                            id: screenPrivacyIcon
-                            visible: Privacy.screenActive
+                        PrivacyIcon {
+                            active: Privacy.screenActive
+                            iconColor: root.privacyColor
                             text: "󱣴"
-                            color: root.foregroundColor
-                            font.pixelSize: 12
-                            font.family: "monospace"
-                            anchors.verticalCenter: parent.verticalCenter
                         }
-                        Text {
-                            id: cameraPrivacyIcon
-                            visible: Privacy.cameraActive
+                        PrivacyIcon {
+                            active: Privacy.cameraActive
+                            iconColor: root.privacyColor
                             text: ""
-                            color: root.foregroundColor
-                            font.pixelSize: 12
-                            font.family: "monospace"
-                            anchors.verticalCenter: parent.verticalCenter
                         }
-                        Text {
-                            id: micPrivacyIcon
-                            visible: Privacy.microphoneActive
+                        PrivacyIcon {
+                            active: Privacy.microphoneActive
+                            iconColor: root.privacyColor
                             text: ""
-                            color: root.foregroundColor
-                            font.pixelSize: 12
-                            font.family: "monospace"
-                            anchors.verticalCenter: parent.verticalCenter
                         }
 
                         Text {
-                            visible: Privacy.screenActive || Privacy.cameraActive || Privacy.microphoneActive
+                            id: privacySeparator
+                            property real visibilityLevel: (Privacy.screenActive || Privacy.cameraActive || Privacy.microphoneActive) ? 1 : 0
                             text: "·"
                             color: root.foregroundColor
                             font.pixelSize: 12
                             font.bold: true
                             font.family: root.font
                             anchors.verticalCenter: parent.verticalCenter
+                            opacity: visibilityLevel
+                            width: implicitWidth * visibilityLevel
+
+                            Behavior on visibilityLevel {
+                                NumberAnimation {
+                                    duration: 500
+                                    easing.type: Easing.InOutQuad
+                                }
+                            }
                         }
                     }
                     //󰒃  󱟙  󰈈   󰨒   󱖧   

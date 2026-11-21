@@ -98,6 +98,12 @@ Singleton {
         return false;
     }
 
+    // Last parsed PipeWire dump, used to recompute state when v4l2 data arrives.
+    property var _lastPwDumpData: null
+
+    // Camera users found by scanning /dev/video*.
+    property var _cameraAppsFromV4l2: []
+
     // ── PipeWire parsing ───────────────────────────────────────────────────
     function updateFromPwDump(jsonText) {
         let nodes = [];
@@ -130,6 +136,33 @@ Singleton {
                 }
             }
         }
+
+        root._lastPwDumpData = { nodes, nodeProps, linksToOutput };
+        root.computeState();
+    }
+
+    function updateV4l2Apps(text) {
+        const apps = new Set();
+        const lines = (text ?? "").trim().split("\n");
+        for (const line of lines) {
+            const parts = line.trim().split(/\s+/);
+            // fuser -v line format per device:
+            //   /dev/video0:  user  pid  access  command
+            if (parts.length < 4) continue;
+            if (!parts[0].startsWith("/dev/")) continue;
+            const pid = parseInt(parts[2]);
+            if (!isFinite(pid)) continue;
+            const comm = parts[parts.length - 1];
+            if (comm) apps.add(comm);
+        }
+        root._cameraAppsFromV4l2 = Array.from(apps);
+        root.computeState();
+    }
+
+    function computeState() {
+        if (!root._lastPwDumpData) return;
+
+        const { nodes, nodeProps, linksToOutput } = root._lastPwDumpData;
 
         const micApps = new Set();
         const screenApps = new Set();
@@ -186,7 +219,6 @@ Singleton {
 
         for (const item of linkBased) {
             const name = item.app;
-            const nameLower = lower(name);
             let camera = false;
             let screen = false;
 
@@ -219,24 +251,6 @@ Singleton {
         root.ready = true;
     }
 
-    // Camera users found by scanning /dev/video*.
-    property var _cameraAppsFromV4l2: []
-
-    function updateV4l2Apps(text) {
-        const apps = new Set();
-        const lines = text.trim().split("\n");
-        // fuser -v output: header line then USER PID ACCESS COMMAND
-        for (let i = 1; i < lines.length; i++) {
-            const parts = lines[i].trim().split(/\s+/);
-            if (parts.length < 2) continue;
-            const pid = parseInt(parts[1]);
-            if (!isFinite(pid)) continue;
-            const comm = parts[parts.length - 1];
-            if (comm) apps.add(comm);
-        }
-        root._cameraAppsFromV4l2 = Array.from(apps);
-    }
-
     // ── Polling ────────────────────────────────────────────────────────────
     Timer {
         id: pollTimer
@@ -265,15 +279,13 @@ Singleton {
 
     Process {
         id: v4l2Process
-        command: ["/bin/sh", "-c", "for dev in /dev/video*; do [ -c \"$dev\" ] && fuser -v \"$dev\" 2>&1; done"]
+        command: ["/bin/sh", "-c", "for dev in /dev/video*; do [ -c \"$dev\" ] && /usr/bin/fuser -v \"$dev\" 2>&1; done"]
         stdout: StdioCollector {
             onStreamFinished: root.updateV4l2Apps(text)
         }
         onExited: (exitCode, exitStatus) => {
-            if (exitCode !== 0) {
-                // fuser may not be installed; camera detection falls back to PipeWire only.
-                root._cameraAppsFromV4l2 = [];
-            }
+            // fuser returns a non-zero exit code when it finds processes using the device.
+            // This is expected and the parsed output is already stored by onStreamFinished.
         }
     }
 
