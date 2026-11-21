@@ -32,7 +32,7 @@ Item {
     //property int chargingBatteryFrame: 0
 
 
-    readonly property string batteryIconText: {
+    /*readonly property string batteryIconText: {
         if (!Battery.available) return "";
         //if (isCharging) return chargingBatteryIcons[chargingBatteryFrame];
         if (percentage > 80) return "";
@@ -40,14 +40,15 @@ Item {
         if (percentage > 40) return "";
         if (percentage > 20) return "";
         return ""; // low
-    }
+    }*/
 
     readonly property string audioIconText: {
         if (!Audio.ready) return "";
         if (Audio.sink?.audio?.muted ?? false) return "";
         if (Audio.value > 0.66) return "";
-        if (Audio.value > 0.33) return "";
-        return "";
+        if (Audio.value > 0.33) return "";
+        if (Audio.value == 0) return "";
+        return "";
     }
         
     readonly property string bluetoothIconText: {
@@ -58,7 +59,7 @@ Item {
     }
 
     readonly property string networkIconText: {
-        if (Network.ethernet) return "󰈀";
+        if (Network.ethernet) return "󰛳";
         if (Network.wifi) {
             if (Network.networkStrength > 75) return "󰤨";
             if (Network.networkStrength > 50) return "󰤥";
@@ -170,21 +171,21 @@ Item {
 
                     Text {
                         id: bellText
-                        text: ""
+                        text: ""
                         font.pixelSize: 14
                         font.family: root.fontFamily
                         color: foregroundColor
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    Rectangle {
+                    /*Rectangle {
                         color: foregroundColor
                         height: 11
                         width: 11
                         radius: 13
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: bellText.horizontalCenter
-                    }
+                    }*/
 
                     Text {
                         id: bellBadgeText
@@ -194,9 +195,9 @@ Item {
                         font.family: root.fontFamily
                         font.pixelSize: Notifications.list.length > 9 ? 9 : 10
                         anchors.horizontalCenter: bellText.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        //anchors.bottom: bellText.bottom
-                        //anchors.bottomMargin: 3.5
+                        //anchors.verticalCenter: parent.verticalCenter
+                        anchors.bottom: bellText.bottom
+                        anchors.bottomMargin: 4
                     }
 
                     /*Rectangle {
