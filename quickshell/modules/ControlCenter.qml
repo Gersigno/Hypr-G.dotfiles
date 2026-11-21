@@ -280,23 +280,77 @@ Item {
                     height: 40
                     visible: isOpened
 
+                    readonly property int n: ccFilesModel.count
+                    // -1 means "not initialised yet" so the first index change
+                    // (e.g. Dashboard selected once the folder model is ready)
+                    // does not trigger a bogus slide from index 0.
+                    property int lastIndex: -1
+                    property real targetScrollPos: 0
+                    property real scrollPos: 0
+
+                    function shortestDelta(from, to, count) {
+                        var d = to - from
+                        while (d > count / 2) d -= count
+                        while (d < -count / 2) d += count
+                        return d
+                    }
+
+                    function resetScrollPosition() {
+                        scrollAnim.stop()
+                        lastIndex = carousel.currentIndex
+                        targetScrollPos = carousel.currentIndex
+                        scrollPos = carousel.currentIndex
+                    }
+
+                    Component.onCompleted: {
+                        if (tabBar.lastIndex < 0) tabBar.resetScrollPosition()
+                    }
+
+                    onNChanged: tabBar.resetScrollPosition()
+
+                    Connections {
+                        target: carousel
+                        function onCurrentIndexChanged() {
+                            if (tabBar.lastIndex < 0 || !controlCenterRoot.isOpened) {
+                                // Before the panel is open, snap silently so the first
+                                // open does not show a slide from the initial index.
+                                tabBar.resetScrollPosition()
+                                return
+                            }
+                            var delta = tabBar.shortestDelta(tabBar.lastIndex, carousel.currentIndex, tabBar.n)
+                            tabBar.lastIndex = carousel.currentIndex
+                            tabBar.targetScrollPos += delta
+                            scrollAnim.from = tabBar.scrollPos
+                            scrollAnim.to = tabBar.targetScrollPos
+                            // Constant duration: a 2-step jump therefore slides twice
+                            // as fast since it covers twice the distance.
+                            scrollAnim.duration = root.animationDuration
+                            scrollAnim.restart()
+                        }
+                    }
+
+                    NumberAnimation {
+                        id: scrollAnim
+                        target: tabBar
+                        property: "scrollPos"
+                        duration: root.animationDuration
+                        easing.type: Easing.InOutQuad
+                    }
+
                     Repeater {
                         model: ccFilesModel
 
                         delegate: Item {
                             id: tabDelegate
 
-                            readonly property int n: ccFilesModel.count
-                            readonly property int cur: carousel.currentIndex
-                            readonly property bool isCurrent: cur === index
-                            readonly property bool isPrev1: n > 1 && (cur - 1 + n) % n === index
-                            readonly property bool isPrev2: n > 2 && (cur - 2 + n) % n === index
-                            readonly property bool isNext1: n > 1 && (cur + 1) % n === index
-                            readonly property bool isNext2: n > 2 && (cur + 2) % n === index
-                            // slots: 0=far-left, 1=left, 2=center, 3=right, 4=far-right
-                            // hidden items park at center (slot 2), invisible
-                            readonly property int slot: isCurrent ? 2
-                                : (isPrev1 ? 1 : (isPrev2 ? 0 : (isNext1 ? 3 : (isNext2 ? 4 : 2))))
+                            readonly property bool isCurrent: carousel.currentIndex === index
+                            // Continuous position on the circular list projected onto the
+                            // 5 visible lanes (0..4). Anything below 0 or above 4 is
+                            // clipped, so the modulo wrap always happens off-screen and
+                            // the visible items simply slide uniformly in one direction.
+                            readonly property real lane: tabBar.n > 0
+                                ? ((((index - tabBar.scrollPos + tabBar.n / 2) % tabBar.n) + tabBar.n) % tabBar.n) - tabBar.n / 2 + 2
+                                : 2
 
                             layer.enabled: true
                             layer.effect: MultiEffect {
@@ -306,43 +360,13 @@ Item {
 
                             width: tabBar.width / 5
                             height: tabBar.height
-                            x: displaySlot * (tabBar.width / 5)
-                            opacity: ((isCurrent || isPrev1 || isPrev2 || isNext1 || isNext2) && isOpened) ? 1.0 : 0.0
+                            x: lane * (tabBar.width / 5)
+                            opacity: isOpened ? 1.0 : 0.0
                             z: isCurrent ? 1 : 0
-
-                            // displaySlot is the animated proxy — only moves when slot changes
-                            property real displaySlot: slot
-                            property int previousSlot: slot
-
-                            Component.onCompleted: {
-                                previousSlot = slot
-                                displaySlot = slot
-                            }
-
-                            onSlotChanged: {
-                                if (Math.abs(slot - previousSlot) > 2) {
-                                    // Wrap-around: teleport instantly
-                                    slotAnim.stop()
-                                    tabDelegate.displaySlot = slot
-                                } else {
-                                    slotAnim.from = tabDelegate.displaySlot
-                                    slotAnim.to = slot
-                                    slotAnim.restart()
-                                }
-                                previousSlot = slot
-                            }
-
-                            NumberAnimation {
-                                id: slotAnim
-                                target: tabDelegate
-                                property: "displaySlot"
-                                duration: root.animationDuration
-                                easing.type: Easing.InOutQuad
-                            }
 
                             Behavior on opacity {
                                 NumberAnimation {
-                                    duration: root.animationDuration
+                                    duration: root.animationDuration / 2
                                     easing.type: Easing.InOutQuad
                                 }
                             }
