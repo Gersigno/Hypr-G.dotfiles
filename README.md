@@ -10,6 +10,7 @@ Comming soon !
 
 - 🎚️ A **unique control center** (Calendar, Wallpaper selector, Media center...)
 - 🔔 Notifications center
+- A fuzy finder
 - 🎨 Color scheme auto-generated based on your wallpaper
 - 🌗 Light/dark mode support
 - ⌨️ User-friendly keyboard navigation
@@ -23,7 +24,7 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 #### Shortcuts
 
 - `⌘` + `F1` Open the **Control Center**
-- `Alt` + `Space` Open **Yazi** _(Spotlight alternative)_
+- `Alt` + `Space` Open **Finder**
 - `⌘` + `T` Open the **Notifications center**
 - `⌘` + `T` Open a new **Terminal**
 - `⌘` + `C` Open your **IDE** _(VSCode for now)_
@@ -39,9 +40,9 @@ To define custom keybinds, please set them in `~/.config/hypr/custom/keybinds.co
 - `⌘` + `Q` **Close**
 - `⌘` + `D` **Maximize**
 - `⌘` + `F` **Fullscreen**
+- `⌘` + `Shift` + `F` **Toggle floating window**
 - `⌘` + `🖱️ Left` **Move**
 - `⌘` + `🖱️ Right` **Resize**
-- `⌘` + `J` Dwindle **Toggle split**
 - `⌘` + `Shift` + `↑` **Move** up
 - `⌘` + `Shift` + `→` **Move** right
 - `⌘` + `Shift` + `↓` **Move** down

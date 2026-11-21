@@ -49,6 +49,50 @@ Item {
                     spacing: 4
                     anchors.centerIn: parent
 
+                    Row {
+                        height: parent.height
+                        spacing: 6
+
+                        Text {
+                            id: screenPrivacyIcon
+                            visible: Privacy.screenActive
+                            text: "󱣴"
+                            color: root.foregroundColor
+                            font.pixelSize: 12
+                            font.family: "monospace"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Text {
+                            id: cameraPrivacyIcon
+                            visible: Privacy.cameraActive
+                            text: ""
+                            color: root.foregroundColor
+                            font.pixelSize: 12
+                            font.family: "monospace"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Text {
+                            id: micPrivacyIcon
+                            visible: Privacy.microphoneActive
+                            text: ""
+                            color: root.foregroundColor
+                            font.pixelSize: 12
+                            font.family: "monospace"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            visible: Privacy.screenActive || Privacy.cameraActive || Privacy.microphoneActive
+                            text: "·"
+                            color: root.foregroundColor
+                            font.pixelSize: 12
+                            font.bold: true
+                            font.family: root.font
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                    //󰒃  󱟙  󰈈   󰨒   󱖧   
+
                     Text {
                         id: dateText
                         text: new Date().toLocaleTimeString(Qt.locale(), "HH:mm")

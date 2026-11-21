@@ -15,3 +15,4 @@ singleton NavigationState 1.0 NavigationState.qml
 singleton Settings 1.0 Settings.qml
 singleton SystemInfo 1.0 SystemInfo.qml
 singleton Metrics 1.0 Metrics.qml
+singleton Privacy 1.0 Privacy.qml

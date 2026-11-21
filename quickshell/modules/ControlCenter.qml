@@ -367,6 +367,7 @@ Item {
                                     if (fileName === "Eureka") return "    Eureka AI"
                                     if (fileName === "_Debug") return "   Debug"
                                     if (fileName === "Settings") return "   Settings"
+                                    if (fileName === "Privacy") return "󱖧   Privacy"
                                     return fileName
                                 }
                                 color: {
