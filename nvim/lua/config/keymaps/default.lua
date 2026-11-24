@@ -1,0 +1,2 @@
+-- Default LazyVim keymap layout
+-- LazyVim defaults are kept as-is. Add your own default keymaps below if needed.

@@ -9,8 +9,8 @@ import "./privacy"
 Item {
     id: root
 
-    implicitWidth: 900
-    implicitHeight: 400
+    implicitWidth: 650
+    implicitHeight: 300
 
     readonly property color fg: Colors.on_background
     readonly property color muted: Services.Settings.isOled && Services.Theme.isDarkMode ? "#9aa0a6" : Colors.on_surface_variant

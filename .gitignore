@@ -13,7 +13,7 @@ hypr/custom/
 !xdg-desktop-portal/
 !matugen/
 !quickshell/
-
+!nvim/
 !yazi/
 
 # Explicitly re-excluded files (has to include each parent directories)

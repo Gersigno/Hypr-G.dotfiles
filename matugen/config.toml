@@ -57,6 +57,10 @@ input_path = '~/.config/matugen/kdeglobals.tpl'
 output_path = '~/.config/kdeglobals'
 post_hook = 'touch ~/.config/qt6ct/qt6ct.conf'
 
+[templates.nvim]
+input_path = '~/.config/matugen/nvim-palette.lua.tpl'
+output_path = '~/.config/nvim/lua/matugen/palette.lua'
+
 #[templates.webcord]
 #input_path = '~/.config/matugen/webcord.css.tpl'
 #output_path = "~/.config/WebCord/Themes/matugen.theme"
