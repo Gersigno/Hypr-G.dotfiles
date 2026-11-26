@@ -63,7 +63,7 @@ Rectangle {
                 severity: Button.Severity.Warning
                 onClicked: {
                     HyprlandConfig.markRead()
-                    ToastService.show("Hyprland config reloaded", 3000)
+                    ToastService.show("  Debug: Hyprland config reloaded", 3000)
                 }
             }
 

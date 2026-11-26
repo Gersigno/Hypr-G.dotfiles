@@ -25,6 +25,7 @@ Singleton {
             const newState = !Bluetooth.defaultAdapter.enabled;
             Bluetooth.defaultAdapter.enabled = newState;
             Settings.bluetoothState = newState ? "on" : "off";
+            ToastService.show((newState ? "󰂯" : "󰂲") + "  Bluetooth " + (newState ? "enabled" : "disabled"), 3000);
         }
     }
 

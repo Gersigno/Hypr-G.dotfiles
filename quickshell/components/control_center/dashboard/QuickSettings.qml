@@ -119,7 +119,7 @@ Item {
 
                     QSButton {
                         id: wifiButton
-                        topIcon: Network.wifiEnabled ? "" : "󰤮"
+                        topIcon: ""
                         text: "Wifi"
                         severity: Network.wifiEnabled ? QSButton.Severity.Primary : QSButton.Severity.Secondary
                         expandIcon: ""

@@ -68,6 +68,7 @@ Singleton {
     }
 
     function toggleWifi(): void {
+        ToastService.show((!wifiEnabled ? "" : "") + "   WiFi " + (!wifiEnabled ? "enabled" : "disabled"), 3000);
         enableWifi(!wifiEnabled);
     }
 
