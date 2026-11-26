@@ -19,6 +19,9 @@ Item {
     readonly property color foregroundColor: Colors.on_background
     readonly property string font: Settings.fontFamily
 
+    // Height fits the content (24px vertical margins around the inner column)
+    implicitHeight: column.implicitHeight + 24
+
     BackgroundLayer {
         id: background
         anchors.fill: parent

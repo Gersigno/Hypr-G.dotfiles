@@ -24,6 +24,9 @@ Item {
     property real blur_level: expanded ? 0 : 2
 
     signal clicked
+    signal hover()
+    signal unhover()
+    signal hovered(bool isHovered)
     signal optionSelected(string option)
 
     property color backgroundColor:
@@ -86,12 +89,20 @@ Item {
         radius: HyprlandConfig.radius
         opacity: root.disabled ? 0.5 : 1.0
 
+        Behavior on color {
+            ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+        }
+
         Rectangle {
             id: topBorderLayer
             anchors.fill: parent
             anchors.bottomMargin: 1.5//mouseArea.containsMouse ? 2 : 1
             color: root.borderTopColor
             radius: externalBorder.radius > 0 ? externalBorder.radius - 1 : 0
+
+            Behavior on color {
+                ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+            }
 
             //Behavior on anchors.bottomMargin {
             //    NumberAnimation { duration: 100; easing.type: Easing.InOutQuad }
@@ -126,6 +137,10 @@ Item {
                         font.family: Settings.fontFamily
                         color: root.textColor
                         font.bold: (root.severity === 0)
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+                        }
                     }
 
                     Text {
@@ -134,6 +149,10 @@ Item {
                         font.family: Settings.fontFamily
                         color: root.textColor
                         font.bold: (root.severity === 0)
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+                        }
                     }
 
                     Text {
@@ -143,6 +162,10 @@ Item {
                         color: root.textColor
                         opacity: 0.7
                         font.bold: (root.severity === 0)
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+                        }
                     }
                 }
             }
@@ -153,6 +176,8 @@ Item {
             anchors.fill: parent
             hoverEnabled: !root.disabled
             cursorShape: !root.disabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+            onEntered: if (!root.disabled) { root.hover(); root.hovered(true) }
+            onExited: if (!root.disabled) { root.unhover(); root.hovered(false) }
             onClicked: if (!root.disabled) root.clicked()
         }
 
@@ -167,6 +192,10 @@ Item {
             font.family: Settings.fontFamily
             color: root.textColor
             visible: root.showExpandButton
+
+            Behavior on color {
+                ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+            }
         }
 
         MouseArea {
@@ -229,6 +258,10 @@ Item {
             width: root.width + 2
             height: 0
             color: Colors.surface_container_high
+
+            Behavior on color {
+                ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+            }
             radius: HyprlandConfig.radius
 
             layer.enabled: false

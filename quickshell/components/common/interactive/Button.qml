@@ -74,6 +74,9 @@ Item {
         color: root.borderBottomColor
         radius: root.fullRounded ? height / 2 : HyprlandConfig.radius
         opacity: root.disabled ? 0.5 : 1.0
+        Behavior on color {
+            ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+        }
 
         // 2. AU MILIEU : Reflet du haut
         Rectangle {
@@ -86,6 +89,9 @@ Item {
             //Behavior on anchors.bottomMargin {
             //    NumberAnimation { duration: 100; easing.type: Easing.InOutQuad }
             //}
+            Behavior on color {
+                ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+            }
 
             // 3. DEVANT : Fond du bouton
             Rectangle {
@@ -112,6 +118,10 @@ Item {
                     color: root.textColor
                     font.bold: true//(root.severity === 0)
                     //font.weight: Font.Medium
+
+                    Behavior on color {
+                        ColorAnimation { duration: 150; easing.type: Easing.InOutQuad }
+                    }
                 }
             }
         }
