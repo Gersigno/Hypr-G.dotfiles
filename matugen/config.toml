@@ -1,29 +1,21 @@
 [config]
 
 [templates.hyprland]
-input_path = '~/.config/matugen/hyprland.lua.tpl'
+input_path = '~/.config/matugen/hyprland.lua'
 output_path = '~/.config/hypr/hypr-g/hyprland/colors.lua'
 post_hook = 'hyprctl reload'
 
 [templates.hyprlock]
-input_path = '~/.config/matugen/hyprlock.conf.tpl'
+input_path = '~/.config/matugen/hyprlock.conf'
 output_path = '~/.config/hypr/hypr-g/hyprlock/colors.conf'
 post_hook = 'hyprctl reload'
-
-#[templates.waybar]
-#input_path = '~/.config/matugen/waybar.css.tpl'
-#output_path = '~/.config/waybar/colors.css'
 
 [templates.yazi]
 input_path = '~/.config/matugen/yazi-theme.toml.tpl'
 output_path = '~/.config/yazi/flavors/matugen.yazi/flavor.toml'
 
-#[templates.fuzzel]
-#input_path = '~/.config/matugen/fuzzel.ini.tpl'
-#output_path = '~/.config/fuzzel/colors.ini'
-
 [templates.kitty]
-input_path = '~/.config/matugen/kitty.conf.tpl'
+input_path = '~/.config/matugen/kitty.conf'
 output_path = '~/.config/kitty/colors.conf'
 post_hook = 'pkill -SIGUSR1 kitty'
 
@@ -32,33 +24,33 @@ post_hook = 'pkill -SIGUSR1 kitty'
 #output_path = '~/.config/rofi/colors.rasi'
 
 [templates.dolphin]
-input_path = '~/.config/matugen/dolphin.kvconfig.tpl'
+input_path = '~/.config/matugen/dolphin.kvconfig'
 output_path = "~/.config/Kvantum/Matugen/Matugen.kvconfig"
 
 [templates.quickshell]
-input_path = '~/.config/matugen/quickshell.qml.tpl'
+input_path = '~/.config/matugen/quickshell.json'
 output_path = '~/.config/quickshell/colors.json'
 
 [templates.vscode]
-input_path = "~/.config/matugen/vscode.json.tpl"
+input_path = "~/.config/matugen/vscode.json"
 output_path = "~/.vscode/extensions/hyprluna.hyprluna-theme-1.0.2/themes/hyprluna.json"
 # Credits to Lunaris-Project (HyprLuna dot file)
 
 [templates.qt5ct]
-input_path = '~/.config/matugen/qtct-colors.conf.tpl'
+input_path = '~/.config/matugen/qtct-colors.conf'
 output_path = '~/.config/qt5ct/colors/matugen.conf'
 
 [templates.qt6ct]
-input_path = '~/.config/matugen/qtct-colors.conf.tpl'
+input_path = '~/.config/matugen/qtct-colors.conf'
 output_path = '~/.config/qt6ct/colors/matugen.conf'
 
 [templates.kdeglobals]
-input_path = '~/.config/matugen/kdeglobals.tpl'
+input_path = '~/.config/matugen/kdeglobals'
 output_path = '~/.config/kdeglobals'
 post_hook = 'touch ~/.config/qt6ct/qt6ct.conf'
 
 [templates.nvim]
-input_path = '~/.config/matugen/nvim-palette.lua.tpl'
+input_path = '~/.config/matugen/nvim-palette.lua'
 output_path = '~/.config/nvim/lua/matugen/palette.lua'
 
 #[templates.webcord]
