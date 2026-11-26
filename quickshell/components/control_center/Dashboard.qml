@@ -39,9 +39,26 @@ Item {
                 height: left_column.availablHeight * 0.8
             }
         }
-        QuickSettings {
+        Column {
+            id: middle_column
             height: parent.height
             width: row.availableWidth * 0.32
+            spacing: 8
+
+            readonly property real availablHeight: middle_column.height - (middle_column.spacing)
+
+            
+            QuickSettings {
+                id: quickSettings
+                width: parent.width
+                height: middle_column.availablHeight * 0.8
+            }
+
+            QuickActions {
+                width: parent.width
+                //height: middle_column.availablHeight - quickSettings.height
+                height: middle_column.availablHeight * 0.2
+            }
         }
         Column {
             id: right_column
