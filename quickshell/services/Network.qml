@@ -18,6 +18,9 @@ Singleton {
     property bool ethernet: false
 
     property bool wifiEnabled: false
+    // Whether the saved power state has been reconciled with the hardware yet
+    property bool _stateRestored: false
+    property bool _wifiStateKnown: false
     property bool wifiScanning: false
     property bool wifiConnecting: connectProc.running
     property WifiAccessPoint wifiConnectTarget
@@ -61,10 +64,32 @@ Singleton {
     function enableWifi(enabled = true): void {
         const cmd = enabled ? "on" : "off";
         enableWifiProc.exec(["nmcli", "radio", "wifi", cmd]);
+        Settings.wifiState = enabled ? "on" : "off";
     }
 
     function toggleWifi(): void {
         enableWifi(!wifiEnabled);
+    }
+
+    // Apply the saved power state once, after both the settings and the current
+    // hardware state are known. On a fresh settings file we adopt the current
+    // state instead of forcing a default.
+    function restoreSavedState(): void {
+        if (_stateRestored || !Settings.ready || !_wifiStateKnown)
+            return;
+        _stateRestored = true;
+        if (Settings.wifiState === "auto") {
+            Settings.wifiState = root.wifiEnabled ? "on" : "off";
+            return;
+        }
+        const saved = Settings.wifiState === "on";
+        if (root.wifiEnabled !== saved)
+            enableWifi(saved);
+    }
+
+    Connections {
+        target: Settings
+        function onReadyChanged() { root.restoreSavedState() }
     }
 
     function rescanWifi(): void {
@@ -391,6 +416,8 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 root.wifiEnabled = text.trim() === "enabled";
+                root._wifiStateKnown = true;
+                root.restoreSavedState();
             }
         }
     }

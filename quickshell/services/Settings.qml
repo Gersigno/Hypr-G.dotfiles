@@ -14,6 +14,9 @@ Singleton {
     readonly property string settingsPath: homePath + "/.config/quickshell/settings.json"
     readonly property string templatePath: homePath + "/.config/quickshell/templates/settings.json"
 
+    // True once settings.json has been loaded (or generated) at least once
+    property bool ready: false
+
     // Template containing the default settings (tracked in git), read synchronously on demand
     FileView {
         id: templateFile
@@ -40,11 +43,15 @@ Singleton {
             } catch (e) {
                 console.log("[Settings] Failed to generate settings.json:", e)
             }
+            root.ready = true
         }
 
         // Settings added by newer versions (present in the template but missing
         // from an existing settings.json) are merged in without touching current values
-        onLoaded: syncWithTemplate()
+        onLoaded: {
+            syncWithTemplate()
+            root.ready = true
+        }
 
         function syncWithTemplate() {
             try {
@@ -53,6 +60,13 @@ Singleton {
                     return
                 const defaults = JSON.parse(templateFile.text())
                 let changed = false
+                // Remove keys from the intermediate power-state implementation
+                for (const legacyKey of ["wifiEnabled", "bluetoothEnabled"]) {
+                    if (Object.prototype.hasOwnProperty.call(current, legacyKey)) {
+                        delete current[legacyKey]
+                        changed = true
+                    }
+                }
                 for (const key in defaults) {
                     if (!Object.prototype.hasOwnProperty.call(current, key)) {
                         current[key] = (key === "wallpapersPath") ? root.homePath + defaults[key] : defaults[key]
@@ -75,6 +89,12 @@ Singleton {
             property string wallpapersPath: root.homePath + "/Pictures/Wallpapers"
             property bool developerMode: false
             property bool lowPowerMode: false
+            property bool caffeineEnabled: false
+
+            // Desired radio power state: "auto" (adopt the current hardware
+            // state on first run), "on" or "off".
+            property string wifiState: "auto"
+            property string bluetoothState: "auto"
 
             // Debug settings
             property JsonObject debug: JsonObject {
@@ -90,6 +110,9 @@ Singleton {
     property alias wallpapersPath: adapter.wallpapersPath
     property alias developerMode: adapter.developerMode
     property alias lowPowerMode: adapter.lowPowerMode
+    property alias caffeineEnabled: adapter.caffeineEnabled
+    property alias wifiState: adapter.wifiState
+    property alias bluetoothState: adapter.bluetoothState
 
     // Debug settings
     property alias debugSlowAnimations: debugSettings.slowAnimations

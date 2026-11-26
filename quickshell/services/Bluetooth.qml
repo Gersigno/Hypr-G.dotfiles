@@ -17,9 +17,43 @@ Singleton {
 
     readonly property bool discovering: Bluetooth.defaultAdapter?.discovering ?? false
 
+    // Whether the saved power state has been reconciled with the adapter yet
+    property bool _stateRestored: false
+
     function toggleBluetooth(): void {
-        if (Bluetooth.defaultAdapter)
-            Bluetooth.defaultAdapter.enabled = !Bluetooth.defaultAdapter.enabled
+        if (Bluetooth.defaultAdapter) {
+            const newState = !Bluetooth.defaultAdapter.enabled;
+            Bluetooth.defaultAdapter.enabled = newState;
+            Settings.bluetoothState = newState ? "on" : "off";
+        }
+    }
+
+    // Apply the saved power state once, after both the settings and the adapter
+    // are available. On a fresh settings file we adopt the current adapter
+    // state instead of forcing a default.
+    function restoreSavedState(): void {
+        if (_stateRestored || !Settings.ready || !Bluetooth.defaultAdapter)
+            return;
+        _stateRestored = true;
+        if (Settings.bluetoothState === "auto") {
+            Settings.bluetoothState = Bluetooth.defaultAdapter.enabled ? "on" : "off";
+            return;
+        }
+        const saved = Settings.bluetoothState === "on";
+        if (Bluetooth.defaultAdapter.enabled !== saved)
+            Bluetooth.defaultAdapter.enabled = saved;
+    }
+
+    Component.onCompleted: restoreSavedState()
+
+    Connections {
+        target: Bluetooth
+        function onDefaultAdapterChanged() { root.restoreSavedState() }
+    }
+
+    Connections {
+        target: Settings
+        function onReadyChanged() { root.restoreSavedState() }
     }
 
     function trustDevice(address: string): void {

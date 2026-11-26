@@ -5,6 +5,9 @@
   "wallpapersPath": "/Pictures/Wallpapers",
   "developerMode": false,
   "lowPowerMode": false,
+  "caffeineEnabled": false,
+  "wifiState": "auto",
+  "bluetoothState": "auto",
   "debug": {
     "slowAnimations": false
   }

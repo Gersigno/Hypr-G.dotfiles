@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import Quickshell
 import QtCore as Core
 
 import "../../../utils"
@@ -47,6 +48,24 @@ Rectangle {
             id: testingColumn
             width: parent.width
             spacing: 12
+
+            Button {
+                text: "Force reload quickshell config"
+                severity: Button.Severity.Warning
+                onClicked: {
+                    //notifProcess.sendNotif("Quickshell Debug", "Quickshell config reloaded successfully at " + new Date().toLocaleTimeString())
+                    //ToastService.show("Config reloaded", 3000)
+                    Quickshell.reload(true)
+                }
+            }
+            Button {
+                text: "Refetch hyprland config"
+                severity: Button.Severity.Warning
+                onClicked: {
+                    HyprlandConfig.markRead()
+                    ToastService.show("Hyprland config reloaded", 3000)
+                }
+            }
 
             Text {
                 text: "Debug settings"
