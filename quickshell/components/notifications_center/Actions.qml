@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import QtQuick.Effects
 
 import qs.services
 import "../../utils"
@@ -123,6 +124,17 @@ Item {
                             anchors.fill: parent
                             radius: 10
                             color: (root.groupByApp === modelData.group) ? Colors.primary : "transparent"
+                            
+                            layer.enabled: true
+                            layer.effect: MultiEffect {
+                                shadowEnabled: true
+                                shadowColor: Colors.shadow
+                                shadowBlur: 0.2
+                                shadowHorizontalOffset: 0
+                                shadowVerticalOffset: 1
+                                shadowOpacity: 0.15
+                            }
+
 
                             Behavior on color {
                                 ColorAnimation { duration: 120; easing.type: Easing.InOutQuad }

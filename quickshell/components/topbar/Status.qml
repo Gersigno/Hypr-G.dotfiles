@@ -14,6 +14,7 @@ Item {
 
     readonly property color backgroundColor: (Settings.isOled && Theme.isDarkMode) ? "#000" : Colors.background
     readonly property color foregroundColor: Colors.on_background
+    readonly property color lowPowerModeColor: Colors.tertiary //(TODO: mix tertiary & on_tertiary_fixed_variant)//Colors.tertiary//Theme.isDarkMode ? "yellow" : "orange"
     readonly property string fontFamily: Settings.fontFamily
 
     readonly property var chargeState: Battery.chargeState
@@ -24,6 +25,7 @@ Item {
     readonly property bool isCritical: percentage <= 10
     readonly property bool isSuspending: percentage <= 5
     readonly property bool isFull: percentage >= 100
+    readonly property bool isLowPowerMode: Settings.lowPowerMode
     //readonly property var chargingBatteryIcons: ["", "", "", "", ""]
     readonly property string batteryText: Battery.available ? (
         //isFull ? "" :
@@ -71,7 +73,7 @@ Item {
         return "󰤮";
     }
 
-    readonly property color batteryTextColor: (isLow && !isCharging) ? (isCritical ? "red" : "orange") : foregroundColor
+    readonly property color batteryTextColor: (isLow && !isCharging) ? (isCritical ? "red" : "orange") : (isLowPowerMode ? lowPowerModeColor : foregroundColor)
 
     //onIsChargingChanged: {
     //    if (!isCharging) chargingBatteryFrame = 0;

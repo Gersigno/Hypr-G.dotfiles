@@ -159,7 +159,7 @@ Item {
                         Layout.preferredWidth: 0
                         onClicked: {
                             Theme.toggle()
-                            ToastService.show(Theme.isDarkMode ? "Dark theme enabled" : "Light theme enabled", 3000, Theme.isDarkMode ? "../../../assets/icons/light_off.png" : "../../../assets/icons/light_on.png")
+                            ToastService.show(Theme.isDarkMode ? "󰖚  Dark theme enabled" : "󰖙  Light theme enabled", 3000)//, Theme.isDarkMode ? "../../../assets/icons/light_off.png" : "../../../assets/icons/light_on.png")
                         }
                     }
                     QSButton {
@@ -191,6 +191,30 @@ Item {
                         Layout.preferredWidth: 0
                     }
                     QSButton {
+                        id: lowPowerModeButton
+                        topIcon: "󱈑"
+                        text: "Low power"
+                        severity: Settings.lowPowerMode ? QSButton.Severity.Primary : QSButton.Severity.Secondary
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                        onClicked: {
+                            Settings.lowPowerMode = !Settings.lowPowerMode
+                            ToastService.show(Settings.lowPowerMode ? "󱈑 Low power mode enabled" : "󱈑 Low power mode disabled", 3000)
+                        }
+                    }
+                    QSButton {
+                        id: caffeineButton
+                        topIcon: ""
+                        text: "Caffeine"
+                        severity: Caffeine.enabled ? QSButton.Severity.Primary : QSButton.Severity.Secondary
+                        onClicked: {
+                            Caffeine.toggle()
+                            ToastService.show(Caffeine.enabled ? "󰅶  Caffeine enabled" : "󰅶  Caffeine disabled", 3000)
+                        }
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 0
+                    }
+                    QSButton {
                         id: screenshotButton
                         topIcon: "󱣴"
                         text: "Screenshot"
@@ -213,18 +237,6 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredWidth: 0
                         Layout.fillHeight: true
-                    }
-                    QSButton {
-                        id: caffeineButton
-                        topIcon: ""
-                        text: "Caffeine"
-                        severity: Caffeine.enabled ? QSButton.Severity.Primary : QSButton.Severity.Secondary
-                        onClicked: {
-                            Caffeine.toggle()
-                            ToastService.show(Caffeine.enabled ? "󰅶  Caffeine enabled" : "󰅶  Caffeine disabled", 3000)
-                        }
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 0
                     }
                 }
             }

@@ -74,6 +74,7 @@ Singleton {
             property string fontFamily: "SF Pro Display"
             property string wallpapersPath: root.homePath + "/Pictures/Wallpapers"
             property bool developerMode: false
+            property bool lowPowerMode: false
 
             // Debug settings
             property JsonObject debug: JsonObject {
@@ -88,6 +89,7 @@ Singleton {
     property alias fontFamily: adapter.fontFamily
     property alias wallpapersPath: adapter.wallpapersPath
     property alias developerMode: adapter.developerMode
+    property alias lowPowerMode: adapter.lowPowerMode
 
     // Debug settings
     property alias debugSlowAnimations: debugSettings.slowAnimations

@@ -4,6 +4,7 @@
   "fontFamily": "SF Pro Display",
   "wallpapersPath": "/Pictures/Wallpapers",
   "developerMode": false,
+  "lowPowerMode": false,
   "debug": {
     "slowAnimations": false
   }

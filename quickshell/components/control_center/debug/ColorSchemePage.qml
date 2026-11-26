@@ -1,4 +1,7 @@
 import QtQuick
+import Quickshell
+
+import qs.services
 
 import "../../../utils"
 
@@ -59,8 +62,34 @@ Rectangle {
                     height: 28
                     spacing: 12
 
+
+                    Item {
+                        width: 20
+                        height: parent.height
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: ""
+                            font.family: Settings.fontFamily
+                            font.pixelSize: 13
+                            color: copyNameArea.containsMouse ? Colors.primary : page.textColor
+                            opacity: copyNameArea.containsMouse ? 1 : 0.7
+                        }
+
+                        MouseArea {
+                            id: copyNameArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                Quickshell.clipboardText = modelData
+                                ToastService.show("   Copied: \"" + modelData + "\"", 3000)
+                            }
+                        }
+                    }
+
                     Text {
-                        width: 250
+                        width: 220
                         height: parent.height
                         text: modelData
                         color: page.textColor
@@ -77,11 +106,21 @@ Rectangle {
 
                         Text {
                             anchors.centerIn: parent
-                            text: Colors[modelData].toString().toUpperCase()
+                            text: Colors[modelData].toString().toUpperCase() + "  "
                             font.pixelSize: 11
                             color: {
                                 const c = Colors[modelData]
                                 return (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) > 0.5 ? "#000000" : "#ffffff"
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                const hex = Colors[modelData].toString().toUpperCase()
+                                Quickshell.clipboardText = hex
+                                ToastService.show("   Copied: \"" + hex + "\"", 3000)
                             }
                         }
                     }
